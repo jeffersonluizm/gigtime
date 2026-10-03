@@ -1,0 +1,6 @@
+{
+    "editor.linkedEditing": true,
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
+}
