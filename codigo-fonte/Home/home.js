@@ -18,26 +18,27 @@ const users = GigArmazenamento.lerUsuarios(localStorage);
 
 // Gera os cards para cada usuário
 users.forEach(user => {
+  const e = GigHTML.escaparHTML; // todo dado do usuário entra escapado no HTML
   const card = `
         <div class="col col-card d-flex">
           <div class="card flex-fill">
-            <a href="#" id="${user.username}">
-              <img src="${user.profilePicLink}" class="card-img-top" alt="Imagem de ${user.name}">
+            <a href="#" id="${e(user.username)}">
+              <img src="${e(user.profilePicLink)}" class="card-img-top" alt="Imagem de ${e(user.name)}">
             </a>
             <div class="card-body">
-              <h5 class="card-title">${user.name}
+              <h5 class="card-title">${e(user.name)}
                 <i class="fa-solid fa-star mt-2 ms-1 float-end">
-                  <span> ${user.rating || 'N/A'}</span>
+                  <span> ${e(user.rating || 'N/A')}</span>
                 </i>
               </h5>
               
             </div>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">
-                <i class="fa-solid fa-location-dot me-1"></i> ${user.city}/${user.state}
+                <i class="fa-solid fa-location-dot me-1"></i> ${e(user.city)}/${e(user.state)}
               </li>
               <li class="list-group-item">
-                <i class="fa-solid fa-guitar me-1"></i> ${user.genres.join(', ')}
+                <i class="fa-solid fa-guitar me-1"></i> ${e((user.genres || []).join(', '))}
               </li>
             </ul>
           </div>

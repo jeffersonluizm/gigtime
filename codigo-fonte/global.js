@@ -10,15 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loggedInUser) {
         // Personaliza a navbar para o usuário logado
 
+        // O template não leva dados do usuário; foto e nome entram por src/textContent (sem HTML)
         navbar.innerHTML = `
         <a class="navbar-brand" href="../Perfil/perfil.html" id="profileAvatarLink">
-            <img src="${loggedInUser.profilePicLink}" alt="Foto de perfil" width="30" height="30" class="shadow object-fit-cover rounded-circle">
+            <img alt="Foto de perfil" width="30" height="30" class="shadow object-fit-cover rounded-circle">
         </a>
-        <span class="navbar-text text-white me-3">Bem-vindo, ${loggedInUser.username}!</span>
+        <span class="navbar-text text-white me-3" id="saudacaoUsuario"></span>
         <a class="nav-link me-3" href="#" id="profileLink">Perfil</a>
         <a class="nav-link me-3" href="../Chat/chat.html">Mensagens</a>
         <a class="nav-link me-3" href="#" id="logoutLink">Sair</a>
           `;
+        navbar.querySelector('#profileAvatarLink img').src = loggedInUser.profilePicLink || '../userImages/defaultUser.jpg';
+        document.getElementById('saudacaoUsuario').textContent = `Bem-vindo, ${loggedInUser.username}!`;
 
         // "Perfil" e a foto abrem o perfil do próprio usuário logado
         document.getElementById('profileLink').addEventListener('click', function () {
