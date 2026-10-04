@@ -40,7 +40,7 @@ const TAMANHOS = { desktop: { width: 1280, height: 800 }, celular: { width: 375,
       pagina.on('console', (m) => { if (m.type() === 'error') erros.push(m.text()); });
       // Conversa de exemplo para o print do chat (gravada antes do script da página rodar)
       await pagina.addInitScript(({ logado, conversa }) => {
-        if (logado && !sessionStorage.getItem('loggedInUser')) sessionStorage.setItem('loggedInUser', JSON.stringify({ username: logado, name: logado }));
+        if (logado && !sessionStorage.getItem('loggedInUser')) sessionStorage.setItem('loggedInUser', JSON.stringify({ username: logado, name: logado === 'davi.sax' ? 'Davi Moraes' : logado }));
         if (conversa && !localStorage.getItem('gigtime:messages')) {
           const agora = Date.now();
           const m = (de, para, texto, s) => ({ id: `${s}-${de}`, de, para, texto, enviadaEm: agora - s * 60000 });
