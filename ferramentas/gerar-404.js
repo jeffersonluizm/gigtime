@@ -19,8 +19,14 @@ const script = `
       var primeiro = caminho.split('/').filter(Boolean)[0];
       if (primeiro) base = '/' + primeiro + '/';
     }
+    // "//host/..." no caminho viraria um link para outro site (open redirect): uma barra só no início,
+    // e o link final precisa estar na mesma origem
+    base = '/' + base.replace(/^\\/+/, '');
     var links = document.querySelectorAll('[data-destino]');
-    for (var j = 0; j < links.length; j++) links[j].href = base + 'codigo-fonte/' + links[j].getAttribute('data-destino');
+    for (var j = 0; j < links.length; j++) {
+      var destino = new URL(base + 'codigo-fonte/' + links[j].getAttribute('data-destino'), window.location.origin);
+      if (destino.origin === window.location.origin) links[j].href = destino.href;
+    }
   })();
 `;
 

@@ -81,3 +81,7 @@ test('usernameValido aceita 3 a 30 letras, números, ponto, hífen e sublinhado'
   assert.equal(V.usernameValido('<script>'), false);
   assert.equal(V.usernameValido('a'.repeat(31)), false);
 });
+
+test('usernameValido recusa nomes reservados de objetos JavaScript', () => {
+  for (const nome of ['__proto__', 'constructor', 'prototype', 'toString', 'hasOwnProperty']) assert.equal(V.usernameValido(nome), false, nome);
+});

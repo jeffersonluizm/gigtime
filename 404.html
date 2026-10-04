@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-wuk9Vl9aaVw7Gz4purLpryzrU17hbwQCrUnBte/+9FE='; style-src 'sha256-NnhszEdQqpuxi+sVJriJTuXiUalmDTOONm7WrArmS8Q='; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-0FmTKcEtUxlQBG1xrfVGMJ8qwJrHzCvRy0ooMgBLWPw='; style-src 'sha256-NnhszEdQqpuxi+sVJriJTuXiUalmDTOONm7WrArmS8Q='; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
@@ -50,8 +50,14 @@
       var primeiro = caminho.split('/').filter(Boolean)[0];
       if (primeiro) base = '/' + primeiro + '/';
     }
+    // "//host/..." no caminho viraria um link para outro site (open redirect): uma barra só no início,
+    // e o link final precisa estar na mesma origem
+    base = '/' + base.replace(/^\/+/, '');
     var links = document.querySelectorAll('[data-destino]');
-    for (var j = 0; j < links.length; j++) links[j].href = base + 'codigo-fonte/' + links[j].getAttribute('data-destino');
+    for (var j = 0; j < links.length; j++) {
+      var destino = new URL(base + 'codigo-fonte/' + links[j].getAttribute('data-destino'), window.location.origin);
+      if (destino.origin === window.location.origin) links[j].href = destino.href;
+    }
   })();
 </script>
 </body>

@@ -91,3 +91,33 @@ test('index.html da raiz leva para a Home do próprio site (sem o endereço anti
   assert.doesNotMatch(html, /icei-puc-minas|github\.io/);
   assert.match(html, /<html lang="pt-BR">/);
 });
+
+test('404: links calculados ficam sempre na mesma origem (sem open redirect por //host no caminho)', () => {
+  const { JSDOM } = require('jsdom');
+  const html = fs.readFileSync(path.join(RAIZ, '..', '404.html'), 'utf8');
+  for (const url of [
+    'https://usuario.github.io//evil.example/codigo-fonte/x',
+    'https://usuario.github.io//evil.example/qualquer',
+    'https://usuario.github.io/repo/codigo-fonte/nao-existe.html',
+    'https://usuario.github.io/repo/nada',
+    'http://127.0.0.1:8000/nada',
+  ]) {
+    const dom = new JSDOM(html, { url, runScripts: 'dangerously' });
+    const links = [...dom.window.document.querySelectorAll('a[data-destino]')];
+    assert.ok(links.length >= 2);
+    for (const a of links) assert.equal(new URL(a.href).origin, new URL(url).origin, `${url} -> ${a.href}`);
+  }
+  const certo = new JSDOM(html, { url: 'https://usuario.github.io/repo/codigo-fonte/nao-existe.html', runScripts: 'dangerously' });
+  assert.equal(certo.window.document.querySelector('a[data-destino]').href, 'https://usuario.github.io/repo/codigo-fonte/Home/home.html');
+});
+
+test('página aberta dentro de um iframe de outro site fica oculta (defesa contra clickjacking)', () => {
+  const w = carregarPagina('Home/home.html');
+  const falsa = { top: {}, self: {}, document: { documentElement: { hidden: false } } };
+  assert.equal(w.GigLayout.bloquearMoldura(falsa), true);
+  assert.equal(falsa.document.documentElement.hidden, true);
+  const normal = { document: { documentElement: { hidden: false } } };
+  normal.top = normal; normal.self = normal;
+  assert.equal(w.GigLayout.bloquearMoldura(normal), false);
+  assert.equal(normal.document.documentElement.hidden, false);
+});

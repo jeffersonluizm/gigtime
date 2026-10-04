@@ -69,7 +69,9 @@
     return null;
   }
 
-  const usernameValido = (valor) => /^[A-Za-z0-9._-]{3,30}$/.test(typeof valor === 'string' ? valor : '');
+  // Nomes que são propriedades de todo objeto JavaScript quebrariam os mapas por usuário (ex.: gigtime:lidas)
+  const RESERVADOS = ['__proto__', 'constructor', 'prototype', 'tostring', 'valueof', 'hasownproperty', 'isprototypeof', 'propertyisenumerable', 'tolocalestring'];
+  const usernameValido = (valor) => typeof valor === 'string' && /^[A-Za-z0-9._-]{3,30}$/.test(valor) && !RESERVADOS.includes(valor.toLowerCase());
 
   return { TAMANHO_MINIMO_SENHA, urlImagem, idYoutube, emailValido, telefoneValido, erroSenha, usernameValido };
 });

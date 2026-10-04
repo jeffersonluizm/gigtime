@@ -143,7 +143,21 @@
     }
   }
 
+  // CSP por <meta> não aceita frame-ancestors e o GitHub Pages não envia X-Frame-Options:
+  // dentro de um iframe de outro site a página fica oculta (defesa contra clickjacking)
+  function bloquearMoldura(janela) {
+    let emMoldura;
+    try {
+      emMoldura = janela.top !== janela.self;
+    } catch (e) {
+      emMoldura = true;
+    }
+    if (emMoldura) janela.document.documentElement.hidden = true;
+    return emMoldura;
+  }
+
   function iniciar() {
+    if (bloquearMoldura(raiz)) return;
     // Sessão parada há mais de 2 horas: encerra e avisa (páginas que exigem login vão para a página própria)
     // (quem exige login trata a expiração no próprio script, com GigSessao.exigirLogin)
     const paginaExigeLogin = document.body.hasAttribute('data-exige-login');
@@ -170,6 +184,6 @@
     });
   }
 
-  raiz.GigLayout = { atualizarContador };
+  raiz.GigLayout = { atualizarContador, bloquearMoldura };
   iniciar();
 })(window);
