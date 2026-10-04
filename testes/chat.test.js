@@ -62,7 +62,7 @@ test('formatarHora mostra hora no mesmo dia e data nos outros', () => {
 });
 
 test('"Contate-me" abre a conversa com a pessoa do perfil', () => {
-  assert.equal(P.acaoDoPerfil({ username: 'ana.pereira' }, { username: 'sonic' }).href, '../Chat/chat.html?com=ana.pereira');
+  assert.equal(P.acaoDoPerfil({ username: 'ana.pereira' }, { username: 'lia.batera' }).href, '../Chat/chat.html?com=ana.pereira');
 });
 
 // Página do chat
@@ -72,39 +72,39 @@ const logado = (username, extra) => (win) => {
 };
 
 test('chat exige login e volta para a mesma conversa depois', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic' });
-  assert.equal(w.sessionStorage.getItem('depoisDoLogin'), '../Chat/chat.html?com=sonic');
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera' });
+  assert.equal(w.sessionStorage.getItem('depoisDoLogin'), '../Chat/chat.html?com=lia.batera');
 });
 
 test('chat aberto pelo perfil mostra a pessoa e envia mensagem gravada no localStorage', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   const d = w.document;
-  assert.equal(d.getElementById('nomeContato').textContent, 'Sonic Hedgehog');
-  assert.equal(d.querySelector('.chatlist .chatBlock.active').dataset.username, 'sonic');
+  assert.equal(d.getElementById('nomeContato').textContent, 'Lia Fontes');
+  assert.equal(d.querySelector('.chatlist .chatBlock.active').dataset.username, 'lia.batera');
 
-  d.getElementById('mensagem').value = 'Olá, Sonic!';
+  d.getElementById('mensagem').value = 'Olá, Lia!';
   d.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
 
   const salvas = JSON.parse(w.localStorage.getItem(CHAVE_MENSAGENS));
   assert.equal(salvas.length, 1);
-  assert.equal(salvas[0].de, 'cartola');
-  assert.equal(salvas[0].para, 'sonic');
+  assert.equal(salvas[0].de, 'davi.sax');
+  assert.equal(salvas[0].para, 'lia.batera');
   const minhas = d.querySelectorAll('.chat .messagechat.myMessage p');
   assert.equal(minhas.length, 1);
-  assert.match(minhas[0].textContent, /^Olá, Sonic!/);
+  assert.match(minhas[0].textContent, /^Olá, Lia!/);
   assert.equal(d.getElementById('mensagem').value, '');
 });
 
 test('chat lista as conversas existentes e mostra a mensagem recebida', () => {
   const w = carregarPagina('Chat/chat.html', {
-    antes: logado('sonic', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([
-      msg('cartola', 'sonic', 'Bora tocar?', Date.now() - 1000),
+    antes: logado('lia.batera', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([
+      msg('davi.sax', 'lia.batera', 'Bora tocar?', Date.now() - 1000),
     ]))),
   });
   const d = w.document;
   const blocos = d.querySelectorAll('.chatlist .chatBlock');
   assert.equal(blocos.length, 1);
-  assert.equal(blocos[0].querySelector('h4').textContent, 'Cartola');
+  assert.equal(blocos[0].querySelector('h4').textContent, 'Davi Moraes');
   assert.equal(blocos[0].querySelector('.message p').textContent, 'Bora tocar?');
 
   blocos[0].click();
@@ -114,7 +114,7 @@ test('chat lista as conversas existentes e mostra a mensagem recebida', () => {
 });
 
 test('chat mostra o texto da mensagem como texto, sem interpretar HTML', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   const d = w.document;
   d.getElementById('mensagem').value = '<img src=x onerror="alert(1)">';
   d.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
@@ -123,21 +123,21 @@ test('chat mostra o texto da mensagem como texto, sem interpretar HTML', () => {
 });
 
 test('chat não envia mensagem vazia', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   w.document.getElementById('mensagem').value = '   ';
   w.document.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
   assert.equal(w.localStorage.getItem(CHAVE_MENSAGENS), null);
 });
 
 test('chat atualiza quando outra aba grava mensagem', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=cartola', antes: logado('sonic') });
-  w.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([msg('cartola', 'sonic', 'Chegou?', Date.now())]));
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=davi.sax', antes: logado('lia.batera') });
+  w.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([msg('davi.sax', 'lia.batera', 'Chegou?', Date.now())]));
   w.dispatchEvent(new w.StorageEvent('storage', { key: CHAVE_MENSAGENS }));
   assert.equal(w.document.querySelectorAll('.chat .friendMessage').length, 1);
 });
 
 test('a navbar do usuário logado tem o link para as mensagens', () => {
-  const w = carregarPagina('Home/home.html', { antes: logado('cartola') });
+  const w = carregarPagina('Home/home.html', { antes: logado('davi.sax') });
   const link = w.document.querySelector('.navbar-nav a[href="../Chat/chat.html"]');
   assert.ok(link);
   assert.equal(link.textContent.trim(), 'Mensagens');
@@ -170,12 +170,12 @@ test('salvarMensagens não esconde erro que não seja de cota', () => {
 });
 
 test('chat limita o campo a 2000 caracteres', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   assert.equal(w.document.getElementById('mensagem').maxLength, 2000);
 });
 
 test('chat avisa quando não há espaço para gravar e mantém o texto digitado', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   const original = w.Storage.prototype.setItem;
   w.Storage.prototype.setItem = function () {
     const erro = new Error('cheio');
@@ -221,29 +221,29 @@ function trocarUsuarios(w, transformar) {
 }
 
 test('chat atualiza nome e foto do contato quando outra aba edita o perfil dele', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
-  trocarUsuarios(w, (lista) => lista.map((u) => (u.username === 'sonic' ? { ...u, name: 'Super Sonic', profilePicLink: 'novo.jpg' } : u)));
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
+  trocarUsuarios(w, (lista) => lista.map((u) => (u.username === 'lia.batera' ? { ...u, name: 'Lia Fontes Trio', profilePicLink: 'novo.jpg' } : u)));
   const d = w.document;
-  assert.equal(d.getElementById('nomeContato').textContent, 'Super Sonic');
+  assert.equal(d.getElementById('nomeContato').textContent, 'Lia Fontes Trio');
   assert.match(d.getElementById('fotoContato').src, /novo\.jpg$/);
-  assert.equal(d.querySelector('.chatlist .chatBlock h4').textContent, 'Super Sonic');
+  assert.equal(d.querySelector('.chatlist .chatBlock h4').textContent, 'Lia Fontes Trio');
 });
 
 test('chat não quebra quando o contato da conversa deixa de existir', () => {
   const w = carregarPagina('Chat/chat.html', {
-    busca: '?com=sonic',
-    antes: logado('cartola', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([msg('cartola', 'sonic', 'oi', Date.now())]))),
+    busca: '?com=lia.batera',
+    antes: logado('davi.sax', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([msg('davi.sax', 'lia.batera', 'oi', Date.now())]))),
   });
-  trocarUsuarios(w, (lista) => lista.filter((u) => u.username !== 'sonic'));
+  trocarUsuarios(w, (lista) => lista.filter((u) => u.username !== 'lia.batera'));
   const d = w.document;
   assert.equal(d.getElementById('nomeContato').textContent, 'Mensagens');
   assert.equal(d.getElementById('mensagem').disabled, true);
-  assert.equal(d.querySelector('.chatlist .chatBlock h4').textContent, 'sonic', 'a conversa antiga continua listada pelo username');
+  assert.equal(d.querySelector('.chatlist .chatBlock h4').textContent, 'lia.batera', 'a conversa antiga continua listada pelo username');
 });
 
 test('conversa nova com contato que deixou de existir some da lista', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
-  trocarUsuarios(w, (lista) => lista.filter((u) => u.username !== 'sonic'));
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
+  trocarUsuarios(w, (lista) => lista.filter((u) => u.username !== 'lia.batera'));
   assert.equal(w.document.querySelectorAll('.chatlist .chatBlock').length, 0);
 });
 
@@ -251,19 +251,19 @@ test('conversa nova com contato que deixou de existir some da lista', () => {
 const container = (w) => w.document.querySelector('body > .container');
 
 test('chat com conversa escolhida marca a tela como conversa aberta', () => {
-  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   assert.equal(container(w).classList.contains('conversa-aberta'), true);
 });
 
 test('chat sem conversa escolhida mostra a lista', () => {
-  const w = carregarPagina('Chat/chat.html', { antes: logado('cartola') });
+  const w = carregarPagina('Chat/chat.html', { antes: logado('davi.sax') });
   assert.equal(container(w).classList.contains('conversa-aberta'), false);
 });
 
 test('"voltar" fecha a conversa e volta para a lista; abrir de novo pela lista reabre', () => {
   const w = carregarPagina('Chat/chat.html', {
-    busca: '?com=sonic',
-    antes: logado('cartola', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([msg('cartola', 'sonic', 'oi', Date.now())]))),
+    busca: '?com=lia.batera',
+    antes: logado('davi.sax', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([msg('davi.sax', 'lia.batera', 'oi', Date.now())]))),
   });
   const d = w.document;
   d.getElementById('voltarLista').click();
@@ -272,7 +272,7 @@ test('"voltar" fecha a conversa e volta para a lista; abrir de novo pela lista r
   assert.equal(w.location.search, '');
   d.querySelector('.chatlist .chatBlock').click();
   assert.equal(container(w).classList.contains('conversa-aberta'), true);
-  assert.equal(w.location.search, '?com=sonic');
+  assert.equal(w.location.search, '?com=lia.batera');
 });
 
 test('CSS do chat: em tela estreita mostra lista ou conversa e o botão voltar', () => {

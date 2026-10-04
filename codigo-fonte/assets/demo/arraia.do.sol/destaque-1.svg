@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='800' height='600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#c2410c'/><stop offset='1' stop-color='#140a05'/></linearGradient></defs>
+<rect width='800' height='600' fill='url(#g)'/>
+<path d='M101 0 L-73.2 600 L265.3 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='101' cy='8' r='14' fill='#5d3a76'/><path d='M226.2 0 L86.3 600 L355.3 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='226.2' cy='8' r='14' fill='#5d3a76'/><path d='M346.2 0 L206.9 600 L478.8 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='346.2' cy='8' r='14' fill='#5d3a76'/><path d='M450.1 0 L282.2 600 L588.4 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='450.1' cy='8' r='14' fill='#5d3a76'/><path d='M578.1 0 L440.2 600 L703.1 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='578.1' cy='8' r='14' fill='#5d3a76'/><path d='M691.5 0 L567.1 600 L867.6 600 Z' fill='#ffffff' opacity='0.2'/><circle cx='691.5' cy='8' r='14' fill='#5d3a76'/>
+<rect x='0' y='500' width='800' height='100' fill='#000000' opacity='.35'/>
+<text x='32' y='562' font-family='Segoe UI, Helvetica, Arial, sans-serif' font-size='36' font-weight='700' fill='#ffffff'>Ao vivo em Salvador</text>
+</svg>

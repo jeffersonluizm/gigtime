@@ -57,4 +57,14 @@ function carregarPagina(relativo, { busca = '', antes } = {}) {
 // Espera as promessas pendentes (hash de senha etc.) terminarem
 const esperar = (ms = 30) => new Promise((r) => setTimeout(r, ms));
 
-module.exports = { StorageMemoria, carregarPagina, esperar, RAIZ };
+// Espera até a condição valer (ex.: login concluído). O seed usa PBKDF2 com 600 mil iterações,
+// então conferir a senha de uma persona leva ~0,1 s: um atraso fixo deixaria o teste instável.
+async function esperarAte(condicao, limiteMs = 5000) {
+  const inicio = Date.now();
+  while (!condicao()) {
+    if (Date.now() - inicio > limiteMs) throw new Error('condição não foi atendida em ' + limiteMs + ' ms');
+    await esperar(10);
+  }
+}
+
+module.exports = { StorageMemoria, carregarPagina, esperar, esperarAte, RAIZ };

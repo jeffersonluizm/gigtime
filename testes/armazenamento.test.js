@@ -73,10 +73,10 @@ test('global.js migra usuários de uma aba aberta na versão antiga', () => {
 
 test('global.js limpa senha antiga do usuário logado guardado na sessão', () => {
   const w = carregarPagina('Home/home.html', {
-    antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify(u('sonic', { password: 'sonic', profilePicLink: 'x' }))),
+    antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify(u('lia.batera', { password: 'demo1234', profilePicLink: 'x' }))),
   });
   const logado = JSON.parse(w.sessionStorage.getItem('loggedInUser'));
-  assert.equal(logado.username, 'sonic');
+  assert.equal(logado.username, 'lia.batera');
   assert.equal('password' in logado, false);
 });
 
@@ -90,8 +90,8 @@ test('home e anúncios montam os cards a partir do localStorage', () => {
 
 test('clicar num card guarda o perfil escolhido sem senha', () => {
   const w = carregarPagina('Anúncios/anuncios.html');
-  w.document.querySelector('#anuncios > .col[data-username="cartola"] a').dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
+  w.document.querySelector('#anuncios > .col[data-username="davi.sax"] a').dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
   const escolhido = JSON.parse(w.sessionStorage.getItem('clickedUser'));
-  assert.equal(escolhido.username, 'cartola');
+  assert.equal(escolhido.username, 'davi.sax');
   assert.equal('password' in escolhido || 'passwordHash' in escolhido, false);
 });

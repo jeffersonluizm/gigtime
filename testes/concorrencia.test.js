@@ -3,7 +3,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { webcrypto } = require('node:crypto');
-const { StorageMemoria, carregarPagina, esperar } = require('./apoio');
+const { StorageMemoria, carregarPagina, esperar, esperarAte } = require('./apoio');
 const A = require('../codigo-fonte/lib/armazenamento.js');
 
 // Troca o WebCrypto da página por um que executa `efeito` (a "outra aba") durante o primeiro hash
@@ -64,17 +64,17 @@ test('cadastro não duplica username registrado por outra aba durante o hash', a
 
 test('edição de perfil não apaga usuário gravado por outra aba durante o hash', async () => {
   const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', {
-    antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify({ username: 'cartola' })),
+    antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify({ username: 'davi.sax' })),
   });
   const $ = (id) => w.document.getElementById(id);
   $('city').value = 'Niterói';
-  $('senhaAtual').value = 'cartolinha';
+  $('senhaAtual').value = 'demo1234';
   $('novaSenha').value = 'nova123';
   $('confirmacao').value = 'nova123';
   outraAbaDuranteOHash(w, () => adicionar(w, outro('outraaba')));
   $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperar(60);
+  await esperarAte(() => usuarios(w).find((u) => u.username === 'davi.sax').city === 'Niterói');
   const lista = usuarios(w);
   assert.ok(lista.some((u) => u.username === 'outraaba'));
-  assert.equal(lista.find((u) => u.username === 'cartola').city, 'Niterói');
+  assert.equal(lista.find((u) => u.username === 'davi.sax').city, 'Niterói');
 });

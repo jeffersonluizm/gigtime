@@ -121,40 +121,40 @@ test('EdicaoPerfil sem login manda para o login e volta depois', () => {
 });
 
 test('EdicaoPerfil vem preenchida com os dados do usuário logado', () => {
-  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('cartola') });
+  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('davi.sax') });
   const $ = (id) => w.document.getElementById(id);
-  assert.equal($('username').value, 'cartola');
+  assert.equal($('username').value, 'davi.sax');
   assert.equal($('username').readOnly, true);
-  assert.equal($('name').value, 'Cartola');
-  assert.equal($('state').value, 'RJ');
+  assert.equal($('name').value, 'Davi Moraes');
+  assert.equal($('state').value, 'MG');
   assert.equal($('role').value, 'Músico');
-  assert.equal($('genreSertanejo').checked, true);
+  assert.equal($('genreJazz').checked, true);
   assert.equal($('genreRock').checked, false);
 });
 
 test('EdicaoPerfil salva no modelo users e atualiza a sessão', async () => {
-  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('cartola') });
+  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('davi.sax') });
   const $ = (id) => w.document.getElementById(id);
   $('city').value = 'Niterói';
   $('genreRock').checked = true;
   $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await esperar();
-  const cartola = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'cartola');
+  const cartola = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'davi.sax');
   assert.equal(cartola.city, 'Niterói');
-  assert.deepEqual(cartola.genres, ['Sertanejo', 'Rock', 'MPB']);
+  assert.deepEqual(cartola.genres, ['Rock', 'MPB', 'Jazz']);
   assert.equal(JSON.parse(w.sessionStorage.getItem('loggedInUser')).city, 'Niterói');
   assert.equal(w.localStorage.getItem('formularioData'), null, 'não usa mais o formulário solto');
 });
 
 test('EdicaoPerfil mostra erro e não salva com campo obrigatório vazio', async () => {
-  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('cartola') });
+  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('davi.sax') });
   const $ = (id) => w.document.getElementById(id);
   $('name').value = '';
   $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await esperar();
   assert.ok($('name').classList.contains('is-invalid'));
-  const cartola = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'cartola');
-  assert.equal(cartola.name, 'Cartola');
+  const cartola = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'davi.sax');
+  assert.equal(cartola.name, 'Davi Moraes');
 });
 
 // Página de perfil
@@ -166,31 +166,38 @@ function verPerfil(exibido, logado) {
 }
 
 test('perfil do próprio usuário mostra "Editar perfil"', () => {
-  const w = carregarPagina('Perfil/perfil.html', { antes: verPerfil('cartola', 'cartola') });
+  const w = carregarPagina('Perfil/perfil.html', { antes: verPerfil('davi.sax', 'davi.sax') });
   const botao = w.document.getElementById('acaoPerfil');
   assert.equal(botao.textContent.trim(), 'Editar perfil');
   assert.equal(botao.dataset.href, '../EdicaoPerfil/EdicaoPerfil.html');
 });
 
 test('perfil de outra pessoa mostra "Contate-me"', () => {
-  const w = carregarPagina('Perfil/perfil.html', { antes: verPerfil('sonic', 'cartola') });
+  const w = carregarPagina('Perfil/perfil.html', { antes: verPerfil('lia.batera', 'davi.sax') });
   assert.equal(w.document.getElementById('acaoPerfil').textContent.trim(), 'Contate-me');
 });
 
 test('perfil mostra os dados atuais do modelo, não a cópia guardada na sessão', () => {
-  const w = carregarPagina('Perfil/perfil.html', { antes: verPerfil('cartola', null) });
-  assert.equal(w.document.getElementById('name').textContent, 'Cartola');
-  assert.equal(w.document.getElementById('location').textContent, 'Rio de Janeiro/RJ');
+  const w = carregarPagina('Perfil/perfil.html', { antes: verPerfil('davi.sax', null) });
+  assert.equal(w.document.getElementById('name').textContent, 'Davi Moraes');
+  assert.equal(w.document.getElementById('location').textContent, 'Belo Horizonte/MG');
 });
 
-test('EdicaoPerfil mantém um estado fora da lista de UFs (ex.: seed "GH") e deixa salvar', async () => {
-  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('sonic') });
+test('EdicaoPerfil mantém um estado fora da lista de UFs (ex.: "GH") e deixa salvar', async () => {
+  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', {
+    antes: (win) => {
+      const lista = JSON.parse(JSON.stringify(require('../codigo-fonte/dados/usuarios-exemplo.js')));
+      lista[0].state = 'GH';
+      win.localStorage.setItem(CHAVE_USUARIOS, JSON.stringify(lista));
+      logadoComo('lia.batera')(win);
+    },
+  });
   const $ = (id) => w.document.getElementById(id);
   assert.equal($('state').value, 'GH');
   $('city').value = 'Station Square';
   $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await esperar();
-  const sonic = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'sonic');
-  assert.equal(sonic.city, 'Station Square');
-  assert.equal(sonic.state, 'GH');
+  const lia = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'lia.batera');
+  assert.equal(lia.city, 'Station Square');
+  assert.equal(lia.state, 'GH');
 });

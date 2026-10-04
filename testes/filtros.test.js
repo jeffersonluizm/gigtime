@@ -55,7 +55,7 @@ function marcar(w, id, valor = true) {
 test('anúncios: avaliação mínima 5 mostra só quem tem nota 5', () => {
   const w = carregarPagina('Anúncios/anuncios.html');
   marcar(w, 'avaliacao5');
-  assert.deepEqual(visiveis(w), ['cartola', 'joao_souza', 'sonic']);
+  assert.deepEqual(visiveis(w), ['banda.aurora', 'casa.lume']);
 });
 
 test('anúncios: as caixas de avaliação são exclusivas e desmarcar volta a mostrar todos', () => {
@@ -70,18 +70,18 @@ test('anúncios: as caixas de avaliação são exclusivas e desmarcar volta a mo
 test('anúncios: filtro por gênero', () => {
   const w = carregarPagina('Anúncios/anuncios.html');
   marcar(w, 'generoJazz');
-  assert.deepEqual(visiveis(w), ['ana.pereira', 'jazzburger']);
+  assert.deepEqual(visiveis(w), ['bar.do.cais', 'bistro.alecrim', 'davi.sax']);
 });
 
 test('anúncios: papel, estado, avaliação e gênero combinados', () => {
   const w = carregarPagina('Anúncios/anuncios.html');
   marcar(w, 'radioContractor');
   const estado = w.document.getElementById('state');
-  estado.value = 'MG';
+  estado.value = 'RJ';
   estado.dispatchEvent(new w.Event('change', { bubbles: true }));
-  assert.deepEqual(visiveis(w), ['jazzburger', 'maria123']);
+  assert.deepEqual(visiveis(w), ['bar.do.cais']);
   marcar(w, 'generoJazz');
-  assert.deepEqual(visiveis(w), ['jazzburger']);
+  assert.deepEqual(visiveis(w), ['bar.do.cais']);
   marcar(w, 'avaliacao5');
   assert.deepEqual(visiveis(w), []);
 });

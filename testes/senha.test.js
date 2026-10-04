@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
-const { StorageMemoria, carregarPagina, esperar } = require('./apoio');
+const { StorageMemoria, carregarPagina, esperar, esperarAte } = require('./apoio');
 const S = require('../codigo-fonte/lib/senha.js');
 const { CHAVE_USUARIOS, CHAVE_MENSAGENS } = require('../codigo-fonte/lib/armazenamento.js');
 
@@ -117,9 +117,9 @@ test('o seed não traz senha em texto puro e as senhas de demonstração funcion
   const w = carregarPagina('Home/home.html');
   const usuarios = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS));
   assert.equal(usuarios.some((u) => 'password' in u), false);
-  assert.ok(usuarios.every((u) => /^[0-9a-f]{64}$/.test(u.passwordHash)));
-  assert.ok(await S.autenticar(usuarios, 'sonic', 'sonic'));
-  assert.ok(await S.autenticar(usuarios, 'jazzburger', 'plannerpro2024'));
+    assert.ok(usuarios.every((u) => /^pbkdf2-sha256\$600000\$/.test(u.passwordHash)), 'seed com PBKDF2 de 600 mil iterações');
+  assert.ok(await S.autenticar(usuarios, 'lia.batera', 'demo1234'));
+  assert.ok(await S.autenticar(usuarios, 'casa.lume', 'demo1234'));
 });
 
 test('global.js converte as senhas antigas migradas da sessão', async () => {
@@ -139,19 +139,19 @@ function preencher(w, campos) {
 
 test('login com a senha certa grava o usuário logado (sem hash) na sessão', async () => {
   const w = carregarPagina('Login/login.html');
-  preencher(w, { username: 'cartola', password: 'cartolinha' });
+  preencher(w, { username: 'davi.sax', password: 'demo1234' });
   w.document.getElementById('loginForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperar();
+  await esperarAte(() => w.sessionStorage.getItem('loggedInUser'));
   const logado = JSON.parse(w.sessionStorage.getItem('loggedInUser'));
-  assert.equal(logado.username, 'cartola');
+  assert.equal(logado.username, 'davi.sax');
   assert.equal('passwordHash' in logado, false);
 });
 
 test('login com senha errada não loga e avisa', async () => {
   const w = carregarPagina('Login/login.html');
-  preencher(w, { username: 'cartola', password: 'cartola' });
+  preencher(w, { username: 'davi.sax', password: 'errada123' });
   w.document.getElementById('loginForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperar();
+  await esperarAte(() => w.__alertas);
   assert.equal(w.sessionStorage.getItem('loggedInUser'), null);
   assert.deepEqual(w.__alertas, ['Usuário ou senha inválidos!']);
 });

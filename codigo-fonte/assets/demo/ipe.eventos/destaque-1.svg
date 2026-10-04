@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='800' height='600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#9d174d'/><stop offset='1' stop-color='#140a05'/></linearGradient></defs>
+<rect width='800' height='600' fill='url(#g)'/>
+<path d='M104.1 0 L-31.9 600 L272.8 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='104.1' cy='8' r='14' fill='#f7b801'/><path d='M210.1 0 L40.6 600 L367.2 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='210.1' cy='8' r='14' fill='#f7b801'/><path d='M327.3 0 L163.2 600 L497.6 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='327.3' cy='8' r='14' fill='#f7b801'/><path d='M459.3 0 L333.8 600 L580.8 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='459.3' cy='8' r='14' fill='#f7b801'/><path d='M570.8 0 L423.5 600 L700 600 Z' fill='#ffffff' opacity='0.2'/><circle cx='570.8' cy='8' r='14' fill='#f7b801'/><path d='M686.1 0 L547.2 600 L863 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='686.1' cy='8' r='14' fill='#f7b801'/>
+<rect x='0' y='500' width='800' height='100' fill='#000000' opacity='.35'/>
+<text x='32' y='562' font-family='Segoe UI, Helvetica, Arial, sans-serif' font-size='36' font-weight='700' fill='#ffffff'>Ao vivo em Belo Horizonte</text>
+</svg>

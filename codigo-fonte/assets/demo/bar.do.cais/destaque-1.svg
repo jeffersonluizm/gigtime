@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='800' height='600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#484f9f'/><stop offset='1' stop-color='#140a05'/></linearGradient></defs>
+<rect width='800' height='600' fill='url(#g)'/>
+<path d='M92.7 0 L-85.2 600 L236 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='92.7' cy='8' r='14' fill='#f7b801'/><path d='M202.2 0 L34.9 600 L366.1 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='202.2' cy='8' r='14' fill='#f7b801'/><path d='M322.6 0 L144.7 600 L495 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='322.6' cy='8' r='14' fill='#f7b801'/><path d='M449.7 0 L289.8 600 L586.6 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='449.7' cy='8' r='14' fill='#f7b801'/><path d='M562.3 0 L382.7 600 L740.8 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='562.3' cy='8' r='14' fill='#f7b801'/><path d='M688.2 0 L540.1 600 L844.3 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='688.2' cy='8' r='14' fill='#f7b801'/>
+<rect x='0' y='500' width='800' height='100' fill='#000000' opacity='.35'/>
+<text x='32' y='562' font-family='Segoe UI, Helvetica, Arial, sans-serif' font-size='36' font-weight='700' fill='#ffffff'>Ao vivo em Rio de Janeiro</text>
+</svg>
