@@ -303,9 +303,17 @@ const USUARIOS_EXEMPLO = [
 
 // Dados (usuários e mensagens) ficam no localStorage; o usuário logado fica no sessionStorage,
 // ou seja, a sessão vale por aba. Quem vinha da versão antiga (usuários no sessionStorage) é migrado.
-GigArmazenamento.migrarChavesAntigas(localStorage);
-GigArmazenamento.migrarDaSessao(localStorage, sessionStorage);
-GigArmazenamento.semearSeVazio(localStorage, USUARIOS_EXEMPLO);
+// Cada passo isolado: armazenamento cheio ou bloqueado não pode derrubar a navbar nem o resto da página
+function tentarGravar(descricao, passo) {
+    try {
+        passo();
+    } catch (erro) {
+        console.warn(`GigTime: não foi possível ${descricao} (${erro.name}: ${erro.message})`);
+    }
+}
+tentarGravar('migrar as chaves antigas', () => GigArmazenamento.migrarChavesAntigas(localStorage));
+tentarGravar('migrar os usuários da sessão antiga', () => GigArmazenamento.migrarDaSessao(localStorage, sessionStorage));
+tentarGravar('gravar os usuários de exemplo', () => GigArmazenamento.semearSeVazio(localStorage, USUARIOS_EXEMPLO));
 // Senhas em texto puro de versões antigas viram hash (assíncrono; o login aceita as duas formas)
 GigSenha.migrarSenhasDoStorage(localStorage, GigArmazenamento.CHAVE_USUARIOS).catch(erro => console.warn(erro.message));
 
@@ -313,6 +321,6 @@ GigSenha.migrarSenhasDoStorage(localStorage, GigArmazenamento.CHAVE_USUARIOS).ca
 ['loggedInUser', 'clickedUser'].forEach(chave => {
     const salvo = GigArmazenamento.lerJSON(sessionStorage, chave);
     if (salvo && ('password' in salvo || 'passwordHash' in salvo)) {
-        sessionStorage.setItem(chave, JSON.stringify(GigArmazenamento.usuarioPublico(salvo)));
+        tentarGravar('limpar a senha da sessão', () => sessionStorage.setItem(chave, JSON.stringify(GigArmazenamento.usuarioPublico(salvo))));
     }
 });
