@@ -2,21 +2,16 @@
 
 **Música ao vivo, sem complicação.** O GigTime conecta músicos e quem contrata música ao vivo (bares, casas de shows, eventos): perfis com repertório e avaliações, busca por gênero e região e conversa direta.
 
-É um site estático, sem servidor, que nasceu como projeto acadêmico (PUC Minas, 2024) e foi revisado como peça de portfólio, com foco em arquitetura, segurança, acessibilidade, testes e teste de carga.
+### ▶ [Abrir a demonstração](https://SEU-USUARIO.github.io/gigtime/)
 
-![Home do GigTime](docs/img/home-desktop.png)
+<!-- Link provisório: troque pelo endereço real depois de publicar (passo a passo em docs/deploy.md). -->
 
-## Experimente em dois minutos
+Entre com um clique: **[Entrar como músico](https://SEU-USUARIO.github.io/gigtime/codigo-fonte/Login/login.html?demo=musico)** · **[Entrar como contratante](https://SEU-USUARIO.github.io/gigtime/codigo-fonte/Login/login.html?demo=contratante)**
+(ou digite `lia.batera` / `casa.lume`, senha `demo1234`). Para ver o chat funcionando, abra uma aba como músico e outra como contratante.
 
-Pré-requisito: Windows com Python ou PowerShell (já vem no Windows), ou qualquer sistema com Python.
+![Fluxo da demonstração: entrar como músico, filtrar, abrir um perfil e mandar mensagem](docs/img/demo.gif)
 
-1. Baixe ou clone o repositório.
-2. No Windows, dê dois cliques em **`iniciar.bat`**. Ele serve a pasta `codigo-fonte` em `http://localhost:8000` e abre o navegador.
-   Em outros sistemas: `python -m http.server 8000 --bind 127.0.0.1 --directory codigo-fonte` e abra `http://localhost:8000/Home/home.html`.
-3. Entre com uma conta de demonstração: **`lia.batera`** (músico) ou **`casa.lume`** (contratante), senha **`demo1234`**.
-4. Para testar o chat entre duas pessoas, abra outra aba, entre com a outra conta e use o botão "Contate-me".
-
-O site precisa ser aberto por HTTP (localhost ou https): aberto direto do disco (`file://`), o navegador isola o armazenamento de cada página e desliga a criptografia usada nas senhas.
+É um site estático, sem servidor, que nasceu como projeto acadêmico (PUC Minas, 2024) e foi revisado como peça de portfólio, com foco em arquitetura, segurança, acessibilidade, testes e teste de carga. Tudo o que você cadastra fica só no seu navegador.
 
 ## O que dá para fazer
 
@@ -84,7 +79,8 @@ documentos/          documentação acadêmica original (com o estado atual anex
 - **CSP por `<meta>`** em todas as páginas (o GitHub Pages não permite cabeçalhos): `script-src 'self'` e `style-src 'self'`, sem nada inline; o 404 da raiz usa hash SHA-256 para o seu único script.
 - **Nada de CDN**: Bootstrap, fontes e ícones servidos pelo site (o Bootstrap é idêntico ao do CDN, mesmo hash SRI).
 - **Dado de usuário nunca vira HTML**: entra por `textContent` ou passa por escape; links de imagem só `https://`; o vídeo é montado só pelo ID de 11 caracteres do YouTube, no domínio `youtube-nocookie.com`.
-- **Redirecionamento pós-login validado** (só caminhos relativos do próprio site) e **sessão que expira** após 2 horas sem uso.
+- **Redirecionamento pós-login validado** (só caminhos relativos do próprio site), **sessão que expira** após 2 horas sem uso e página oculta se aberta dentro de um iframe de outro site (clickjacking).
+- **Revisão de segurança independente** sobre o diff: o único achado médio (open redirect pelos links calculados do 404) foi corrigido com teste.
 - **Limitação assumida:** sem servidor, a autenticação é demonstrativa. Quem controla o navegador (DevTools) consegue gravar outra pessoa na sessão; a senha e o PBKDF2 protegem contra uso casual e contra quem só copia os dados.
 
 ## Acessibilidade e identidade visual
@@ -95,16 +91,24 @@ documentos/          documentação acadêmica original (com o estado atual anex
 
 ## Testes
 
-```
-npm install
-npm test
-```
-
-Requer Node.js 22 ou superior (os testes não fazem parte do site publicado). <!-- TESTES --> testes com `node:test` e `jsdom`: regras de `lib/`, páginas reais carregadas com os seus scripts (preencher, enviar, clicar) e testes de arquitetura (CSP em todas as páginas, contraste dos tokens, ícones existentes no sprite, estrutura comum).
+**286 testes** automatizados (`npm install` e `npm test`, Node.js 22 ou superior; os testes não fazem parte do site publicado), com `node:test` e `jsdom` com `node:test` e `jsdom`: regras de `lib/`, páginas reais carregadas com os seus scripts (preencher, enviar, clicar) e testes de arquitetura (CSP em todas as páginas, contraste dos tokens, ícones existentes no sprite, estrutura comum).
 
 ## Teste de carga
 
-<!-- CARGA -->
+Sem servidor, o que se estressa é o navegador: milhares de perfis, dezenas de milhares de mensagens, a cota do localStorage e duas abas gravando ao mesmo tempo. As hipóteses foram escritas antes de medir ([hipóteses](docs/carga/2026-10-04-hipoteses.md)) e cada cenário rodou 5 vezes no Chrome, antes e depois das correções ([resultados completos](docs/carga/2026-10-04-resultados.md)).
+
+![Gráfico antes x depois](docs/carga/2026-10-04-grafico.svg)
+
+| Cenário (mediana) | Antes | Depois |
+|---|---|---|
+| Trocar o filtro com 5 mil perfis | 1,2 s | 24 ms |
+| Abrir o chat com 25 mil mensagens | 727 ms | 254 ms |
+| Enviar uma mensagem com 25 mil gravadas | 511 ms | 43 ms |
+| Duas abas enviando 500 mensagens cada | 40% perdidas | 0 perdidas |
+| Lighthouse da Home (desktop): desempenho / acessibilidade | não pintava (tela em branco até o `load`) | 98 / 100 |
+| Cadastro com o armazenamento cheio | erro não tratado, sem aviso | aviso na tela |
+
+O que as medições mudaram no código: filtro sobre os dados com `Map` (era O(n²)), paginação em Explorar e no chat, uma chave de mensagens por autor (uma trava Web Locks foi testada e não resolveu; ver [ADR 0003](docs/adr/0003-mensagens-por-autor.md)). Fora da meta e registrado: LCP de 4,1 s no celular simulado, por causa do CSS inteiro do Bootstrap.
 
 ## Limitações
 
@@ -112,14 +116,34 @@ Requer Node.js 22 ou superior (os testes não fazem parte do site publicado). <!
 - Cota do localStorage de cerca de 5 MB.
 - Avaliações e selos são fixos (não há fluxo de avaliação depois do show).
 - Fotos são links para outros sites, que podem ver o IP de quem abre o perfil.
-- Mensagens só chegam com o site aberto (sem notificação).
+- Mensagens só chegam com o site aberto (sem notificação). Duas abas da mesma pessoa enviando ao mesmo tempo ainda podem colidir (pessoas diferentes, não).
+
+## Rodar localmente
+
+Pré-requisito: Windows com Python ou PowerShell (já vem no Windows), ou qualquer sistema com Python.
+
+1. Baixe ou clone o repositório.
+2. No Windows, dê dois cliques em **`iniciar.bat`**. Ele serve a pasta `codigo-fonte` em `http://localhost:8000` e abre o navegador.
+   Em outros sistemas: `python -m http.server 8000 --bind 127.0.0.1 --directory codigo-fonte` e abra `http://localhost:8000/Home/home.html`.
+3. Use "Entrar como músico" ou "Entrar como contratante".
+
+O site precisa ser aberto por HTTP (localhost ou https): aberto direto do disco (`file://`), o navegador isola o armazenamento de cada página e desliga a criptografia usada nas senhas.
+
+**Publicar a sua cópia:** o workflow `.github/workflows/pages.yml` publica no GitHub Pages a cada push na `main`; o passo a passo está em [docs/deploy.md](docs/deploy.md).
+
+## Decisões registradas (ADRs)
+
+- [0001: site estático, sem back-end](docs/adr/0001-site-estatico-sem-back-end.md)
+- [0002: modo demonstração num site sem servidor](docs/adr/0002-modo-demo.md)
+- [0003: uma chave de mensagens por autor](docs/adr/0003-mensagens-por-autor.md)
 
 ## Próximos passos
 
 1. API real (Node ou .NET) com autenticação no servidor, substituindo o armazenamento local em `lib/armazenamento.js`.
-2. Avaliação depois do show, que alimente a nota e os selos.
-3. Publicação de "gigs" (vagas) pelos contratantes, com candidatura dos músicos.
-4. IndexedDB para conversas grandes, se o site continuar sem servidor.
+2. Gerar só o CSS do Bootstrap que o site usa, para baixar o LCP no celular.
+3. Avaliação depois do show, que alimente a nota e os selos.
+4. Publicação de "gigs" (vagas) pelos contratantes, com candidatura dos músicos.
+5. IndexedDB para conversas grandes, se o site continuar sem servidor.
 
 ## Equipe
 

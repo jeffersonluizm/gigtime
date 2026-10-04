@@ -1,0 +1,576 @@
+{
+  "data": "2026-10-04",
+  "ambiente": {
+    "maquina": {
+      "cpus": 12,
+      "modelo": "AMD Ryzen 5 5600 6-Core Processor              ",
+      "memoriaGB": 16
+    },
+    "chrome": "154.0.8037.93",
+    "repeticoes": 5,
+    "observacao": "gerador e navegador na mesma máquina, com outros projetos rodando ao mesmo tempo; CPU média de 50 a 100% durante as medições"
+  },
+  "tempos": [
+    {
+      "id": "H2",
+      "rotulo": "Explorar 5 mil perfis: resultados na tela",
+      "meta": 1000,
+      "antes": {
+        "mediana": 364,
+        "p95": 642.2
+      },
+      "depois": {
+        "mediana": 258.3,
+        "p95": 390
+      },
+      "nota": "antes: 5 mil cards; depois: primeira página (24)"
+    },
+    {
+      "id": "H3",
+      "rotulo": "Explorar 5 mil: trocar o filtro",
+      "meta": 100,
+      "antes": {
+        "mediana": 1216.1,
+        "p95": 2416.8
+      },
+      "depois": {
+        "mediana": 24.3,
+        "p95": 35.7
+      }
+    },
+    {
+      "id": "H4",
+      "rotulo": "Home com 5 mil usuários: LCP",
+      "meta": 2500,
+      "antes": {
+        "mediana": 1708,
+        "p95": 1988
+      },
+      "depois": {
+        "mediana": 164,
+        "p95": 1388
+      }
+    },
+    {
+      "id": "H7",
+      "rotulo": "Chat com 25 mil mensagens: abrir",
+      "meta": 500,
+      "antes": {
+        "mediana": 726.8,
+        "p95": 1412
+      },
+      "depois": {
+        "mediana": 254.1,
+        "p95": 314.5
+      }
+    },
+    {
+      "id": "H8",
+      "rotulo": "Chat com 25 mil: enviar uma mensagem",
+      "meta": 200,
+      "antes": {
+        "mediana": 511,
+        "p95": 721.7
+      },
+      "depois": {
+        "mediana": 43.4,
+        "p95": 50.4
+      }
+    },
+    {
+      "id": "H9",
+      "rotulo": "Abrir conversa de 5 mil mensagens",
+      "meta": 500,
+      "antes": {
+        "mediana": 424,
+        "p95": 461.1
+      },
+      "depois": {
+        "mediana": 43.3,
+        "p95": 58.8
+      }
+    }
+  ],
+  "H1_node": {
+    "antes": {
+      "filtrar 10k usuarios": {
+        "mediana": 0.2299000000000433,
+        "p95": 0.4256000000000313
+      },
+      "listarConversas 100k": {
+        "mediana": 4.01279999999997,
+        "p95": 7.221300000000042
+      },
+      "conversaEntre 100k": {
+        "mediana": 2.2871000000000095,
+        "p95": 3.6663999999999533
+      },
+      "laço da página: find por card, 5k": {
+        "mediana": 67.16909999999984,
+        "p95": 82.73919999999998
+      }
+    },
+    "depois": {
+      "filtrar 10k usuarios": {
+        "mediana": 0.2418999999999869,
+        "p95": 0.35789999999997235
+      },
+      "listarConversas 100k": {
+        "mediana": 2.195500000000038,
+        "p95": 3.187599999999975
+      },
+      "conversaEntre 100k": {
+        "mediana": 1.847099999999955,
+        "p95": 2.539700000000039
+      },
+      "naoLidas 100k": {
+        "mediana": 1.3584000000000742,
+        "p95": 2.8819999999998345
+      },
+      "filtrar 10k com busca por texto": {
+        "mediana": 0.42620000000010805,
+        "p95": 0.7446999999999662
+      },
+      "laço da página: Map por card, 5k": {
+        "mediana": 0.7084999999997308,
+        "p95": 1.3981000000003405
+      }
+    }
+  },
+  "H5": {
+    "antes": {
+      "capacidade": {
+        "usuarios": 11647,
+        "caracteresPorUsuario": 442
+      },
+      "cadastroCheio": {
+        "avisoNaTela": "",
+        "alertas": [],
+        "errosNaoTratados": [
+          "Failed to execute 'setItem' on 'Storage': Setting the value of 'gigtime:users' exceeded the quota."
+        ]
+      }
+    },
+    "depois": {
+      "capacidade": {
+        "usuarios": 8846,
+        "caracteresPorUsuario": 585
+      },
+      "cadastroCheio": {
+        "avisoNaTela": "Não há espaço no navegador para gravar o cadastro. Restaure os dados de demonstração (em \"Esqueci minha senha\") para liberar espaço.",
+        "alertas": [],
+        "errosNaoTratados": []
+      }
+    }
+  },
+  "H6": {
+    "antes": {
+      "capacidade": {
+        "mensagens": 35643
+      },
+      "envioCheio": {
+        "gravadas": 35643,
+        "avisoNaTela": "",
+        "campo": 520,
+        "alertas": [
+          "Não há espaço no navegador para gravar mais mensagens. Apague dados antigos do site e tente de novo."
+        ],
+        "perdeuAnteriores": false
+      }
+    },
+    "depois": {
+      "capacidade": {
+        "mensagens": 35642
+      },
+      "envioCheio": {
+        "gravadas": 35642,
+        "avisoNaTela": "Não há espaço no navegador para gravar mais mensagens. Apague conversas antigas em Conta e dados (restaurar a demonstração) e tente de novo.",
+        "campo": 520,
+        "alertas": [],
+        "perdeuAnteriores": false
+      }
+    }
+  },
+  "H10": {
+    "antes": {
+      "rodadas": [
+        {
+          "enviadas": 1000,
+          "gravadas": 567,
+          "perdidas": 433
+        },
+        {
+          "enviadas": 1000,
+          "gravadas": 596,
+          "perdidas": 404
+        },
+        {
+          "enviadas": 1000,
+          "gravadas": 589,
+          "perdidas": 411
+        },
+        {
+          "enviadas": 1000,
+          "gravadas": 628,
+          "perdidas": 372
+        },
+        {
+          "enviadas": 1000,
+          "gravadas": 619,
+          "perdidas": 381
+        }
+      ],
+      "perdidasTotal": 2001
+    },
+    "depois": {
+      "rodadas": [
+        {
+          "enviadas": 1000,
+          "gravadas": 1000,
+          "perdidas": 0
+        },
+        {
+          "enviadas": 1000,
+          "gravadas": 1000,
+          "perdidas": 0
+        },
+        {
+          "enviadas": 1000,
+          "gravadas": 1000,
+          "perdidas": 0
+        },
+        {
+          "enviadas": 1000,
+          "gravadas": 1000,
+          "perdidas": 0
+        },
+        {
+          "enviadas": 1000,
+          "gravadas": 1000,
+          "perdidas": 0
+        }
+      ],
+      "perdidasTotal": 0
+    }
+  },
+  "H11_lighthouse": {
+    "antes": {
+      "versao": "antes",
+      "base": "http://127.0.0.1:8812",
+      "quando": "2026-10-04T21:06:35.304Z",
+      "home-desktop": {
+        "erro": "NO_FCP, NO_FCP, NO_FCP",
+        "rodadasComErro": 3,
+        "falhasAcessibilidade": []
+      },
+      "home-celular": {
+        "erro": "NO_FCP, NO_FCP, NO_FCP",
+        "rodadasComErro": 3,
+        "falhasAcessibilidade": []
+      },
+      "explorar-desktop": {
+        "desempenho": 88,
+        "acessibilidade": 94,
+        "boasPraticas": 74,
+        "lcpMs": 1125,
+        "fcpMs": 653,
+        "tbtMs": 0,
+        "cls": 0,
+        "pesoKB": 667,
+        "rodadasComErro": 2,
+        "falhasAcessibilidade": [
+          "color-contrast"
+        ]
+      },
+      "explorar-celular": {
+        "erro": "NO_FCP, NO_FCP, NO_FCP",
+        "rodadasComErro": 3,
+        "falhasAcessibilidade": []
+      }
+    },
+    "depois": {
+      "versao": "depois",
+      "base": "http://127.0.0.1:8811",
+      "quando": "2026-10-04T21:18:34.967Z",
+      "home-desktop": {
+        "desempenho": 98,
+        "acessibilidade": 100,
+        "boasPraticas": 100,
+        "lcpMs": 813,
+        "fcpMs": 693,
+        "tbtMs": 0,
+        "cls": 0.049,
+        "pesoKB": 554,
+        "rodadasComErro": 0,
+        "falhasAcessibilidade": []
+      },
+      "home-celular": {
+        "desempenho": 78,
+        "acessibilidade": 100,
+        "boasPraticas": 100,
+        "lcpMs": 4080,
+        "fcpMs": 3330,
+        "tbtMs": 0,
+        "cls": 0.078,
+        "pesoKB": 552,
+        "rodadasComErro": 0,
+        "falhasAcessibilidade": []
+      },
+      "explorar-desktop": {
+        "desempenho": 96,
+        "acessibilidade": 100,
+        "boasPraticas": 100,
+        "lcpMs": 893,
+        "fcpMs": 733,
+        "tbtMs": 0,
+        "cls": 0.101,
+        "pesoKB": 515,
+        "rodadasComErro": 0,
+        "falhasAcessibilidade": []
+      },
+      "explorar-celular": {
+        "desempenho": 75,
+        "acessibilidade": 100,
+        "boasPraticas": 100,
+        "lcpMs": 4286,
+        "fcpMs": 3761,
+        "tbtMs": 0,
+        "cls": 0.102,
+        "pesoKB": 513,
+        "rodadasComErro": 0,
+        "falhasAcessibilidade": []
+      }
+    }
+  },
+  "H12": {
+    "antes": {
+      "algoritmo": "SHA-256 (sal = username)",
+      "hashMs": {
+        "mediana": 0.09999999403953552,
+        "p95": 11.699999988079071,
+        "amostras": [
+          0,
+          0,
+          0.1,
+          0.1,
+          11.7
+        ]
+      }
+    },
+    "depois": {
+      "algoritmo": "PBKDF2-SHA256, 600 mil iterações",
+      "hashMs": {
+        "mediana": 116.09999999403954,
+        "p95": 138.09999999403954,
+        "amostras": [
+          105.1,
+          108.4,
+          116.1,
+          136.2,
+          138.1
+        ]
+      }
+    }
+  },
+  "H13_servidor": {
+    "antes": {
+      "url": "http://127.0.0.1:8812/Home/home.html",
+      "quando": "2026-10-04T21:25:46.316Z",
+      "maquina": {
+        "cpus": 12,
+        "modelo": "AMD Ryzen 5 5600 6-Core Processor              "
+      },
+      "degraus": [
+        {
+          "recursos": {
+            "cpuMediaPct": 63,
+            "memLivreMinMB": 2393
+          },
+          "conexoes": 1,
+          "reqPorSegundo": 370,
+          "latenciaMs": {
+            "p50": 2696,
+            "p97_5": 4371,
+            "p99": 4423,
+            "max": 4461
+          },
+          "erros": 11,
+          "totalRequisicoes": 3701
+        },
+        {
+          "recursos": {
+            "cpuMediaPct": 73,
+            "memLivreMinMB": 2679
+          },
+          "conexoes": 10,
+          "reqPorSegundo": 749,
+          "latenciaMs": {
+            "p50": 2872,
+            "p97_5": 6123,
+            "p99": 6288,
+            "max": 6690
+          },
+          "erros": 7893,
+          "totalRequisicoes": 7494
+        },
+        {
+          "recursos": {
+            "cpuMediaPct": 78,
+            "memLivreMinMB": 2583
+          },
+          "conexoes": 50,
+          "reqPorSegundo": 727,
+          "latenciaMs": {
+            "p50": 2610,
+            "p97_5": 6261,
+            "p99": 6446,
+            "max": 6803
+          },
+          "erros": 12285,
+          "totalRequisicoes": 7272
+        }
+      ]
+    },
+    "depois": {
+      "url": "http://127.0.0.1:8811/Home/home.html",
+      "quando": "2026-10-04T21:26:52.669Z",
+      "maquina": {
+        "cpus": 12,
+        "modelo": "AMD Ryzen 5 5600 6-Core Processor              "
+      },
+      "degraus": [
+        {
+          "recursos": {
+            "cpuMediaPct": 61,
+            "memLivreMinMB": 3128
+          },
+          "conexoes": 1,
+          "reqPorSegundo": 524,
+          "latenciaMs": {
+            "p50": 2673,
+            "p97_5": 5315,
+            "p99": 5392,
+            "max": 5447
+          },
+          "erros": 22,
+          "totalRequisicoes": 5767
+        },
+        {
+          "recursos": {
+            "cpuMediaPct": 78,
+            "memLivreMinMB": 3192
+          },
+          "conexoes": 10,
+          "reqPorSegundo": 877,
+          "latenciaMs": {
+            "p50": 3119,
+            "p97_5": 6144,
+            "p99": 6260,
+            "max": 6495
+          },
+          "erros": 7502,
+          "totalRequisicoes": 8769
+        },
+        {
+          "recursos": {
+            "cpuMediaPct": 76,
+            "memLivreMinMB": 3084
+          },
+          "conexoes": 50,
+          "reqPorSegundo": 730,
+          "latenciaMs": {
+            "p50": 2957,
+            "p97_5": 6630,
+            "p99": 6745,
+            "max": 6951
+          },
+          "erros": 12268,
+          "totalRequisicoes": 7299
+        }
+      ]
+    }
+  },
+  "recursos": {
+    "recursos_H2": {
+      "cpuMediaPct": 64,
+      "cpuMaxPct": 99,
+      "memLivreMinMB": 748,
+      "duracaoS": 50
+    },
+    "recursos_H4": {
+      "cpuMediaPct": 62,
+      "cpuMaxPct": 94,
+      "memLivreMinMB": 859,
+      "duracaoS": 23
+    },
+    "recursos_H5": {
+      "cpuMediaPct": 49,
+      "cpuMaxPct": 92,
+      "memLivreMinMB": 747,
+      "duracaoS": 19
+    },
+    "recursos_H6": {
+      "cpuMediaPct": 83,
+      "cpuMaxPct": 100,
+      "memLivreMinMB": 107,
+      "duracaoS": 11
+    },
+    "recursos_H7": {
+      "cpuMediaPct": 86,
+      "cpuMaxPct": 100,
+      "memLivreMinMB": 316,
+      "duracaoS": 27
+    },
+    "recursos_H10": {
+      "cpuMediaPct": 70,
+      "cpuMaxPct": 100,
+      "memLivreMinMB": 452,
+      "duracaoS": 138
+    },
+    "recursos_H12": {
+      "duracaoS": 0
+    },
+    "recursos_H2_depois": {
+      "cpuMediaPct": 86,
+      "cpuMaxPct": 100,
+      "memLivreMinMB": 1093,
+      "duracaoS": 6
+    },
+    "recursos_H4_depois": {
+      "cpuMediaPct": 88,
+      "cpuMaxPct": 100,
+      "memLivreMinMB": 782,
+      "duracaoS": 16
+    },
+    "recursos_H5_depois": {
+      "cpuMediaPct": 66,
+      "cpuMaxPct": 93,
+      "memLivreMinMB": 722,
+      "duracaoS": 7
+    },
+    "recursos_H6_depois": {
+      "cpuMediaPct": 55,
+      "cpuMaxPct": 90,
+      "memLivreMinMB": 615,
+      "duracaoS": 5
+    },
+    "recursos_H7_depois": {
+      "cpuMediaPct": 87,
+      "cpuMaxPct": 98,
+      "memLivreMinMB": 649,
+      "duracaoS": 8
+    },
+    "recursos_H10_depois": {
+      "cpuMediaPct": 81,
+      "cpuMaxPct": 100,
+      "memLivreMinMB": 384,
+      "duracaoS": 54
+    },
+    "recursos_H12_depois": {
+      "cpuMediaPct": 53,
+      "cpuMaxPct": 68,
+      "memLivreMinMB": 1033,
+      "duracaoS": 3
+    }
+  }
+}

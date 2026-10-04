@@ -162,12 +162,16 @@
         <p class="conteudo-texto">Sem servidor, o que se estressa é o navegador: milhares de perfis em Explorar, dezenas de milhares de mensagens no chat e o limite de cerca de 5 MB do localStorage. As medições foram feitas antes e depois das correções; o relatório completo está em <code>docs/carga/</code> no repositório.</p>
         <div class="table-responsive painel p-0" tabindex="0" role="region" aria-label="Tabela de resultados do teste de carga">
           <table class="table mb-0 tabela-carga">
-            <caption class="px-3">Resumo das medições (mediana, Chrome, desktop)</caption>
+            <caption class="px-3">Resumo das medições (mediana de 5 execuções, Chrome, desktop)</caption>
             <thead>
               <tr><th scope="col">Cenário</th><th scope="col">Antes</th><th scope="col">Depois</th></tr>
             </thead>
             <tbody id="resumoCarga">
-              <tr><td>Filtrar 5 mil perfis em Explorar</td><td>ver relatório</td><td>ver relatório</td></tr>
+              <tr><td>Trocar o filtro com 5 mil perfis em Explorar</td><td>1,2 s</td><td>24 ms</td></tr>
+              <tr><td>Abrir o chat com 25 mil mensagens</td><td>727 ms</td><td>254 ms</td></tr>
+              <tr><td>Enviar uma mensagem com 25 mil gravadas</td><td>511 ms</td><td>43 ms</td></tr>
+              <tr><td>Duas abas enviando 500 mensagens cada</td><td>40% perdidas</td><td>nenhuma perdida</td></tr>
+              <tr><td>Lighthouse da Home (desktop): desempenho / acessibilidade</td><td>página não pintava</td><td>98 / 100</td></tr>
             </tbody>
           </table>
         </div>

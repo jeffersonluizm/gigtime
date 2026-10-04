@@ -37,3 +37,18 @@ https://imgur.com/tra33LP
 RF-07	
 O usuário deve poder visualizar o próprio perfil.
 https://imgur.com/qj3nDKU
+
+---
+
+## Registro dos testes automatizados (revisão de portfólio, 2026)
+
+Os registros acima (links de imagens) são os testes manuais de 2024 e ficam como histórico; o último item (RF-07) na verdade descreve o RF-09.
+
+| Data | Comando | Ambiente | Resultado |
+|------|---------|----------|-----------|
+| 2026-10-04 | `npm test` | Windows 11, Node.js 24.11.1, jsdom 26 | **286 testes, 286 passaram, 0 falhas** |
+| 2026-10-04 | `node ferramentas/verificar-acessibilidade.js` (axe-core 4, WCAG 2.1 AA) | Chrome 154 headless, 15 telas em 1280 px e 375 px | **0 violações** |
+| 2026-10-04 | Teste de carga (H1 a H13) | Chrome 154 headless, Lighthouse 12, autocannon 8 | Ver `docs/carga/2026-10-04-resultados.md` |
+
+Os testes também rodam no GitHub Actions a cada push (`.github/workflows/ci.yml`) e antes de cada publicação no GitHub Pages (`.github/workflows/pages.yml`).
+
