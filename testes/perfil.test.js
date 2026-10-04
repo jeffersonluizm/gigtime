@@ -374,3 +374,17 @@ test('EdicaoPerfil com sessão expirada vai para a página de sessão expirada',
   assert.equal(w.sessionStorage.getItem('loggedInUser'), null);
   assert.equal(w.sessionStorage.getItem('depoisDoLogin'), '../EdicaoPerfil/EdicaoPerfil.html');
 });
+
+test('EdicaoPerfil não mostra o caminho interno da ilustração e a mantém ao salvar sem trocar', async () => {
+  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('davi.sax') });
+  const $ = (id) => w.document.getElementById(id);
+  assert.equal($('profilePicLink').value, '', 'o campo não mostra ../assets/...');
+  assert.match($('profilePicLink').placeholder, /ilustração atual/);
+  assert.match($('profilePreview').getAttribute('src'), /assets\/demo\/davi\.sax\/avatar\.svg$/);
+  $('senhaAtual').value = 'demo1234';
+  $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await esperarAte(() => w.sessionStorage.getItem('gigtime:aviso'));
+  const davi = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'davi.sax');
+  assert.equal(davi.profilePicLink, '../assets/demo/davi.sax/avatar.svg');
+  assert.equal(davi.bannerPicLink, '../assets/demo/davi.sax/banner.svg');
+});

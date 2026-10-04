@@ -30,6 +30,10 @@ h1, .h1 {
   line-height: 1.08;
 }
 
+code {
+  color: var(--gig-laranja-escuro);
+}
+
 a {
   color: var(--gig-indigo);
   text-underline-offset: .18em;

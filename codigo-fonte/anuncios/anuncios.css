@@ -2,9 +2,10 @@
   margin-bottom: .5rem;
 }
 
-.grupo-papel .btn {
-  border-radius: 999px;
-  margin-right: .25rem;
+.grupo-papel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
 }
 
 .grupo-papel .btn-check:checked + .btn {

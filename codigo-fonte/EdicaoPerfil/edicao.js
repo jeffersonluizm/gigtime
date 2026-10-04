@@ -8,6 +8,10 @@
   const $ = (id) => document.getElementById(id);
   const form = $('editForm');
   const CAMPOS_TEXTO = ['profilePicLink', 'bannerPicLink', 'name', 'email', 'phone', 'role', 'state', 'city', 'songLink', 'bio', 'disponibilidade'];
+  const CAMPOS_IMAGEM = { profilePicLink: GigConstantes.FOTO_PADRAO, bannerPicLink: GigConstantes.BANNER_PADRAO };
+  // Ilustração do próprio site (../assets/...) não aparece no campo: o campo vazio mantém a ilustração atual
+  const ilustracaoAtual = {};
+  const ehInterna = (link) => typeof link === 'string' && link.startsWith('../');
 
   GigFormulario.preencherUFs($('state'), 'UF');
   GigFormulario.montarGeneros($('genres'), 'genre', 'form-check-inline');
@@ -18,9 +22,11 @@
     return GigArmazenamento.lerUsuarios(localStorage).find((u) => u.username === logado.username);
   }
 
+  const imagemEscolhida = (campo) => GigValidacao.urlImagem($(campo).value) || ilustracaoAtual[campo] || CAMPOS_IMAGEM[campo];
+
   function atualizarPrevias() {
-    $('profilePreview').src = GigValidacao.urlImagem($('profilePicLink').value) || GigConstantes.FOTO_PADRAO;
-    $('bannerPreview').src = GigValidacao.urlImagem($('bannerPicLink').value) || GigConstantes.BANNER_PADRAO;
+    $('profilePreview').src = imagemEscolhida('profilePicLink');
+    $('bannerPreview').src = imagemEscolhida('bannerPicLink');
   }
 
   function atualizarContadorBio() {
@@ -49,6 +55,13 @@
     garantirOpcao($('role'), usuario.role);
     garantirOpcao($('state'), usuario.state);
     CAMPOS_TEXTO.forEach((campo) => { $(campo).value = usuario[campo] || ''; });
+    Object.keys(CAMPOS_IMAGEM).forEach((campo) => {
+      ilustracaoAtual[campo] = ehInterna(usuario[campo]) ? usuario[campo] : '';
+      if (ilustracaoAtual[campo]) {
+        $(campo).value = '';
+        $(campo).placeholder = 'Usando a ilustração atual. Cole um link https:// para trocar.';
+      }
+    });
     const generos = usuario.genres || [];
     $('genres').querySelectorAll('input').forEach((caixa) => { caixa.checked = generos.includes(caixa.value); });
     $('senhaAtual').value = '';
@@ -61,6 +74,9 @@
     GigFormulario.limparErros(form);
     const dados = {};
     CAMPOS_TEXTO.forEach((campo) => { dados[campo] = $(campo).value; });
+    Object.keys(CAMPOS_IMAGEM).forEach((campo) => {
+      if (!dados[campo].trim() && ilustracaoAtual[campo]) dados[campo] = ilustracaoAtual[campo];
+    });
     dados.genres = GigFormulario.marcados($('genres'));
 
     const botao = $('salvar_button');
