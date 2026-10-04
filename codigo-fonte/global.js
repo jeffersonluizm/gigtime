@@ -19,19 +19,23 @@ document.addEventListener('DOMContentLoaded', () => {
         <a class="nav-link me-3" href="#" id="logoutLink">Sair</a>
           `;
 
-        // Foto e link "Perfil" abrem o perfil do próprio usuário logado
-        ['profileLink', 'profileAvatarLink'].forEach(id => {
-          document.getElementById(id).addEventListener('click', function (event) {
-            event.preventDefault();
+        // "Perfil" e a foto abrem o perfil do próprio usuário logado
+        document.getElementById('profileLink').addEventListener('click', function () {
             // Obtém o usuário logado
             const loggedInUser = sessionStorage.getItem('loggedInUser');
 
-                // Adiciona o objeto do usuário logado à key 'clickedUser'
-                sessionStorage.setItem('clickedUser', loggedInUser);
-        
+            // Adiciona o objeto do usuário logado à key 'clickedUser'
+            sessionStorage.setItem('clickedUser', loggedInUser);
+
             // Redireciona para a página de perfil
             window.location.href = '../Perfil/perfil.html';
-          });
+        });
+
+        // A foto navega pelo próprio href (inclusive Ctrl+clique e clique do meio); só grava o perfil a exibir
+        ['click', 'auxclick'].forEach(evento => {
+            document.getElementById('profileAvatarLink').addEventListener(evento, function () {
+                sessionStorage.setItem('clickedUser', sessionStorage.getItem('loggedInUser'));
+            });
         });
 
         // Adiciona evento de logout
