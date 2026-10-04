@@ -71,4 +71,38 @@ A logotipo foi escolhida considerando um dos instrumentos mais emblemáticos da 
 ![image (3)](https://github.com/user-attachments/assets/2583f1ef-d8e9-4f8b-8630-d992c190558f)  
 <figcaption>Figura 7 - Logotipo em branco</figcaption>
 
+---
 
+## Template atual (revisão de portfólio, 2026)
+
+A paleta e a fonte citadas acima são as do projeto original (histórico). Na prática o código usava `#ff5629` e não `#e55c1e`, e a fonte Roboto só era carregada em duas páginas. A revisão consolidou tudo num lugar só: `codigo-fonte/assets/css/tokens.css`.
+
+### Paleta (tokens)
+
+| Token | Cor | Uso | Contraste |
+|-------|-----|-----|-----------|
+| `--gig-laranja` | `#c2410c` | Navbar, botões principais | 5,18:1 com branco |
+| `--gig-laranja-escuro` | `#9a3412` | Hover e pressionado | 7,31:1 com branco |
+| `--gig-laranja-vivo` | `#ff5629` | Só decorativo (ilustrações), nunca texto | - |
+| `--gig-indigo` | `#484f9f` | Links e botões secundários | 6,78:1 sobre o fundo |
+| `--gig-amarelo` | `#f7b801` | Notas, selo de demonstração, contador | 10,13:1 com texto escuro |
+| `--gig-fundo` | `#fcf6f3` | Fundo das páginas | - |
+| `--gig-texto` | `#2b211d` | Texto | 14,66:1 sobre o fundo |
+| `--gig-texto-suave` | `#6b5a52` | Texto secundário | 6,11:1 sobre o fundo |
+| `--gig-escuro` | `#1f1410` | Rodapé | - |
+
+Todos os pares de texto são verificados em `testes/identidade.test.js` (WCAG AA, 4,5:1). O mesmo teste impede cor em hexadecimal fora do `tokens.css`.
+
+### Tipografia, ícones e logo
+
+- **Títulos:** Outfit (variável). **Texto:** Inter (variável). As duas servidas pelo próprio site (`assets/fontes/`, licença SIL OFL), com `font-display: swap`.
+- **Ícones:** um único conjunto, Bootstrap Icons (MIT), num sprite SVG (`assets/icones.svg`) gerado por `ferramentas/copiar-vendor.js`.
+- **Logo:** palheta de guitarra com um relógio (gig + time), em SVG próprio (`assets/img/logo.svg` e `logo-claro.svg`), também usada como favicon.
+
+### Componentes
+
+`assets/css/componentes.css`: topo (navbar laranja e topo simples das telas de acesso), botões (`btn-gig`, `btn-gig-secundario`, `btn-gig-claro`, `btn-perigo`), card de perfil, chips de gênero, selos, nota, painel, estados (carregando, vazio, erro), alertas, avisos (toast), diálogo de confirmação, rodapé com selo de demonstração e o campo de senha com botão de mostrar.
+
+### Estrutura comum das páginas
+
+Toda página tem `<header id="topo">`, `<main id="conteudo">` e `<footer id="rodape">`, montados por `ui/layout.js`, um link "Pular para o conteúdo", CSP por `<meta>` e a mesma sequência de scripts. Isso é verificado em `testes/paginas.test.js` e `testes/seguranca-paginas.test.js`.

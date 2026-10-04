@@ -1,144 +1,43 @@
 # Plano de Testes de Software
 
-<span style="color:red">Pré-requisitos: <a href="https://github.com/ICEI-PUC-Minas-PMV-ADS/ads-e1-exemplo-vida-de-estudante/tree/main/documentos/02-Especificação%20do%20Projeto.md"> Especificação do Projeto</a></span>, <a href="https://github.com/ICEI-PUC-Minas-PMV-ADS/ads-e1-exemplo-vida-de-estudante/tree/main/documentos/04-Projeto%20de%20Interface.md"> Projeto de Interface</a>
+Pré-requisitos: [Especificação do Projeto](02-Especificação%20do%20Projeto.md) e [Projeto de Interface](04-Projeto%20de%20Interface.md).
 
-Os requisitos para realização dos testes de software são:
-<ul><li>Site publicado na internet;</li>
-<li>Navegador da internet: Chrome, Firefox ou Edge.</li>
-</ul>
+Este plano tem duas partes: os **casos de teste manuais** do projeto original (2024), revisados, e o **plano de testes automatizados** criado na revisão de portfólio (2026).
 
-Os testes funcionais a serem realizados na aplicação são descritos a seguir.
+## 1. Casos de teste manuais (projeto original, revisados)
 
-<table>
- <tr>
-  <th>Caso de teste</th>
-  <th>Requisitos associados</th>
-  <th>Objetivo do teste</th>
-  <th>Passos</th>
-  <th>Critérios de êxito</th>
-  <th>Responsável</th>
- </tr>
- <tr>
-  <td>CT-01: Verificar o funcionamento dos links da página Home</td>
-  <td>
-   <ul>
-    <li>RF-001:	Os usuários deverão poder se cadastrar na plataforma.</li>
-   <li>RF-005:	O sistema deve permitir login.</li>
-   <li>RF-009:	O usuário deve poder visualizar o próprio perfil.</li>
-   <li>RF-007: Os usuários poderão clicar no perfil do Artista/Contratante na página inicial e serem levados diretamente para o perfil escolhido.</li>
-   </ul>
-  </td>
-  <td>Verificar se os links da página Home estão encaminhando para as respectivas páginas corretamente.</td>
-  <td>
-   <ol>
-    <li>Acessar o navegador.</li>
-    <li>Informar o endereço do site.</li>
-    <li>Visualizar a página Home.</li>
-    <li>Clicar nos links da página Home e ser redirecionado.</li>
-   </ol>
-   </td>
-  <td>Todos os links da página Home devem encaminhar os usuários para as páginas descritas.</td>
-  <td>Jefferson</td>
- </tr>
-</table>
+Na versão de 2024 as tabelas estavam com HTML quebrado, os títulos de CT-03 e CT-05 repetiam o de outro caso e os requisitos usavam IDs de três dígitos. A tabela abaixo mantém os mesmos casos, com o título que corresponde ao que é testado.
 
-<table>
- <tr>
-  <th>Caso de teste</th>
-  <th>Requisitos associados</th>
-  <th>Objetivo do teste</th>
-  <th>Passos</th>
-  <th>Critérios de êxito</th>
-  <th>Responsável</th>
- </tr>
- <tr>
-  <td>CT-02: Verificar o funcionamento do filtro de pesquisa de gêneros musicais.</td>
-  <td>
-   <ul>
-    <li>RF-002:	O site deve oferecer uma funcionalidade de filtro para permitir ao usuário localizar os artistas/estabelecimentos disponíveis.</li>
-   </ul>
-  </td>
-  <td>Verificar se o filtro de pesquisa está recuperando os dados inseridos pelo usuário.</td>
-  <td>
-   <ol>
-    <li>Acessar o navegador.</li>
-    <li>Informar o endereço do site.</li>
-    <li>Visualizar a página Home.</li>
-    <li>Clicar na página Músicos/Contratantes.</li>
-    <li>Escolher no filtro o gênero/local na lista.</li>
-   </ol>
-   </td>
-  <td>Os dados inseridos no filtro de pesquisa devem mostrar o artista/estabelecimento onde há o dado informado.</td>
-  <td>Jefferson</td>
- </tr>
-</table>
-<table>
-  <td>CT-03: Verificar o funcionamento do filtro de pesquisa de gêneros musicais.</td>
-  <td>
-   <ul>
-    <li>RF-003:	Os usuários deverão poder se comunicar por chat através da plataforma.</li>
-    <li>RF-004:	Perfis de músicos/bandas devem exibir uma página detalhada com informações completas, incluindo vídeos, fotos e disponibilidade.</li>
-   </ul>
-  </td>
-  <td>Verificar se o filtro de pesquisa está recuperando os dados inseridos pelo usuário.</td>
-  <td>
-   <ol>
-    <li>Acessar o navegador.</li>
-    <li>Informar o endereço do site.</li>
-    <li>Visualizar a página Home.</li>
-    <li>Clicar no perfil do Artista/Estabelecimento.</li>
-    <li>Clicar no Contate-me para se comunicar.</li>
-   </ol>
-   </td>
-  <td>Os dados inseridos no filtro de pesquisa devem mostrar o artista/estabelecimento onde há o dado informado.</td>
-  <td>Jefferson</td>
- </tr>
-</table>
- <tr>
-  <table>
-  <td>CT-04: Verificar o funcionamento dos perfis na página Home.</td>
-  <td>
-   <ul>
-    <li>RF-006:	Os usuários deverão se cadastrar e aparecer na tela da categoria escolhida no cadastro de perfil (Artista/Contratante).</li>
-   </ul>
-  </td>
-  <td>Verificar se após o cadastro o perfil aparece na página Home.</td>
-  <td>
-   <ol>
-    <li>Acessar o navegador.</li>
-    <li>Informar o endereço do site.</li>
-    <li>Visualizar a página Home.</li>
-    <li>Se cadastrar.</li>
-    <li>Voltar para a página Home.</li>
-   </ol>
-   </td>
-  <td>O perfil deve aparecer logo após voltar para a página home e fazer o login.</td>
-  <td>Jefferson</td>
- </tr>
-</table>
-</table>
- <tr>
-  <table>
-  <td>CT-05: Verificar o funcionamento do filtro de localidade.</td>
-  <td>
-   <ul>
-   <li>O site deve se encontrar totalmente responsivo nas principais das plataformas de uso (smartphones/tablets/notebooks/computadores).</li>
-   </ul>
-  </td>
-  <td>Verificar se está funcionando em todas as plataformas.</td>
-  <td>
-   <ol>
-    <li>Acessar o navegador.</li>
-    <li>CTRL + Shift + I</li>
-    <li>Testar todas as opções e se está funcional.</li>
-   </ol>
-   </td>
-  <td>Todas as opções devem funcionar normalmente.</td>
-  <td>Jefferson</td>
- </tr>
-</table>
+Requisitos: navegador Chrome, Firefox ou Edge e o site aberto por HTTP (`iniciar.bat` ou o endereço publicado).
 
+| Caso | Requisitos | Objetivo | Passos | Critério de êxito |
+|------|------------|----------|--------|-------------------|
+| CT-01 Links da Home | RF-01, RF-05, RF-07, RF-09 | Os links da Home levam às páginas certas | Abrir a Home; clicar em Explorar, Como funciona, Entrar, Criar conta e nos cards | Cada link abre a página descrita |
+| CT-02 Filtros de Explorar | RF-02 | Os filtros mostram só os perfis que atendem | Abrir Explorar; escolher papel, estado, avaliação e gênero; buscar por nome | Só aparecem perfis que atendem a todos os critérios; sem resultado, aparece o estado vazio |
+| CT-03 Contato pelo chat | RF-03, RF-04 | Do perfil é possível abrir uma conversa | Abrir um perfil; clicar em "Contate-me"; entrar se pedido; enviar uma mensagem | A mensagem aparece na conversa e na lista de conversas |
+| CT-04 Perfil cadastrado aparece | RF-06 | O cadastro aparece na categoria escolhida | Criar conta como músico; abrir Explorar com o filtro Músicos | O perfil novo aparece entre os músicos |
+| CT-05 Responsividade | RF-08 | As páginas funcionam em telas pequenas | Abrir as páginas em 375 px (DevTools, Ctrl+Shift+M) | Sem rolagem horizontal; menu e filtros recolhidos funcionam |
 
+## 2. Plano de testes automatizados (2026)
 
+Ferramentas: `node:test` (nativo do Node 22+) e `jsdom`. Rodar com `npm install` e `npm test`. Os testes de página carregam o HTML real, executam os scripts na mesma ordem do navegador e interagem como uma pessoa (preencher, enviar, clicar).
 
+| Arquivo | O que cobre | Requisitos |
+|---------|-------------|------------|
+| `senha.test.js` | PBKDF2 (formato, sal aleatório, 600 mil iterações), migração do SHA-256 legado no login, login e cadastro com hash | RF-01, RF-05, RNF-07 |
+| `validacao.test.js` | Links https, ID do YouTube, e-mail, telefone, política de senha, nome de usuário | RF-01, RF-10 |
+| `perfil.test.js` | Regras do perfil, senha atual obrigatória, troca de senha, página de perfil (`?u=`, contato só logado, galeria) e edição | RF-04, RF-09, RF-10 |
+| `registro.test.js` | Cadastro: validações, cota cheia, entra na conta | RF-01 |
+| `filtros.test.js` | Critérios combinados, busca sem acento, filtro no endereço, página Explorar | RF-02 |
+| `cards.test.js`, `armazenamento.test.js` | Cards da Home e de Explorar, links acessíveis, dados no localStorage, migrações | RF-06, RF-07 |
+| `chat.test.js` | Mensagens, conversas, não lidas, paginação, atualização entre abas, cota | RF-03 |
+| `sessao.test.js` | Sessão, destino depois do login (anti open redirect), expiração | RF-05 |
+| `conta.test.js`, `conta-pagina.test.js` | Exportar, apagar conta, restaurar demonstração, trocar senha | RF-11 |
+| `paginas-sistema.test.js` | Sobre, Privacidade, esqueci a senha, saiu, sessão expirada, erro, 404 e `index.html` | RF-12 |
+| `html.test.js`, `seguranca-paginas.test.js` | Escape de HTML (XSS), CSP em todas as páginas, nada inline nem de CDN | RNF-07 |
+| `identidade.test.js`, `paginas.test.js` | Contraste AA dos tokens, fontes locais, ícones no sprite, estrutura comum das páginas | RNF-05, RNF-09, RNF-10 |
+| `concorrencia.test.js`, `chaves.test.js`, `inicializacao.test.js` | Gravação concorrente entre abas, chaves `gigtime:`, armazenamento cheio ou bloqueado | RNF-03 |
 
+## 3. Teste de carga
+
+O plano, as hipóteses (escritas antes de medir) e os resultados ficam em `docs/carga/`. Ferramentas: `playwright-core` com o Chrome instalado, Lighthouse e autocannon, todos rodando contra o site servido localmente, com dados gerados.

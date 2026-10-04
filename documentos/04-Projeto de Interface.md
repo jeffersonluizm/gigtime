@@ -63,5 +63,43 @@ Sistema de mensagens para comunicação entre músicos e contratantes.
 
 ![Chat](https://github.com/user-attachments/assets/d8ebe5f2-9672-4167-85cb-cf2ab159230a)
 
+---
 
+## Interface atual (revisão de portfólio, 2026)
 
+O fluxo e os wireframes acima são os do projeto original e ficam como histórico. Duas diferenças: a "barra de pesquisa" do cabeçalho virou a busca da página Explorar, e o rodapé agora existe em todas as páginas (com o selo "Demo · dados só neste navegador").
+
+### Fluxo atual
+
+```mermaid
+flowchart LR
+  Home --> Explorar
+  Home --> Sobre["Como funciona"]
+  Explorar --> Perfil["Perfil (?u=usuário)"]
+  Perfil -->|Contate-me| Chat
+  Chat -->|sem sessão| Entrar
+  Entrar --> Esqueci["Esqueci a senha"]
+  Entrar --> Cadastro
+  Cadastro -->|entra na conta| Perfil
+  Perfil -->|próprio perfil| Editar["Editar perfil"]
+  Menu["Menu da conta"] --> Conta["Conta e dados"]
+  Menu --> Sair --> Saiu["Você saiu"]
+  Conta --> Privacidade
+```
+
+### Telas
+
+Prints tirados no Chrome a partir do código atual (`ferramentas/capturar-telas.js`), em 1280 px e em 375 px.
+
+| Tela | Desktop | Celular |
+|------|---------|---------|
+| Home | ![Home](../docs/img/home-desktop.png) | ![Home no celular](../docs/img/home-celular.png) |
+| Explorar | ![Explorar](../docs/img/explorar-desktop.png) | ![Explorar no celular](../docs/img/explorar-celular.png) |
+| Perfil | ![Perfil](../docs/img/perfil-desktop.png) | ![Perfil no celular](../docs/img/perfil-celular.png) |
+| Mensagens | ![Mensagens](../docs/img/chat-desktop.png) | ![Mensagens no celular](../docs/img/chat-celular.png) |
+| Entrar | ![Entrar](../docs/img/entrar-desktop.png) | ![Entrar no celular](../docs/img/entrar-celular.png) |
+| Conta e dados | ![Conta](../docs/img/conta-desktop.png) | ![Conta no celular](../docs/img/conta-celular.png) |
+
+### Estados de interface
+
+Toda lista tem estado de carregando, vazio e erro: Explorar sem resultado ("Nenhum perfil com esses filtros", com botão para limpar), perfil não encontrado, chat sem conversas, imagem externa que não carrega (troca pela ilustração padrão). Sucesso e erro aparecem em avisos (toast) numa região `aria-live`, no lugar de `alert()`, e ações destrutivas usam um diálogo próprio com o foco começando em "Cancelar".

@@ -102,5 +102,42 @@
 | RNF-09 | <div align=center>O código deve ser organizado e documentado de forma que</br>futuras atualizações e correções possam ser feitas</br>facilmente.</div>| Média |
 | RNF-10 | <div align=center>A arquitetura deve ser modular, permitindo que novos</br>recursos sejam adicionados sem impactar o sistema</br>existente.</div>| Alta | 
 
-**Prioridade: Alta / Média / Baixa. 
+**Prioridade: Alta / Média / Baixa.
 
+---
+
+## Situação dos requisitos na revisão de portfólio (2026)
+
+As tabelas acima são o registro original do projeto acadêmico (2024) e foram mantidas como histórico. A tabela abaixo mostra o estado de cada requisito no código atual e onde está a evidência (arquivos de teste em `testes/`, rodados com `npm test`).
+
+### Requisitos funcionais
+
+| ID | Situação | Como foi atendido | Evidência |
+|----|----------|-------------------|-----------|
+| RF-01 | Atendido | Cadastro com validação de usuário, e-mail, telefone, senha (8+ caracteres) e links; já entra na conta ao terminar | `registro.test.js`, `perfil.test.js` |
+| RF-02 | Atendido | Explorar filtra por papel, estado, avaliação mínima, gêneros e texto; o filtro fica no endereço (`?papel=&uf=...`) | `filtros.test.js`, `cards.test.js` |
+| RF-03 | Atendido (local) | Chat entre usuários no mesmo navegador, com lista de conversas, não lidas, paginação e atualização entre abas | `chat.test.js` |
+| RF-04 | Atendido | Perfil com apresentação, disponibilidade, gêneros, selos, fotos de destaque (galeria com diálogo) e vídeo do YouTube | `perfil.test.js` |
+| RF-05 | Atendido | Login com PBKDF2; volta para a página que pediu login; sessão expira após 2 horas sem uso | `senha.test.js`, `sessao.test.js` |
+| RF-06 | Atendido | O perfil cadastrado aparece em Explorar e na Home conforme o papel escolhido | `armazenamento.test.js`, `cards.test.js` |
+| RF-07 | Atendido | Cards da Home e de Explorar levam ao perfil por link de verdade (`perfil.html?u=<usuário>`) | `cards.test.js` |
+| RF-08 | Atendido | Layout responsivo verificado em 375 px e 1280 px (prints em `docs/img/`) | revisão visual |
+| RF-09 | Atendido | "Meu perfil" no menu da conta abre o próprio perfil, com o botão "Editar perfil" | `perfil.test.js` |
+| RF-10 (novo) | Atendido | Edição do perfil com a senha atual obrigatória | `perfil.test.js`, `concorrencia.test.js` |
+| RF-11 (novo) | Atendido | Conta e dados: trocar senha, baixar os dados (JSON), apagar a conta, restaurar a demonstração, sair | `conta.test.js`, `conta-pagina.test.js` |
+| RF-12 (novo) | Atendido | Páginas de acesso e de sistema: esqueci a senha (honesta, sem e-mail), saiu, sessão expirada, erro e 404 | `paginas-sistema.test.js` |
+
+### Requisitos não funcionais
+
+| ID | Situação | Observação |
+|----|----------|------------|
+| RNF-01 | Atendido | Capa de 45 KB em WebP, sem CDN, fontes com `font-display: swap`. Medido com Lighthouse em `docs/carga/` |
+| RNF-02 | Atendido | Filtro sobre 5 mil perfis medido em `docs/carga/`; o laço O(n²) foi trocado por um `Map` |
+| RNF-03 | Parcial | Sem servidor, o limite é a cota de cerca de 5 MB do localStorage (cerca de 6 mil perfis ou 30 mil mensagens curtas), medida em `docs/carga/` |
+| RNF-04 | Encaminhado | As regras ficam em `codigo-fonte/lib/` e recebem o armazenamento como parâmetro; uma API pode ocupar esse lugar sem reescrever as telas |
+| RNF-05 | Atendido | Identidade única, estados de carregando, vazio e erro, avisos no lugar de `alert()` |
+| RNF-06 | Atendido | Igual ao RF-08 |
+| RNF-07 | Reescrito como limitação | Sem servidor não há armazenamento "protegido contra acesso não autorizado": quem usa o mesmo navegador vê os dados. A senha fica só como hash PBKDF2 e a página Privacidade explica o que é guardado |
+| RNF-08 | Atendido nos navegadores atuais | Usa recursos presentes em Chrome, Edge, Firefox e Safari recentes (WebCrypto, `<dialog>`, CSS `aspect-ratio`) |
+| RNF-09 | Atendido | Código em camadas (`lib/`, `ui/`, páginas), comentado, com mais de 280 testes automatizados |
+| RNF-10 | Atendido | Página nova = HTML com a sequência padrão de scripts + script da página; a estrutura comum é verificada em `paginas.test.js` |
