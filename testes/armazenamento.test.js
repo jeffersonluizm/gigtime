@@ -92,12 +92,12 @@ test('home e anúncios montam os cards a partir do localStorage', () => {
   const home = carregarPagina('Home/home.html');
   assert.equal(home.document.querySelectorAll('#anunciosMusic .card').length, 5);
   assert.equal(home.document.querySelectorAll('#anunciosContrat .card').length, 5);
-  const anuncios = carregarPagina('Anúncios/anuncios.html');
+  const anuncios = carregarPagina('anuncios/anuncios.html');
   assert.equal(anuncios.document.querySelectorAll('#anuncios .card').length, 10);
 });
 
 test('clicar num card guarda o perfil escolhido sem senha', () => {
-  const w = carregarPagina('Anúncios/anuncios.html');
+  const w = carregarPagina('anuncios/anuncios.html');
   w.document.querySelector('#anuncios > .col[data-username="davi.sax"] a').dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
   const escolhido = JSON.parse(w.sessionStorage.getItem('clickedUser'));
   assert.equal(escolhido.username, 'davi.sax');

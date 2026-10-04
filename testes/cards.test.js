@@ -17,12 +17,12 @@ const escolhido = (w) => JSON.parse(w.sessionStorage.getItem('clickedUser'));
 test('cards não usam o username como id', () => {
   const home = carregarPagina('Home/home.html', { antes: comUsuarios(usuario('state'), usuario('outro', { role: 'Contratante' })) });
   assert.equal(home.document.querySelectorAll('#anunciosMusic [id], #anunciosContrat [id]').length, 0);
-  const anuncios = carregarPagina('Anúncios/anuncios.html', { antes: comUsuarios(usuario('state')) });
+  const anuncios = carregarPagina('anuncios/anuncios.html', { antes: comUsuarios(usuario('state')) });
   assert.equal(anuncios.document.querySelectorAll('#anuncios [id]').length, 0);
 });
 
 test('anúncios: usuário "state" não sequestra o select de estado', () => {
-  const w = carregarPagina('Anúncios/anuncios.html', {
+  const w = carregarPagina('anuncios/anuncios.html', {
     antes: comUsuarios(usuario('state', { state: 'SP' }), usuario('bh', { state: 'MG' })),
   });
   const select = w.document.getElementById('state');
@@ -36,7 +36,7 @@ test('anúncios: usuário "state" não sequestra o select de estado', () => {
 });
 
 test('anúncios: clicar no card abre o perfil do usuário do card', () => {
-  const w = carregarPagina('Anúncios/anuncios.html', { antes: comUsuarios(usuario('state'), usuario('radioMusician')) });
+  const w = carregarPagina('anuncios/anuncios.html', { antes: comUsuarios(usuario('state'), usuario('radioMusician')) });
   clicar(w, w.document.querySelector('#anuncios > .col[data-username="state"] .card-img-top'));
   assert.equal(escolhido(w).username, 'state');
   clicar(w, w.document.querySelector('#anuncios > .col[data-username="radioMusician"] a'));

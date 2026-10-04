@@ -51,7 +51,7 @@ test('cards da home não interpretam HTML vindo dos dados do usuário', () => {
 });
 
 test('cards dos anúncios não interpretam HTML e o clique ainda abre o perfil certo', () => {
-  const w = carregarPagina('Anúncios/anuncios.html', { antes: comMalicioso() });
+  const w = carregarPagina('anuncios/anuncios.html', { antes: comMalicioso() });
   semInjecao(w);
   const col = w.document.querySelector('#anuncios > .col');
   assert.equal(col.dataset.username, MALICIOSO.username);

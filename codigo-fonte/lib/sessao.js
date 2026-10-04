@@ -45,7 +45,7 @@
 
   // Página para onde o login deve voltar (gravada por quem exigiu login). Lê uma vez só e
   // aceita apenas caminhos relativos do próprio site, como "../Chat/chat.html?com=ana".
-  const DESTINO_VALIDO = /^\.\.\/[A-Za-zÀ-ÿ]+\/[A-Za-z]+\.html(\?[A-Za-z0-9_=%.&-]*)?$/;
+  const DESTINO_VALIDO = /^\.\.\/[A-Za-z]+\/[A-Za-z-]+\.html(\?[A-Za-z0-9_=%.&-]*)?$/;
 
   // encodeURIComponent deixa ' ( ) * ! ~ sem codificar; aqui eles também viram %XX,
   // para o valor caber na lista de caracteres aceitos em DESTINO_VALIDO

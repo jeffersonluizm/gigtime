@@ -64,3 +64,8 @@ test('destinoDepoisDoLogin só aceita páginas do próprio site e é lido uma ve
   assert.equal(Sessao.destinoDepoisDoLogin(new StorageMemoria({ depoisDoLogin: 'https://mal.example/x.html' })), null);
   assert.equal(Sessao.destinoDepoisDoLogin(new StorageMemoria({ depoisDoLogin: 'javascript:alert(1)' })), null);
 });
+
+test('o endereço antigo com acento (Anúncios) redireciona para anuncios/', () => {
+  const html = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Anúncios', 'anuncios.html'), 'utf8');
+  assert.match(html, /<meta http-equiv="refresh" content="0; url=\.\.\/anuncios\/anuncios\.html">/);
+});

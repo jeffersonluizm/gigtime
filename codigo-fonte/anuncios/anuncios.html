@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GigTime - Anúncios</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="../global.css">
+  <link rel="stylesheet" href="styleAnuncios.css">
+</head>
+<body class="bg-gig">
+<!--Barra de navegação-->
+      <nav class="navbar navbar-expand-sm fixed-top bg-gig-pr" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="../Home/home.html">
+            <img src="../assets/img/logo-claro.svg" alt="" width="30" height="30" class="d-inline-block align-text-top">
+            GigTime
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="navbar-nav ms-auto">
+              <!-- Container com os links customizados conforme status de login (logado ou deslogado) -->
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-fluid mt-6">
+        <div class="row">
+          <div id="filtros" class="col-md-4 col-lg-3 bg-secondary bg-opacity-50">
+            <h5 class="text-center pt-3 d-md-none" data-bs-toggle="collapse" data-bs-target="#collapseFiltros" aria-expanded="false" aria-controls="collapseFiltros">
+              FILTROS <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#chevron-down"></use></svg>
+            </h5>
+
+            <div id="collapseFiltros" class="collapse d-md-block mt-3">
+            <input type="radio" class="btn-check" name="options" id="radioMusician" autocomplete="off">
+            <label class="btn btn-secondary" for="radioMusician">Músicos</label>
+            <input type="radio" class="btn-check" name="options" id="radioContractor" autocomplete="off">
+            <label class="btn btn-secondary" for="radioContractor">Contratantes</label>
+
+
+
+            <div class="my-2 position-relative">
+              <label for="state" class="form-label fw-semibold">Localidade:</label>
+              <select id="state" class="form-select" required>
+                <option value="" selected>Escolha seu estado...</option>
+                <option value="AC">AC</option>
+                <option value="AL">AL</option>
+                <option value="AP">AP</option>
+                <option value="AM">AM</option>
+                <option value="BA">BA</option>
+                <option value="CE">CE</option>
+                <option value="DF">DF</option>
+                <option value="ES">ES</option>
+                <option value="GO">GO</option>
+                <option value="MA">MA</option>
+                <option value="MT">MT</option>
+                <option value="MS">MS</option>
+                <option value="MG">MG</option>
+                <option value="PA">PA</option>
+                <option value="PB">PB</option>
+                <option value="PR">PR</option>
+                <option value="PE">PE</option>
+                <option value="PI">PI</option>
+                <option value="RJ">RJ</option>
+                <option value="RN">RN</option>
+                <option value="RS">RS</option>
+                <option value="RO">RO</option>
+                <option value="RR">RR</option>
+                <option value="SC">SC</option>
+                <option value="SP">SP</option>
+                <option value="SE">SE</option>
+                <option value="TO">TO</option>
+              </select>
+              <div class="invalid-feedback">Por favor, selecione seu estado.</div>
+            </div>
+            
+            <h6 class="pt-3">Avaliação mínima:</h6>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao1" value="1">
+              <label class="form-check-label" for="avaliacao1">1</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao2" value="2">
+              <label class="form-check-label" for="avaliacao2">2</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao3" value="3">
+              <label class="form-check-label" for="avaliacao3">3</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao4" value="4">
+              <label class="form-check-label" for="avaliacao4">4</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao5" value="5">
+              <label class="form-check-label" for="avaliacao5">5</label>
+            </div>
+
+            <h6 class="pt-3">Gêneros:</h6>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoSertanejo" value="Sertanejo">
+              <label class="form-check-label" for="generoSertanejo">Sertanejo</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoRock" value="Rock">
+              <label class="form-check-label" for="generoRock">Rock</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoMPB" value="MPB">
+              <label class="form-check-label" for="generoMPB">MPB</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoPop" value="Pop">
+              <label class="form-check-label" for="generoPop">Pop</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoForró" value="Forró">
+              <label class="form-check-label" for="generoForró">Forró</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoJazz" value="Jazz">
+              <label class="form-check-label" for="generoJazz">Jazz</label>
+            </div>
+
+            <div class="my-3">
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="limparFiltros">Limpar filtros</button>
+            </div>
+            </div>
+          </div>
+
+          <div class="col-md-8 col-lg-9 py-4">
+            <div id="anuncios" class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 px-4 g-4">
+              <!-- Aqui ficam os anúncios de cada usuário -->
+            </div>
+          </div>
+        </div>
+      </div>
+  <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="../lib/html.js"></script>
+  <script src="../lib/constantes.js"></script>
+  <script src="../lib/armazenamento.js"></script>
+  <script src="../lib/senha.js"></script>
+  <script src="../lib/validacao.js"></script>
+  <script src="../lib/perfil.js"></script>
+  <script src="../lib/sessao.js"></script>
+  <script src="../lib/filtros.js"></script>
+  <script src="../dados/usuarios-exemplo.js"></script>
+  <script src="../inicializacao.js"></script>
+  <script src="../ui/navbar.js"></script>
+  <script src="../ui/cards.js"></script>
+  <script src="scriptAnuncios.js"></script>
+
+</body>
+</html>

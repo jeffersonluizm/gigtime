@@ -26,7 +26,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
       GigSessao.entrar(sessionStorage, user);
 
       // Volta para a página que pediu login (chat, edição de perfil) ou vai para os anúncios
-      const redirectionPath = GigSessao.destinoDepoisDoLogin(sessionStorage) || '../Anúncios/anuncios.html';
+      const redirectionPath = GigSessao.destinoDepoisDoLogin(sessionStorage) || '../anuncios/anuncios.html';
       window.location.href = redirectionPath;
   } else {
       alert('Usuário ou senha inválidos!');

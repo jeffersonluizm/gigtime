@@ -53,13 +53,13 @@ function marcar(w, id, valor = true) {
 }
 
 test('anúncios: avaliação mínima 5 mostra só quem tem nota 5', () => {
-  const w = carregarPagina('Anúncios/anuncios.html');
+  const w = carregarPagina('anuncios/anuncios.html');
   marcar(w, 'avaliacao5');
   assert.deepEqual(visiveis(w), ['banda.aurora', 'casa.lume']);
 });
 
 test('anúncios: as caixas de avaliação são exclusivas e desmarcar volta a mostrar todos', () => {
-  const w = carregarPagina('Anúncios/anuncios.html');
+  const w = carregarPagina('anuncios/anuncios.html');
   marcar(w, 'avaliacao4');
   marcar(w, 'avaliacao5');
   assert.equal(w.document.getElementById('avaliacao4').checked, false);
@@ -68,13 +68,13 @@ test('anúncios: as caixas de avaliação são exclusivas e desmarcar volta a mo
 });
 
 test('anúncios: filtro por gênero', () => {
-  const w = carregarPagina('Anúncios/anuncios.html');
+  const w = carregarPagina('anuncios/anuncios.html');
   marcar(w, 'generoJazz');
   assert.deepEqual(visiveis(w), ['bar.do.cais', 'bistro.alecrim', 'davi.sax']);
 });
 
 test('anúncios: papel, estado, avaliação e gênero combinados', () => {
-  const w = carregarPagina('Anúncios/anuncios.html');
+  const w = carregarPagina('anuncios/anuncios.html');
   marcar(w, 'radioContractor');
   const estado = w.document.getElementById('state');
   estado.value = 'RJ';
@@ -87,7 +87,7 @@ test('anúncios: papel, estado, avaliação e gênero combinados', () => {
 });
 
 test('anúncios: limpar filtros desfaz tudo', () => {
-  const w = carregarPagina('Anúncios/anuncios.html');
+  const w = carregarPagina('anuncios/anuncios.html');
   marcar(w, 'radioMusician');
   marcar(w, 'generoRock');
   marcar(w, 'avaliacao5');
