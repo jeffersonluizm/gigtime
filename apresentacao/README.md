@@ -2,13 +2,13 @@
 
 ## Apresentação de Slides
 
-[Adicione pdf de apresentação.]
+[Slides da apresentação (PDF)](GIGTIME%20-%20PDF%20(1).pdf), feitos para a banca de 2024.
 
 ## Vídeo de apresentação
 
 
 https://github.com/user-attachments/assets/a1f76118-9848-4823-99a8-f23280faf9b7
 
-## Hospedagem
+## Como ver o site
 
-Você pode ver o site pessoalmente clicando [aqui](https://icei-puc-minas-pmv-ads.github.io/pmv-ads-2024-2-e1-proj-web-t10-pmv-ads-2024-2-e1-proj-gigtime/codigo-fonte/Home/home.html)
+O endereço publicado pela PUC em 2024 mostra a versão original. Para ver a versão atual, siga "Experimente em dois minutos" no [README principal](../README.md).
