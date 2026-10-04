@@ -1,8 +1,8 @@
 // Seleciona o container onde os cards serão inseridos
 const anuncios = document.getElementById('anuncios');
 
-// Recupera os usuários do sessionStorage
-const users = JSON.parse(sessionStorage.getItem('users')) || [];
+// Recupera os usuários do localStorage
+const users = GigArmazenamento.lerUsuarios(localStorage);
 
 
 
@@ -100,7 +100,7 @@ users.forEach(user => {
   const link = document.getElementById(user.username);
   link.addEventListener('click', (event) => {
     event.preventDefault(); // Evita redirecionamento imediato
-    sessionStorage.setItem('clickedUser', JSON.stringify(user)); // Armazena os dados do usuário
+    sessionStorage.setItem('clickedUser', JSON.stringify(GigArmazenamento.usuarioPublico(user))); // Armazena os dados do usuário (sem senha)
     window.location.href = '../Perfil/perfil.html'; // Redireciona para a página de perfil
   });
 });

@@ -52,9 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }});
 
-// Adiciona usuário padrão na memória local
-if (!sessionStorage.getItem('users')) {
-    sessionStorage.setItem('users', JSON.stringify([
+// Usuários de exemplo, gravados no localStorage só quando ainda não há nenhum usuário
+const USUARIOS_EXEMPLO = [
         {
             username: 'sonic',
             name: 'Sonic Hedgehog',
@@ -295,6 +294,17 @@ if (!sessionStorage.getItem('users')) {
             ],
             password: 'evento2024'
         }
-        
-    ]));
-}
+];
+
+// Dados (usuários e mensagens) ficam no localStorage; o usuário logado fica no sessionStorage,
+// ou seja, a sessão vale por aba. Quem vinha da versão antiga (usuários no sessionStorage) é migrado.
+GigArmazenamento.migrarDaSessao(localStorage, sessionStorage);
+GigArmazenamento.semearSeVazio(localStorage, USUARIOS_EXEMPLO);
+
+// Objetos copiados para a sessão não guardam senha (versões antigas guardavam o usuário inteiro)
+['loggedInUser', 'clickedUser'].forEach(chave => {
+    const salvo = GigArmazenamento.lerJSON(sessionStorage, chave);
+    if (salvo && ('password' in salvo || 'passwordHash' in salvo)) {
+        sessionStorage.setItem(chave, JSON.stringify(GigArmazenamento.usuarioPublico(salvo)));
+    }
+});

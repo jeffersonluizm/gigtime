@@ -48,8 +48,8 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
       return;
     }
 
-    // Recupera ou inicializa os usuários no sessionStorage
-    const users = JSON.parse(sessionStorage.getItem('users')) || [];
+    // Recupera ou inicializa os usuários no localStorage
+    const users = GigArmazenamento.lerUsuarios(localStorage);
     
       // Variável para controlar se há erro
     let hasError = false;
@@ -109,7 +109,7 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
       password
     });
     
-    sessionStorage.setItem('users', JSON.stringify(users));
+    GigArmazenamento.salvarUsuarios(localStorage, users);
   
     alert('Registro realizado com sucesso!');
     window.location.href = '../Login/login.html'; // Ajuste o caminho conforme necessário
