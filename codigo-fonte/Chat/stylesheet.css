@@ -294,6 +294,7 @@ body {
     position: relative;
     right: 0;
     text-align: justify;
+    overflow-wrap: anywhere;
     max-width: 65%;
     padding: 12px;
     background: var(--primaryColor);

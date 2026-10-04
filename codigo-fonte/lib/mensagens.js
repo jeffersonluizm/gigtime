@@ -6,6 +6,7 @@
   else raiz.GigMensagens = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   const CHAVE_MENSAGENS = 'messages';
+  const LIMITE_TEXTO = 2000; // caracteres por mensagem (o campo da tela tem o mesmo maxlength)
 
   function lerMensagens(storage) {
     try {
@@ -16,14 +17,21 @@
     }
   }
 
+  // Devolve false se o navegador recusar por falta de espaço (cota do localStorage)
   function salvarMensagens(storage, lista) {
-    storage.setItem(CHAVE_MENSAGENS, JSON.stringify(lista));
+    try {
+      storage.setItem(CHAVE_MENSAGENS, JSON.stringify(lista));
+      return true;
+    } catch (erro) {
+      if (erro && (erro.name === 'QuotaExceededError' || erro.name === 'NS_ERROR_DOM_QUOTA_REACHED')) return false;
+      throw erro;
+    }
   }
 
   // Devolve uma lista nova com a mensagem no fim, ou null se a mensagem for inválida
   function enviarMensagem(lista, de, para, texto, agora) {
     const conteudo = typeof texto === 'string' ? texto.trim() : '';
-    if (!conteudo || !de || !para || de === para) return null;
+    if (!conteudo || conteudo.length > LIMITE_TEXTO || !de || !para || de === para) return null;
     const enviadaEm = typeof agora === 'number' ? agora : Date.now();
     const id = enviadaEm + '-' + Math.random().toString(36).slice(2, 10);
     return lista.concat([{ id, de, para, texto: conteudo, enviadaEm }]);
@@ -58,5 +66,5 @@
     return dois(data.getDate()) + '/' + dois(data.getMonth() + 1);
   }
 
-  return { CHAVE_MENSAGENS, lerMensagens, salvarMensagens, enviarMensagem, conversaEntre, listarConversas, formatarHora };
+  return { CHAVE_MENSAGENS, LIMITE_TEXTO, lerMensagens, salvarMensagens, enviarMensagem, conversaEntre, listarConversas, formatarHora };
 });

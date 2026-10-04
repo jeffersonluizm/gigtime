@@ -141,3 +141,59 @@ test('a navbar do usuário logado tem o link para as mensagens', () => {
   assert.ok(link);
   assert.equal(link.textContent.trim(), 'Mensagens');
 });
+
+test('enviarMensagem aceita até 2000 caracteres e recusa acima disso', () => {
+  assert.equal(M.LIMITE_TEXTO, 2000);
+  assert.equal(M.enviarMensagem([], 'ana', 'bia', 'a'.repeat(2000), 1).length, 1);
+  assert.equal(M.enviarMensagem([], 'ana', 'bia', 'a'.repeat(2001), 1), null);
+});
+
+class StorageCheio {
+  getItem() { return null; }
+  setItem() {
+    const erro = new Error('cheio');
+    erro.name = 'QuotaExceededError';
+    throw erro;
+  }
+  removeItem() {}
+}
+
+test('salvarMensagens devolve false quando o armazenamento está cheio', () => {
+  assert.equal(M.salvarMensagens(new StorageCheio(), [msg('ana', 'bia', 'oi', 1)]), false);
+  assert.equal(M.salvarMensagens(new StorageMemoria(), [msg('ana', 'bia', 'oi', 1)]), true);
+});
+
+test('salvarMensagens não esconde erro que não seja de cota', () => {
+  const quebrado = { setItem() { throw new TypeError('outro'); } };
+  assert.throws(() => M.salvarMensagens(quebrado, []), TypeError);
+});
+
+test('chat limita o campo a 2000 caracteres', () => {
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  assert.equal(w.document.getElementById('mensagem').maxLength, 2000);
+});
+
+test('chat avisa quando não há espaço para gravar e mantém o texto digitado', () => {
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  const original = w.Storage.prototype.setItem;
+  w.Storage.prototype.setItem = function () {
+    const erro = new Error('cheio');
+    erro.name = 'QuotaExceededError';
+    throw erro;
+  };
+  try {
+    w.document.getElementById('mensagem').value = 'Mensagem grande';
+    w.document.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  } finally {
+    w.Storage.prototype.setItem = original;
+  }
+  assert.equal(w.__alertas.length, 1);
+  assert.match(w.__alertas[0], /espaço/);
+  assert.equal(w.document.getElementById('mensagem').value, 'Mensagem grande');
+});
+
+test('balão de mensagem quebra palavras longas (overflow-wrap)', () => {
+  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Chat', 'stylesheet.css'), 'utf8');
+  const regras = [...css.matchAll(/\.messagechat p\s*\{([^}]*)\}/g)].map((m) => m[1]).join('');
+  assert.match(regras, /overflow-wrap:\s*anywhere/);
+});

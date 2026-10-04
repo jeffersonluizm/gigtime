@@ -126,7 +126,10 @@
     const campo = $('mensagem');
     const nova = GigMensagens.enviarMensagem(GigMensagens.lerMensagens(localStorage), eu, contatoAtual, campo.value);
     if (!nova) return;
-    GigMensagens.salvarMensagens(localStorage, nova);
+    if (!GigMensagens.salvarMensagens(localStorage, nova)) {
+      alert('Não há espaço no navegador para gravar mais mensagens. Apague dados antigos do site e tente de novo.');
+      return;
+    }
     campo.value = '';
     renderizar();
   });
