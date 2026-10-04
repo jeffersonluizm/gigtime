@@ -30,7 +30,7 @@
           <div class="card-body">
             <div class="d-flex align-items-start justify-content-between gap-2">
               <h3 class="card-title h5 mb-0"><a class="link-perfil stretched-link" href="${href}">${e(usuario.name)}</a></h3>
-              <span class="nota" aria-label="${e(rotuloNota)}">${icone('star-fill')}<span aria-hidden="true">${e(nota)}</span></span>
+              <span class="nota">${icone('star-fill')}<span aria-hidden="true">${e(nota)}</span><span class="visually-hidden">${e(rotuloNota)}</span></span>
             </div>
             <p class="card-perfil__meta">${icone(usuario.role === 'Contratante' ? 'building' : 'mic')} ${e(usuario.role)} · ${icone('geo-alt')} ${e(usuario.city)}/${e(usuario.state)}</p>
             <ul class="chips" aria-label="Gêneros">${generos}</ul>

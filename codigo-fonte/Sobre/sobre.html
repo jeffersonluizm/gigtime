@@ -78,7 +78,7 @@
       <section class="mb-5" id="arquitetura" aria-labelledby="tituloArquitetura">
         <h2 id="tituloArquitetura">Arquitetura</h2>
         <p class="conteudo-texto">Três camadas dentro do navegador, sem build: cada página carrega scripts clássicos na mesma ordem. As regras de negócio ficam em <code>lib/</code>, sem tocar no DOM, e por isso rodam igual no Node para os testes.</p>
-        <div class="painel diagrama">
+        <div class="painel diagrama" tabindex="0" role="region" aria-label="Diagrama da arquitetura (role para os lados em telas pequenas)">
           <svg viewBox="0 0 960 560" role="img" aria-labelledby="diagramaTitulo diagramaDescricao" xmlns="http://www.w3.org/2000/svg">
             <title id="diagramaTitulo">Arquitetura do GigTime</title>
             <desc id="diagramaDescricao">Páginas HTML usam a camada ui, que usa a camada lib de regras puras. A lib grava no localStorage e no sessionStorage e usa a WebCrypto. Os testes em Node carregam a mesma lib. Uma API futura pode substituir o armazenamento.</desc>
@@ -160,7 +160,7 @@
       <section class="mb-5" id="carga" aria-labelledby="tituloCarga">
         <h2 id="tituloCarga">Teste de carga</h2>
         <p class="conteudo-texto">Sem servidor, o que se estressa é o navegador: milhares de perfis em Explorar, dezenas de milhares de mensagens no chat e o limite de cerca de 5 MB do localStorage. As medições foram feitas antes e depois das correções; o relatório completo está em <code>docs/carga/</code> no repositório.</p>
-        <div class="table-responsive painel p-0">
+        <div class="table-responsive painel p-0" tabindex="0" role="region" aria-label="Tabela de resultados do teste de carga">
           <table class="table mb-0 tabela-carga">
             <caption class="px-3">Resumo das medições (mediana, Chrome, desktop)</caption>
             <thead>
