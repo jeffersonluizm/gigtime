@@ -41,7 +41,12 @@ try {
         $resposta = $contexto.Response
         try {
             $caminho = [Uri]::UnescapeDataString($contexto.Request.Url.AbsolutePath)
-            if ($caminho -eq '/') {
+            # O prefixo localhost ainda aceita conexao vinda da rede com o cabecalho Host: localhost.
+            # So atende quem conecta pelo loopback (127.0.0.1 ou ::1) desta maquina.
+            $origem = $contexto.Request.RemoteEndPoint.Address
+            if (-not $contexto.Request.IsLocal -or -not [System.Net.IPAddress]::IsLoopback($origem)) {
+                $resposta.StatusCode = 403
+            } elseif ($caminho -eq '/') {
                 $resposta.Redirect('/Home/home.html')
             } else {
                 $relativo = $caminho.TrimStart('/').Replace('/', '\').Normalize([Text.NormalizationForm]::FormC)
@@ -59,7 +64,7 @@ try {
                     $resposta.StatusCode = 404
                 }
             }
-            Write-Host "$($resposta.StatusCode) $caminho"
+            Write-Host "$($resposta.StatusCode) $caminho ($origem)"
         } catch {
             $resposta.StatusCode = 500
             Write-Host "500 $($_.Exception.Message)"
