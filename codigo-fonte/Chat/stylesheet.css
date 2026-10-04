@@ -456,6 +456,7 @@ footer a{
     .container{
         width: 100%;
         height: calc(100vh - 100px);
+        height: calc(100dvh - 100px); /* barra de endereço móvel; 100vh acima fica de fallback */
         padding: 0;
     }
 

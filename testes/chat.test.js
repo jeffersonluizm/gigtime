@@ -283,3 +283,10 @@ test('CSS do chat: em tela estreita mostra lista ou conversa e o botão voltar',
   assert.match(estreita[1], /\.container\.conversa-aberta \.rightside\s*\{[^}]*display:\s*block/);
   assert.match(estreita[1], /\.imgtext \.voltar\s*\{[^}]*display:\s*flex/);
 });
+
+test('CSS do chat: altura em tela estreita usa 100dvh com 100vh antes como fallback', () => {
+  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Chat', 'stylesheet.css'), 'utf8');
+  const estreita = css.match(/@media\s*\(max-width:\s*767\.98px\)\s*\{([\s\S]*)\}\s*$/)[1];
+  const container = estreita.match(/\n\s*\.container\s*\{([^}]*)\}/)[1];
+  assert.match(container, /height:\s*calc\(100vh - 100px\);\s*height:\s*calc\(100dvh - 100px\);/);
+});
