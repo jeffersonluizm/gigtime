@@ -14,7 +14,12 @@ if (clickedUser) {
     document.getElementById('location').textContent = `${clickedUser.city}/${clickedUser.state}`;
     document.getElementById('genres').textContent = clickedUser.genres.join(', ');
     document.getElementById('bannerImg').src = clickedUser.bannerPicLink;
-    document.getElementById('songLink').src = "https://www.youtube.com/embed/" + clickedUser.songLink.split('/').pop();
+    // Sem música cadastrada, esconde o player (um embed vazio do YouTube mostra erro)
+    if (clickedUser.songLink) {
+        document.getElementById('songLink').src = "https://www.youtube.com/embed/" + clickedUser.songLink.split('/').pop();
+    } else {
+        document.getElementById('songLink').style.display = 'none';
+    }
     document.getElementById('img1').src = clickedUser.userPicsLinks[0];
     document.getElementById('img2').src = clickedUser.userPicsLinks[1];
     document.getElementById('img3').src = clickedUser.userPicsLinks[2];
