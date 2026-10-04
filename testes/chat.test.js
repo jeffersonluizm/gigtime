@@ -246,3 +246,40 @@ test('conversa nova com contato que deixou de existir some da lista', () => {
   trocarUsuarios(w, (lista) => lista.filter((u) => u.username !== 'sonic'));
   assert.equal(w.document.querySelectorAll('.chatlist .chatBlock').length, 0);
 });
+
+// Telas estreitas: a página alterna entre lista e conversa pela classe "conversa-aberta"
+const container = (w) => w.document.querySelector('body > .container');
+
+test('chat com conversa escolhida marca a tela como conversa aberta', () => {
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  assert.equal(container(w).classList.contains('conversa-aberta'), true);
+});
+
+test('chat sem conversa escolhida mostra a lista', () => {
+  const w = carregarPagina('Chat/chat.html', { antes: logado('cartola') });
+  assert.equal(container(w).classList.contains('conversa-aberta'), false);
+});
+
+test('"voltar" fecha a conversa e volta para a lista; abrir de novo pela lista reabre', () => {
+  const w = carregarPagina('Chat/chat.html', {
+    busca: '?com=sonic',
+    antes: logado('cartola', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([msg('cartola', 'sonic', 'oi', Date.now())]))),
+  });
+  const d = w.document;
+  d.getElementById('voltarLista').click();
+  assert.equal(container(w).classList.contains('conversa-aberta'), false);
+  assert.equal(d.getElementById('nomeContato').textContent, 'Mensagens');
+  assert.equal(w.location.search, '');
+  d.querySelector('.chatlist .chatBlock').click();
+  assert.equal(container(w).classList.contains('conversa-aberta'), true);
+  assert.equal(w.location.search, '?com=sonic');
+});
+
+test('CSS do chat: em tela estreita mostra lista ou conversa e o botão voltar', () => {
+  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Chat', 'stylesheet.css'), 'utf8');
+  const estreita = css.match(/@media\s*\(max-width:\s*767\.98px\)\s*\{([\s\S]*)\}\s*$/);
+  assert.ok(estreita, 'existe media query para telas estreitas');
+  assert.match(estreita[1], /\.container\.conversa-aberta \.leftside\s*\{[^}]*display:\s*none/);
+  assert.match(estreita[1], /\.container\.conversa-aberta \.rightside\s*\{[^}]*display:\s*block/);
+  assert.match(estreita[1], /\.imgtext \.voltar\s*\{[^}]*display:\s*flex/);
+});

@@ -76,6 +76,8 @@
     area.replaceChildren();
 
     const pessoa = contatoAtual && buscarUsuario(contatoAtual);
+    // Em telas estreitas a página mostra a lista OU a conversa (ver stylesheet.css)
+    document.querySelector('body > .container').classList.toggle('conversa-aberta', Boolean(pessoa));
     if (!pessoa) {
       $('nomeContato').textContent = 'Mensagens';
       $('detalheContato').textContent = '';
@@ -133,6 +135,13 @@
       return;
     }
     campo.value = '';
+    renderizar();
+  });
+
+  // "Voltar" (só aparece em telas estreitas): fecha a conversa e mostra a lista
+  $('voltarLista').addEventListener('click', () => {
+    contatoAtual = null;
+    history.replaceState(null, '', window.location.pathname);
     renderizar();
   });
 
