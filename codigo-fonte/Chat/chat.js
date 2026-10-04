@@ -1,21 +1,16 @@
 // Chat local entre o usuário logado e outro usuário. As mensagens ficam no localStorage
 // (lib/mensagens.js); a conversa aberta vem de ?com=<username> (botão "Contate-me" do perfil).
 (function () {
-  const logado = GigArmazenamento.lerJSON(sessionStorage, 'loggedInUser');
-
   const pedido = new URLSearchParams(window.location.search).get('com');
 
   // Exige login: guarda a conversa pedida para o login voltar para ela
-  if (!logado) {
-    const busca = pedido ? '?com=' + GigArmazenamento.codificarParametro(pedido) : '';
-    sessionStorage.setItem(GigArmazenamento.CHAVE_DESTINO, '../Chat/chat.html' + busca);
-    window.location.href = '../Login/login.html';
-    return;
-  }
+  const busca = pedido ? '?com=' + GigSessao.codificarParametro(pedido) : '';
+  const logado = GigSessao.exigirLogin(sessionStorage, '../Chat/chat.html' + busca, (url) => { window.location.href = url; });
+  if (!logado) return;
 
   const eu = logado.username;
   const $ = (id) => document.getElementById(id);
-  const FOTO_PADRAO = '../userImages/defaultUser.jpg';
+  const FOTO_PADRAO = GigConstantes.FOTO_PADRAO;
   const usuarios = () => GigArmazenamento.lerUsuarios(localStorage);
   const buscarUsuario = (username) => usuarios().find((u) => u.username === username);
 
@@ -150,7 +145,7 @@
     event.preventDefault();
     const pessoa = buscarUsuario(contatoAtual);
     if (!pessoa) return;
-    sessionStorage.setItem('clickedUser', JSON.stringify(GigArmazenamento.usuarioPublico(pessoa)));
+    GigSessao.escolherPerfil(sessionStorage, pessoa);
     window.location.href = '../Perfil/perfil.html';
   });
 

@@ -1,18 +1,18 @@
 // Regras do perfil: cadastro, edição, troca de senha e o botão de ação da página de perfil.
 // Username, nota, selos e fotos de destaque não mudam na edição. Toda gravação de perfil exige a senha
 // atual (a sessão fica no sessionStorage e pode ser forjada no DevTools; a senha é a única prova local).
-// Depende de lib/senha.js (GigSenha) e lib/validacao.js (GigValidacao).
+// Depende de lib/constantes.js, lib/senha.js (GigSenha) e lib/validacao.js (GigValidacao).
 (function (raiz, fabrica) {
   const ehNode = typeof module === 'object' && module.exports;
   const api = fabrica(
     () => (ehNode ? require('./senha.js') : raiz.GigSenha),
     () => (ehNode ? require('./validacao.js') : raiz.GigValidacao),
+    ehNode ? require('./constantes.js') : raiz.GigConstantes,
   );
   if (ehNode) module.exports = api;
   else raiz.GigPerfil = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (senha, validacao) {
-  const FOTO_PADRAO = '../assets/img/avatar-padrao.svg';
-  const BANNER_PADRAO = '../assets/img/banner-padrao.svg';
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (senha, validacao, constantes) {
+  const { FOTO_PADRAO, BANNER_PADRAO } = constantes;
   const LIMITE_BIO = 280;
   const LIMITE_DISPONIBILIDADE = 80;
   const OBRIGATORIOS = {

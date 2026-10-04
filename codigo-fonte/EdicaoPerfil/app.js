@@ -1,14 +1,9 @@
 // Edição do perfil do usuário logado, gravando no mesmo modelo `users` do cadastro (localStorage).
 // As regras de validação e de troca de senha ficam em lib/perfil.js.
 (function () {
-  const logado = GigArmazenamento.lerJSON(sessionStorage, 'loggedInUser');
-
   // Exige login: guarda esta página para o login voltar para cá
-  if (!logado) {
-    sessionStorage.setItem(GigArmazenamento.CHAVE_DESTINO, '../EdicaoPerfil/EdicaoPerfil.html');
-    window.location.href = '../Login/login.html';
-    return;
-  }
+  const logado = GigSessao.exigirLogin(sessionStorage, '../EdicaoPerfil/EdicaoPerfil.html', (url) => { window.location.href = url; });
+  if (!logado) return;
 
   const $ = (id) => document.getElementById(id);
   const form = $('editForm');
@@ -104,9 +99,8 @@
       alert('Usuário não encontrado!');
       return;
     }
-    const publico = JSON.stringify(GigArmazenamento.usuarioPublico(resultado.usuario));
-    sessionStorage.setItem('loggedInUser', publico);
-    sessionStorage.setItem('clickedUser', publico);
+    GigSessao.entrar(sessionStorage, resultado.usuario);
+    GigSessao.escolherPerfil(sessionStorage, resultado.usuario);
     alert('Perfil atualizado com sucesso!');
     window.location.href = '../Perfil/perfil.html';
   }

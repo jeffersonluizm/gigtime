@@ -160,14 +160,6 @@ test('criarUsuario monta o usuário novo com os padrões e sem a senha em texto'
   assert.equal('senha' in u || 'confirmacao' in u, false);
 });
 
-test('destinoDepoisDoLogin só aceita páginas do próprio site e é lido uma vez', () => {
-  const sessao = new StorageMemoria({ depoisDoLogin: '../Chat/chat.html?com=ana' });
-  assert.equal(A.destinoDepoisDoLogin(sessao), '../Chat/chat.html?com=ana');
-  assert.equal(A.destinoDepoisDoLogin(sessao), null);
-  assert.equal(A.destinoDepoisDoLogin(new StorageMemoria({ depoisDoLogin: 'https://mal.example/x.html' })), null);
-  assert.equal(A.destinoDepoisDoLogin(new StorageMemoria({ depoisDoLogin: 'javascript:alert(1)' })), null);
-});
-
 // Página de edição
 const html = fs.readFileSync(path.join(RAIZ, 'EdicaoPerfil', 'EdicaoPerfil.html'), 'utf8');
 

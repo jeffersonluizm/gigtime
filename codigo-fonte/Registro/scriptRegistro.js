@@ -85,9 +85,9 @@
     }
 
     // Cadastro feito: já entra na conta e vai para o perfil novo (ou para a página que pediu login)
-    sessionStorage.setItem('loggedInUser', JSON.stringify(GigArmazenamento.usuarioPublico(usuario)));
-    sessionStorage.setItem('clickedUser', JSON.stringify(GigArmazenamento.usuarioPublico(usuario)));
-    window.location.href = GigArmazenamento.destinoDepoisDoLogin(sessionStorage) || '../Perfil/perfil.html?u=' + encodeURIComponent(usuario.username);
+    GigSessao.entrar(sessionStorage, usuario);
+    GigSessao.escolherPerfil(sessionStorage, usuario);
+    window.location.href = GigSessao.destinoDepoisDoLogin(sessionStorage) || '../Perfil/perfil.html?u=' + encodeURIComponent(usuario.username);
   }
 
   $('profilePicLink').addEventListener('input', atualizarPrevia);

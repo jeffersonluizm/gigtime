@@ -23,10 +23,10 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 
   if (user) {
       // Armazena o nome de usuário no sessionStorage
-      sessionStorage.setItem('loggedInUser', JSON.stringify(GigArmazenamento.usuarioPublico(user)));
+      GigSessao.entrar(sessionStorage, user);
 
       // Volta para a página que pediu login (chat, edição de perfil) ou vai para os anúncios
-      const redirectionPath = GigArmazenamento.destinoDepoisDoLogin(sessionStorage) || '../Anúncios/anuncios.html';
+      const redirectionPath = GigSessao.destinoDepoisDoLogin(sessionStorage) || '../Anúncios/anuncios.html';
       window.location.href = redirectionPath;
   } else {
       alert('Usuário ou senha inválidos!');

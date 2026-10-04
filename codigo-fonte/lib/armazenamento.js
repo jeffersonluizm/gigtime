@@ -99,22 +99,5 @@
     return copia;
   }
 
-  // Página para onde o login deve voltar (gravada por quem exigiu login). Lê uma vez só e
-  // aceita apenas caminhos relativos do próprio site, como "../Chat/chat.html?com=ana".
-  const CHAVE_DESTINO = 'depoisDoLogin';
-  const DESTINO_VALIDO = /^\.\.\/[A-Za-zÀ-ÿ]+\/[A-Za-z]+\.html(\?[A-Za-z0-9_=%.&-]*)?$/;
-
-  // encodeURIComponent deixa ' ( ) * ! ~ sem codificar; aqui eles também viram %XX,
-  // para o valor caber na lista de caracteres aceitos em DESTINO_VALIDO
-  function codificarParametro(valor) {
-    return encodeURIComponent(String(valor)).replace(/[!'()*~]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase());
-  }
-
-  function destinoDepoisDoLogin(sessao) {
-    const destino = sessao.getItem(CHAVE_DESTINO);
-    sessao.removeItem(CHAVE_DESTINO);
-    return destino && DESTINO_VALIDO.test(destino) ? destino : null;
-  }
-
-  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_DESTINO, ehErroDeCota, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico, destinoDepoisDoLogin, codificarParametro };
+  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, ehErroDeCota, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico };
 });

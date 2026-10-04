@@ -55,3 +55,18 @@ test('home: username igual ao id de um container não quebra os cards nem o cliq
   clicar(w, d.querySelector('#anunciosMusic .card a'));
   assert.equal(escolhido(w).username, 'anunciosContrat');
 });
+
+test('o card leva ao perfil endereçável (?u=) por link de verdade, acessível pelo teclado', () => {
+  const w = carregarPagina('Home/home.html', { antes: comUsuarios(usuario('o\'neil & cia', { name: 'O Neil' })) });
+  const links = [...w.document.querySelectorAll('#anunciosMusic [data-username] a.link-perfil')];
+  assert.ok(links.length >= 1);
+  for (const a of links) assert.equal(a.getAttribute('href'), '../Perfil/perfil.html?u=' + encodeURIComponent("o'neil & cia"));
+  const focaveis = links.filter((a) => a.getAttribute('tabindex') !== '-1');
+  assert.equal(focaveis.length, 1, 'um link por card na ordem de tabulação');
+  assert.match(focaveis[0].textContent, /O Neil/);
+});
+
+test('usuário sem avaliação aparece como "Novo" no card', () => {
+  const w = carregarPagina('Home/home.html', { antes: comUsuarios(usuario('novato', { rating: 0 })) });
+  assert.match(w.document.querySelector('#anunciosMusic .nota').textContent, /Novo/);
+});
