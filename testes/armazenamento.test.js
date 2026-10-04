@@ -4,7 +4,8 @@ const { StorageMemoria, carregarPagina } = require('./apoio');
 const A = require('../codigo-fonte/lib/armazenamento.js');
 const { CHAVE_USUARIOS, CHAVE_MENSAGENS } = require('../codigo-fonte/lib/armazenamento.js');
 
-const u = (username, extra = {}) => ({ username, name: username.toUpperCase(), ...extra });
+// Usuário com a forma mínima dos dados do GigTime (a migração ignora o que não tem essa forma)
+const u = (username, extra = {}) => ({ username, name: username.toUpperCase(), role: 'Músico', genres: [], passwordHash: 'h', ...extra });
 
 test('lerUsuarios devolve lista vazia quando não há nada gravado', () => {
   assert.deepEqual(A.lerUsuarios(new StorageMemoria()), []);

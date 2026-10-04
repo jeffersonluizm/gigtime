@@ -68,3 +68,36 @@ test('global.js migra as chaves antigas antes de semear os usuários de exemplo'
   assert.equal(JSON.parse(w.localStorage.getItem('gigtime:messages')).length, 1);
   assert.equal(w.localStorage.getItem('users'), null);
 });
+
+// Dado de app vizinho na mesma origem (GitHub Pages) não pode ser mesclado nem apagado
+test('migrarDaSessao ignora e preserva dado de outro app no sessionStorage["users"]', () => {
+  const alheio = JSON.stringify([{ id: 1, nome: 'outro app' }]);
+  const local = new StorageMemoria();
+  const sessao = new StorageMemoria({ users: alheio });
+  assert.equal(A.migrarDaSessao(local, sessao), false);
+  assert.equal(sessao.getItem('users'), alheio);
+  assert.equal(local.getItem(A.CHAVE_USUARIOS), null);
+});
+
+test('migrarDaSessao leva só os usuários válidos e deixa os outros itens na chave antiga', () => {
+  const local = new StorageMemoria();
+  const sessao = new StorageMemoria({ users: JSON.stringify([usuario('ana'), { id: 1 }]) });
+  assert.equal(A.migrarDaSessao(local, sessao), true);
+  assert.deepEqual(JSON.parse(local.getItem(A.CHAVE_USUARIOS)).map((u) => u.username), ['ana']);
+  assert.deepEqual(JSON.parse(sessao.getItem('users')), [{ id: 1 }]);
+});
+
+test('migrarChavesAntigas migra os itens válidos e mantém os inválidos na chave antiga', () => {
+  const local = new StorageMemoria({
+    users: JSON.stringify([usuario('ana'), { id: 7 }]),
+    messages: JSON.stringify([mensagem('m1'), { qualquer: true }]),
+  });
+  assert.equal(A.migrarChavesAntigas(local), true);
+  assert.deepEqual(JSON.parse(local.getItem('gigtime:users')).map((u) => u.username), ['ana']);
+  assert.deepEqual(JSON.parse(local.getItem('gigtime:messages')).map((m) => m.id), ['m1']);
+  assert.deepEqual(JSON.parse(local.getItem('users')), [{ id: 7 }]);
+  assert.deepEqual(JSON.parse(local.getItem('messages')), [{ qualquer: true }]);
+  // idempotente: na segunda vez só sobraram itens inválidos
+  assert.equal(A.migrarChavesAntigas(local), false);
+  assert.deepEqual(JSON.parse(local.getItem('users')), [{ id: 7 }]);
+});

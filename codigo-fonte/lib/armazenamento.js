@@ -43,43 +43,42 @@
     return true;
   }
 
-  // A versão anterior do site guardava os usuários no sessionStorage.
-  // Leva esses usuários para o localStorage (mesclando por username, o local vence)
-  // e apaga a cópia antiga. Devolve true se havia algo para migrar.
-  function migrarDaSessao(local, sessao) {
-    const antigos = lerJSON(sessao, CHAVE_SESSAO_ANTIGA);
-    if (!Array.isArray(antigos)) return false;
-    const atuais = lerUsuarios(local);
-    const existentes = new Set(atuais.map((u) => u.username));
-    const novos = antigos.filter((u) => u && !existentes.has(u.username));
-    salvarUsuarios(local, atuais.concat(novos));
-    sessao.removeItem(CHAVE_SESSAO_ANTIGA);
-    return true;
-  }
-
-  // Chaves sem prefixo usadas antes ("users" e "messages"). Só migra o que tem a forma dos dados
-  // do GigTime; dado de outro site na mesma origem fica intocado.
+  // Só é migrado o que tem a forma dos dados do GigTime: no GitHub Pages a origem é dividida com
+  // outros repositórios, e dado de app vizinho sob as mesmas chaves não pode ser mesclado nem apagado.
   const ehUsuario = (u) => Boolean(u) && typeof u.username === 'string' && typeof u.role === 'string'
     && Array.isArray(u.genres) && ('passwordHash' in u || 'password' in u);
   const ehMensagem = (m) => Boolean(m) && typeof m.id === 'string' && typeof m.de === 'string'
     && typeof m.para === 'string' && typeof m.texto === 'string' && typeof m.enviadaEm === 'number';
 
-  function migrarChave(storage, antiga, nova, valido, identificador) {
-    const antigos = lerJSON(storage, antiga);
-    if (!Array.isArray(antigos) || antigos.length === 0 || !antigos.every(valido)) return false;
-    const atuais = lerJSON(storage, nova);
+  // Move os itens válidos de origem[antiga] para destino[nova], mesclando pelo identificador
+  // (o que já está no destino vence). Itens inválidos ficam na chave antiga; ela só é apagada
+  // quando não sobra nada. Devolve true se havia algo válido para mover.
+  function moverItens(origem, antiga, destino, nova, valido, identificador) {
+    const antigos = lerJSON(origem, antiga);
+    if (!Array.isArray(antigos)) return false;
+    const validos = antigos.filter(valido);
+    if (validos.length === 0) return false;
+    const atuais = lerJSON(destino, nova);
     const lista = Array.isArray(atuais) ? atuais : [];
     const existentes = new Set(lista.map((item) => item && item[identificador]));
-    const novos = antigos.filter((item) => !existentes.has(item[identificador]));
-    storage.setItem(nova, JSON.stringify(lista.concat(novos)));
-    storage.removeItem(antiga);
+    destino.setItem(nova, JSON.stringify(lista.concat(validos.filter((item) => !existentes.has(item[identificador])))));
+    const restantes = antigos.filter((item) => !valido(item));
+    if (restantes.length > 0) origem.setItem(antiga, JSON.stringify(restantes));
+    else origem.removeItem(antiga);
     return true;
   }
 
+  // A versão anterior do site guardava os usuários no sessionStorage["users"].
+  // Leva esses usuários para o localStorage (mesclando por username, o local vence).
+  function migrarDaSessao(local, sessao) {
+    return moverItens(sessao, CHAVE_SESSAO_ANTIGA, local, CHAVE_USUARIOS, ehUsuario, 'username');
+  }
+
+  // Chaves sem prefixo usadas antes no localStorage ("users" e "messages")
   // Devolve true se migrou alguma coisa; rodar de novo não muda nada
   function migrarChavesAntigas(local) {
-    const usuarios = migrarChave(local, 'users', CHAVE_USUARIOS, ehUsuario, 'username');
-    const mensagens = migrarChave(local, 'messages', CHAVE_MENSAGENS, ehMensagem, 'id');
+    const usuarios = moverItens(local, 'users', local, CHAVE_USUARIOS, ehUsuario, 'username');
+    const mensagens = moverItens(local, 'messages', local, CHAVE_MENSAGENS, ehMensagem, 'id');
     return usuarios || mensagens;
   }
 
