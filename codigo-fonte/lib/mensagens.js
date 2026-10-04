@@ -1,5 +1,7 @@
-// Mensagens do chat local: ficam no localStorage do navegador (chave GigArmazenamento.CHAVE_MENSAGENS).
-// Cada mensagem: { id, de, para, texto, enviadaEm } (de/para = username; enviadaEm = milissegundos).
+// Mensagens do chat local, no localStorage do navegador. Cada mensagem: { id, de, para, texto, enviadaEm }
+// (de/para = username; enviadaEm = milissegundos). Mensagens novas vão para a chave do autor
+// (gigtime:messages:<usuário>): duas abas de pessoas diferentes nunca gravam a mesma chave, então uma não
+// apaga a mensagem da outra (ver docs/carga, H10). A lista única antiga (CHAVE_MENSAGENS) continua lida.
 // Depende de lib/armazenamento.js, que precisa ser carregado antes na página.
 (function (raiz, fabrica) {
   const ehNode = typeof module === 'object' && module.exports;
@@ -11,13 +13,42 @@
   const CHAVE_LIDAS = armazenamento.CHAVE_LIDAS;
   const LIMITE_TEXTO = 2000; // caracteres por mensagem (o campo da tela tem o mesmo maxlength)
 
-  function lerMensagens(storage) {
+  const PREFIXO_AUTOR = CHAVE_MENSAGENS + ':';
+  const chaveDoAutor = (username) => PREFIXO_AUTOR + username;
+  // null = storage.clear() (evento "storage" sem chave)
+  const ehChaveDeMensagens = (chave) => chave === null || chave === CHAVE_MENSAGENS || String(chave).startsWith(PREFIXO_AUTOR);
+
+  function lerLista(storage, chave) {
     try {
-      const lista = JSON.parse(storage.getItem(CHAVE_MENSAGENS));
+      const lista = JSON.parse(storage.getItem(chave));
       return Array.isArray(lista) ? lista : [];
     } catch (e) {
       return [];
     }
+  }
+
+  // Todas as chaves de mensagens: a lista antiga e as dos autores
+  function chavesDeMensagens(storage) {
+    const chaves = [CHAVE_MENSAGENS];
+    for (let i = 0; i < storage.length; i++) {
+      const chave = storage.key(i);
+      if (chave && chave.startsWith(PREFIXO_AUTOR)) chaves.push(chave);
+    }
+    return chaves;
+  }
+
+  function lerMensagens(storage) {
+    if (typeof storage.key !== 'function') return lerLista(storage, CHAVE_MENSAGENS);
+    const vistas = new Set();
+    const todas = [];
+    for (const chave of chavesDeMensagens(storage)) {
+      for (const m of lerLista(storage, chave)) {
+        if (!m || vistas.has(m.id)) continue;
+        vistas.add(m.id);
+        todas.push(m);
+      }
+    }
+    return todas;
   }
 
   // Devolve false se o navegador recusar por falta de espaço (cota do localStorage)
@@ -38,6 +69,21 @@
     const enviadaEm = typeof agora === 'number' ? agora : Date.now();
     const id = enviadaEm + '-' + Math.random().toString(36).slice(2, 10);
     return lista.concat([{ id, de, para, texto: conteudo, enviadaEm }]);
+  }
+
+  // Envio: acrescenta a mensagem na chave do autor e grava só essa chave.
+  // Devolve 'gravada', 'invalida' ou 'sem-espaco'.
+  async function adicionarMensagem(storage, de, para, texto, agora) {
+    const chave = chaveDoAutor(de);
+    const nova = enviarMensagem(lerLista(storage, chave), de, para, texto, agora);
+    if (!nova) return 'invalida';
+    try {
+      storage.setItem(chave, JSON.stringify(nova));
+      return 'gravada';
+    } catch (erro) {
+      if (armazenamento.ehErroDeCota(erro)) return 'sem-espaco';
+      throw erro;
+    }
   }
 
   const doPar = (m, a, b) => (m.de === a && m.para === b) || (m.de === b && m.para === a);
@@ -107,5 +153,5 @@
     return dois(data.getDate()) + '/' + dois(data.getMonth() + 1);
   }
 
-  return { CHAVE_MENSAGENS, CHAVE_LIDAS, LIMITE_TEXTO, lerMensagens, salvarMensagens, enviarMensagem, conversaEntre, listarConversas, lerLidas, marcarComoLida, naoLidas, naoLidasPorContato, formatarHora };
+  return { CHAVE_MENSAGENS, CHAVE_LIDAS, LIMITE_TEXTO, chaveDoAutor, ehChaveDeMensagens, chavesDeMensagens, lerMensagens, salvarMensagens, enviarMensagem, adicionarMensagem, conversaEntre, listarConversas, lerLidas, marcarComoLida, naoLidas, naoLidasPorContato, formatarHora };
 });

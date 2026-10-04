@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { StorageMemoria, carregarPagina } = require('./apoio');
+const { StorageMemoria, carregarPagina, esperarAte } = require('./apoio');
 const M = require('../codigo-fonte/lib/mensagens.js');
 const P = require('../codigo-fonte/lib/perfil.js');
 const { CHAVE_USUARIOS, CHAVE_MENSAGENS } = require('../codigo-fonte/lib/armazenamento.js');
@@ -76,7 +76,7 @@ test('chat exige login e volta para a mesma conversa depois', () => {
   assert.equal(w.sessionStorage.getItem('depoisDoLogin'), '../Chat/chat.html?com=lia.batera');
 });
 
-test('chat aberto pelo perfil mostra a pessoa e envia mensagem gravada no localStorage', () => {
+test('chat aberto pelo perfil mostra a pessoa e envia mensagem gravada no localStorage', async () => {
   const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   const d = w.document;
   assert.equal(d.getElementById('nomeContato').textContent, 'Lia Fontes');
@@ -84,8 +84,9 @@ test('chat aberto pelo perfil mostra a pessoa e envia mensagem gravada no localS
 
   d.getElementById('mensagem').value = 'Olá, Lia!';
   d.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await esperarAte(() => d.querySelector('.chat .messagechat.myMessage'));
 
-  const salvas = JSON.parse(w.localStorage.getItem(CHAVE_MENSAGENS));
+  const salvas = M.lerMensagens(w.localStorage);
   assert.equal(salvas.length, 1);
   assert.equal(salvas[0].de, 'davi.sax');
   assert.equal(salvas[0].para, 'lia.batera');
@@ -113,11 +114,12 @@ test('chat lista as conversas existentes e mostra a mensagem recebida', () => {
   assert.match(delas[0].textContent, /^Bora tocar\?/);
 });
 
-test('chat mostra o texto da mensagem como texto, sem interpretar HTML', () => {
+test('chat mostra o texto da mensagem como texto, sem interpretar HTML', async () => {
   const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   const d = w.document;
   d.getElementById('mensagem').value = '<img src=x onerror="alert(1)">';
   d.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await esperarAte(() => d.querySelector('.chat .myMessage p'));
   assert.equal(d.querySelector('.chat img'), null);
   assert.match(d.querySelector('.chat .myMessage p').textContent, /<img src=x/);
 });
@@ -174,7 +176,7 @@ test('chat limita o campo a 2000 caracteres', () => {
   assert.equal(w.document.getElementById('mensagem').maxLength, 2000);
 });
 
-test('chat avisa quando não há espaço para gravar e mantém o texto digitado', () => {
+test('chat avisa quando não há espaço para gravar e mantém o texto digitado', async () => {
   const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   const original = w.Storage.prototype.setItem;
   w.Storage.prototype.setItem = function () {
@@ -185,6 +187,7 @@ test('chat avisa quando não há espaço para gravar e mantém o texto digitado'
   try {
     w.document.getElementById('mensagem').value = 'Mensagem grande';
     w.document.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
+    await esperarAte(() => w.document.getElementById('erroEnvio').textContent);
   } finally {
     w.Storage.prototype.setItem = original;
   }
@@ -316,4 +319,38 @@ test('a lista de conversas mostra o número de não lidas de cada contato e é n
   assert.equal(bloco.tagName, 'BUTTON');
   assert.equal(bloco.querySelector('.contador').textContent, '2');
   assert.match(bloco.getAttribute('aria-label'), /2 mensagens não lidas/);
+});
+
+// Duas abas gravando ao mesmo tempo (H10 do teste de carga): com uma lista única, a gravação de uma aba
+// apagava a mensagem da outra. Cada autor passa a gravar na própria chave (gigtime:messages:<usuário>).
+test('adicionarMensagem grava na chave do autor e lerMensagens junta a lista antiga e as de cada autor', async () => {
+  const local = new StorageMemoria({ [CHAVE_MENSAGENS]: JSON.stringify([msg('caio', 'ana', 'antiga', 1)]) });
+  assert.equal(await M.adicionarMensagem(local, 'ana', 'bia', 'oi bia', 10), 'gravada');
+  assert.equal(await M.adicionarMensagem(local, 'bia', 'ana', 'oi ana', 20), 'gravada');
+  assert.deepEqual(JSON.parse(local.getItem('gigtime:messages:ana')).map((m) => m.texto), ['oi bia']);
+  assert.deepEqual(JSON.parse(local.getItem('gigtime:messages:bia')).map((m) => m.texto), ['oi ana']);
+  assert.deepEqual(JSON.parse(local.getItem(CHAVE_MENSAGENS)).map((m) => m.texto), ['antiga'], 'a lista antiga não é regravada');
+  assert.deepEqual(M.conversaEntre(M.lerMensagens(local), 'ana', 'bia').map((m) => m.texto), ['oi bia', 'oi ana']);
+  assert.equal(M.lerMensagens(local).length, 3);
+});
+
+test('gravação concorrente de autores diferentes não se sobrescreve (cada um escreve só a sua chave)', async () => {
+  // Simula duas abas com cópias desatualizadas: cada uma lê antes de a outra gravar
+  const local = new StorageMemoria();
+  const ana = M.adicionarMensagem(local, 'ana', 'bia', 'de ana', 1);
+  const bia = M.adicionarMensagem(local, 'bia', 'ana', 'de bia', 2);
+  await Promise.all([ana, bia]);
+  assert.equal(M.lerMensagens(local).length, 2);
+});
+
+test('adicionarMensagem informa texto inválido e falta de espaço', async () => {
+  assert.equal(await M.adicionarMensagem(new StorageMemoria(), 'ana', 'bia', '   '), 'invalida');
+  assert.equal(await M.adicionarMensagem(new StorageCheio(), 'ana', 'bia', 'oi'), 'sem-espaco');
+});
+
+test('ehChaveDeMensagens reconhece a lista antiga e as chaves por autor', () => {
+  assert.equal(M.ehChaveDeMensagens('gigtime:messages'), true);
+  assert.equal(M.ehChaveDeMensagens('gigtime:messages:ana'), true);
+  assert.equal(M.ehChaveDeMensagens('gigtime:users'), false);
+  assert.equal(M.ehChaveDeMensagens(null), true, 'storage.clear() também conta');
 });

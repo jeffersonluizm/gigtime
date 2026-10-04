@@ -180,7 +180,7 @@
     // Mensagem nova chegando por outra aba atualiza o contador
     raiz.addEventListener('storage', (event) => {
       const logadoAgora = seguro(() => GigSessao.usuarioLogado(sessionStorage), null);
-      if (logadoAgora && raiz.GigMensagens && [null, GigMensagens.CHAVE_MENSAGENS, GigMensagens.CHAVE_LIDAS].includes(event.key)) {
+      if (logadoAgora && raiz.GigMensagens && (GigMensagens.ehChaveDeMensagens(event.key) || event.key === GigMensagens.CHAVE_LIDAS)) {
         atualizarContador(logadoAgora.username);
       }
     });

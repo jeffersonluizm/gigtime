@@ -18,6 +18,12 @@ class StorageMemoria {
   removeItem(chave) {
     this.dados.delete(chave);
   }
+  get length() {
+    return this.dados.size;
+  }
+  key(i) {
+    return [...this.dados.keys()][i] ?? null;
+  }
 }
 
 // Carrega o HTML de uma página e executa, na ordem, os scripts locais que ela referencia

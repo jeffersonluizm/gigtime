@@ -53,3 +53,18 @@ test('usoDoArmazenamento soma só as chaves do GigTime, em caracteres e em rela�
   assert.equal(uso.cotaEstimada, 5 * 1024 * 1024);
   assert.ok(uso.percentual > 0 && uso.percentual < 1);
 });
+
+test('conta: apagar, exportar, restaurar e medir consideram também as mensagens gravadas por autor', () => {
+  const storage = local();
+  storage.setItem('gigtime:messages:ana', JSON.stringify([msg('a1', 'ana', 'bia')]));
+  storage.setItem('gigtime:messages:bia', JSON.stringify([msg('b1', 'bia', 'ana'), msg('b2', 'bia', 'caio')]));
+  assert.deepEqual(Conta.exportarDados(storage, 'ana', 1).mensagens.map((m) => m.id).sort(), ['a1', 'b1', 'm1', 'm2']);
+  const uso = Conta.usoDoArmazenamento(storage).caracteres;
+  assert.ok(uso > Conta.usoDoArmazenamento(local()).caracteres);
+  Conta.apagarConta(storage, 'ana');
+  assert.equal(storage.getItem('gigtime:messages:ana'), null);
+  assert.deepEqual(JSON.parse(storage.getItem('gigtime:messages:bia')).map((m) => m.id), ['b2']);
+  Conta.restaurarDemo(storage, []);
+  assert.equal(storage.getItem('gigtime:messages:bia'), null);
+  assert.equal(storage.getItem('outro-app'), 'intocado');
+});

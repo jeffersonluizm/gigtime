@@ -291,7 +291,10 @@ const CENARIOS = {
       }, rotulo);
       await Promise.all([enviar(abas[0], 'A'), enviar(abas[1], 'B')]);
       await abas[0].waitForTimeout(500);
-      const gravadas = await abas[0].evaluate(() => JSON.parse(localStorage.getItem('gigtime:messages') || '[]').length);
+      // soma a lista única (antes) e as chaves por autor (depois: gigtime:messages:<usuário>)
+      const gravadas = await abas[0].evaluate(() => Object.keys(localStorage)
+        .filter((k) => k === 'gigtime:messages' || k.startsWith('gigtime:messages:'))
+        .reduce((total, k) => total + JSON.parse(localStorage.getItem(k) || '[]').length, 0));
       resultados.push({ enviadas: 1000, gravadas, perdidas: 1000 - gravadas });
       await contexto.close();
     }

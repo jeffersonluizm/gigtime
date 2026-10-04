@@ -37,7 +37,7 @@
           </thead>
           <tbody>
             <tr><td>localStorage</td><td><code>gigtime:users</code></td><td>Perfis: nome, e-mail, telefone, cidade, gêneros, links de imagem e vídeo, e a senha só como hash PBKDF2 (nunca o texto da senha).</td></tr>
-            <tr><td>localStorage</td><td><code>gigtime:messages</code></td><td>Mensagens do chat: quem enviou, para quem, texto e horário.</td></tr>
+            <tr><td>localStorage</td><td><code>gigtime:messages:&lt;usuário&gt;</code> e <code>gigtime:messages</code></td><td>Mensagens do chat, uma lista por autor (e a lista única de versões antigas): quem enviou, para quem, texto e horário.</td></tr>
             <tr><td>localStorage</td><td><code>gigtime:lidas</code></td><td>Até quando você já leu cada conversa, para o contador de não lidas.</td></tr>
             <tr><td>sessionStorage</td><td><code>loggedInUser</code>, <code>gigtime:atividade</code></td><td>Quem está logado nesta aba (sem senha) e a hora da última atividade. Some ao fechar a aba.</td></tr>
             <tr><td>sessionStorage</td><td><code>clickedUser</code>, <code>depoisDoLogin</code>, <code>gigtime:aviso</code></td><td>Perfil aberto, página para voltar depois do login e o próximo aviso a mostrar.</td></tr>

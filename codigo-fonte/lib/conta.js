@@ -1,15 +1,17 @@
 // Dados da conta no navegador: exportar (portabilidade), apagar a conta, restaurar a demonstração
 // e medir quanto do localStorage o GigTime ocupa. Só mexe nas chaves gigtime:*, nunca em outros apps
 // que dividam a mesma origem (GitHub Pages).
-// Depende de lib/armazenamento.js.
+// Depende de lib/armazenamento.js e lib/mensagens.js (que sabe em quais chaves ficam as mensagens).
 (function (raiz, fabrica) {
   const ehNode = typeof module === 'object' && module.exports;
-  const api = fabrica(ehNode ? require('./armazenamento.js') : raiz.GigArmazenamento);
+  const api = ehNode
+    ? fabrica(require('./armazenamento.js'), require('./mensagens.js'))
+    : fabrica(raiz.GigArmazenamento, raiz.GigMensagens);
   if (ehNode) module.exports = api;
   else raiz.GigConta = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (armazenamento) {
-  const { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_LIDAS } = armazenamento;
-  const CHAVES = [CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_LIDAS];
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (armazenamento, mensagens) {
+  const { CHAVE_USUARIOS, CHAVE_LIDAS } = armazenamento;
+  const chavesDoGigTime = (storage) => [CHAVE_USUARIOS, CHAVE_LIDAS, ...mensagens.chavesDeMensagens(storage)];
   // Cota típica do localStorage por origem (Chrome, Edge, Firefox): 5 Mi unidades UTF-16
   const COTA_ESTIMADA = 5 * 1024 * 1024;
 
@@ -25,7 +27,7 @@
       aviso: 'Dados do GigTime guardados neste navegador. A senha não é exportada (nem o hash).',
       exportadoEm: new Date(typeof agora === 'number' ? agora : Date.now()).toISOString(),
       perfil: usuario ? armazenamento.usuarioPublico(usuario) : null,
-      mensagens: lista(storage, CHAVE_MENSAGENS).filter((m) => daPessoa(m, username)),
+      mensagens: mensagens.lerMensagens(storage).filter((m) => daPessoa(m, username)),
     };
   }
 
@@ -34,7 +36,11 @@
     const usuarios = lista(storage, CHAVE_USUARIOS);
     if (!usuarios.some((u) => u.username === username)) return false;
     storage.setItem(CHAVE_USUARIOS, JSON.stringify(usuarios.filter((u) => u.username !== username)));
-    storage.setItem(CHAVE_MENSAGENS, JSON.stringify(lista(storage, CHAVE_MENSAGENS).filter((m) => !daPessoa(m, username))));
+    // A chave do próprio autor some; nas outras listas saem as mensagens trocadas com ele
+    for (const chave of mensagens.chavesDeMensagens(storage)) {
+      if (chave === mensagens.chaveDoAutor(username)) storage.removeItem(chave);
+      else if (storage.getItem(chave) !== null) storage.setItem(chave, JSON.stringify(lista(storage, chave).filter((m) => !daPessoa(m, username))));
+    }
     const lidas = armazenamento.lerJSON(storage, CHAVE_LIDAS);
     if (lidas && typeof lidas === 'object') {
       delete lidas[username];
@@ -47,14 +53,14 @@
   }
 
   function restaurarDemo(storage, seed) {
-    storage.removeItem(CHAVE_MENSAGENS);
+    mensagens.chavesDeMensagens(storage).forEach((chave) => storage.removeItem(chave));
     storage.removeItem(CHAVE_LIDAS);
     storage.setItem(CHAVE_USUARIOS, JSON.stringify(seed));
   }
 
   function usoDoArmazenamento(storage) {
     let caracteres = 0;
-    for (const chave of CHAVES) {
+    for (const chave of chavesDoGigTime(storage)) {
       const valor = storage.getItem(chave);
       if (valor !== null) caracteres += chave.length + valor.length;
     }

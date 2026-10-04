@@ -164,18 +164,20 @@
     $('mensagem').focus();
   }
 
-  $('chatForm').addEventListener('submit', (event) => {
+  $('chatForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!contatoAtual) return;
     const campo = $('mensagem');
-    const nova = GigMensagens.enviarMensagem(GigMensagens.lerMensagens(localStorage), eu, contatoAtual, campo.value);
-    if (!nova) return;
-    if (!GigMensagens.salvarMensagens(localStorage, nova)) {
+    const texto = campo.value;
+    // Grava na chave do próprio autor: duas abas de pessoas diferentes não se sobrescrevem
+    const resultado = await GigMensagens.adicionarMensagem(localStorage, eu, contatoAtual, texto);
+    if (resultado === 'invalida') return;
+    if (resultado === 'sem-espaco') {
       $('erroEnvio').textContent = 'Não há espaço no navegador para gravar mais mensagens. Apague conversas antigas em Conta e dados (restaurar a demonstração) e tente de novo.';
       return;
     }
     $('erroEnvio').textContent = '';
-    campo.value = '';
+    if (campo.value === texto) campo.value = '';
     renderizar();
   });
 
@@ -199,7 +201,7 @@
   // A mensagem que chega na conversa aberta é anunciada ao leitor de tela (a área não é live: ela é redesenhada)
   window.addEventListener('storage', (event) => {
     if (event.key === null || event.key === GigArmazenamento.CHAVE_USUARIOS) recarregarUsuarios();
-    if (![null, GigMensagens.CHAVE_MENSAGENS, GigArmazenamento.CHAVE_USUARIOS].includes(event.key)) return;
+    if (!GigMensagens.ehChaveDeMensagens(event.key) && event.key !== GigArmazenamento.CHAVE_USUARIOS) return;
     const antes = $('areaMensagens').querySelectorAll('.friendMessage').length;
     renderizar();
     const recebidas = $('areaMensagens').querySelectorAll('.friendMessage');
