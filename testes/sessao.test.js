@@ -69,3 +69,35 @@ test('o endereço antigo com acento (Anúncios) redireciona para anuncios/', () 
   const html = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Anúncios', 'anuncios.html'), 'utf8');
   assert.match(html, /<meta http-equiv="refresh" content="0; url=\.\.\/anuncios\/anuncios\.html">/);
 });
+
+test('a sessão expira depois de 2 horas sem atividade', () => {
+  const sessao = new StorageMemoria();
+  Sessao.entrar(sessao, { username: 'ana' }, 1000);
+  assert.equal(Sessao.LIMITE_INATIVIDADE_MS, 2 * 60 * 60 * 1000);
+  assert.equal(Sessao.situacao(sessao, 1000 + Sessao.LIMITE_INATIVIDADE_MS - 1), 'ativa');
+  assert.equal(Sessao.situacao(sessao, 1000 + Sessao.LIMITE_INATIVIDADE_MS + 1), 'expirada');
+  assert.equal(Sessao.situacao(new StorageMemoria(), 5), 'sem-sessao');
+});
+
+test('registrarAtividade adia a expiração', () => {
+  const sessao = new StorageMemoria();
+  Sessao.entrar(sessao, { username: 'ana' }, 0);
+  Sessao.registrarAtividade(sessao, Sessao.LIMITE_INATIVIDADE_MS - 10);
+  assert.equal(Sessao.situacao(sessao, Sessao.LIMITE_INATIVIDADE_MS + 10), 'ativa');
+});
+
+test('sessão antiga sem registro de atividade continua valendo (passa a contar a partir de agora)', () => {
+  const sessao = new StorageMemoria({ [C.CHAVES_SESSAO.LOGADO]: '{"username":"ana"}' });
+  assert.equal(Sessao.situacao(sessao, 999999999), 'ativa');
+});
+
+test('exigirLogin com sessão expirada encerra a sessão e manda para a página de sessão expirada', () => {
+  const sessao = new StorageMemoria();
+  Sessao.entrar(sessao, { username: 'ana' }, 0);
+  const navegou = [];
+  const logado = Sessao.exigirLogin(sessao, '../Chat/chat.html', (url) => navegou.push(url), Sessao.LIMITE_INATIVIDADE_MS + 1);
+  assert.equal(logado, null);
+  assert.equal(Sessao.usuarioLogado(sessao), null);
+  assert.deepEqual(navegou, ['../Acesso/sessao-expirada.html']);
+  assert.equal(sessao.getItem('depoisDoLogin'), '../Chat/chat.html');
+});

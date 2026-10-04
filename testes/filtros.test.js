@@ -42,7 +42,7 @@ test('critérios se combinam com E', () => {
 
 // Página de anúncios com os 10 usuários de exemplo
 const visiveis = (w) => [...w.document.querySelectorAll('#anuncios > .col')]
-  .filter((c) => c.style.display !== 'none')
+  .filter((c) => !c.hidden)
   .map((c) => c.dataset.username)
   .sort();
 
@@ -58,13 +58,38 @@ test('anúncios: avaliação mínima 5 mostra só quem tem nota 5', () => {
   assert.deepEqual(visiveis(w), ['banda.aurora', 'casa.lume']);
 });
 
-test('anúncios: as caixas de avaliação são exclusivas e desmarcar volta a mostrar todos', () => {
+test('anúncios: avaliação mínima é uma escolha só e "Qualquer" volta a mostrar todos', () => {
   const w = carregarPagina('anuncios/anuncios.html');
   marcar(w, 'avaliacao4');
   marcar(w, 'avaliacao5');
   assert.equal(w.document.getElementById('avaliacao4').checked, false);
-  marcar(w, 'avaliacao5', false);
+  marcar(w, 'avaliacao0');
   assert.equal(visiveis(w).length, 10);
+});
+
+test('anúncios: lê o filtro do endereço (?papel=) e grava o filtro escolhido no endereço', () => {
+  const w = carregarPagina('anuncios/anuncios.html', { busca: '?papel=Contratante&uf=SP' });
+  assert.equal(w.document.getElementById('radioContractor').checked, true);
+  assert.deepEqual(visiveis(w), ['casa.lume']);
+  marcar(w, 'radioMusician');
+  assert.equal(new URLSearchParams(w.location.search).get('papel'), 'Músico');
+  assert.equal(new URLSearchParams(w.location.search).get('uf'), 'SP');
+});
+
+test('anúncios: busca por texto e estado vazio com contagem anunciada', () => {
+  const w = carregarPagina('anuncios/anuncios.html');
+  const d = w.document;
+  assert.equal(d.getElementById('resumoResultados').textContent, '10 perfis encontrados');
+  d.getElementById('busca').value = 'goiania';
+  d.getElementById('busca').dispatchEvent(new w.Event('input', { bubbles: true }));
+  assert.deepEqual(visiveis(w), ['nina.voz']);
+  assert.equal(d.getElementById('resumoResultados').textContent, '1 perfil encontrado');
+  d.getElementById('busca').value = 'nenhum lugar';
+  d.getElementById('busca').dispatchEvent(new w.Event('input', { bubbles: true }));
+  assert.equal(d.getElementById('semResultados').hidden, false);
+  d.getElementById('limparFiltrosVazio').click();
+  assert.equal(visiveis(w).length, 10);
+  assert.equal(d.getElementById('semResultados').hidden, true);
 });
 
 test('anúncios: filtro por gênero', () => {
@@ -94,5 +119,33 @@ test('anúncios: limpar filtros desfaz tudo', () => {
   w.document.getElementById('limparFiltros').click();
   assert.equal(visiveis(w).length, 10);
   assert.equal(w.document.getElementById('radioMusician').checked, false);
+  assert.equal(w.document.getElementById('radioTodos').checked, true);
   assert.equal(w.document.getElementById('generoRock').checked, false);
+});
+
+test('busca por texto procura no nome, na cidade e no usuário, sem diferenciar acento e maiúscula', () => {
+  const lia = { username: 'lia.batera', name: 'Lia Fontes', city: 'São Paulo', role: 'Músico', genres: [] };
+  assert.equal(correspondeFiltro(lia, { texto: 'lia' }), true);
+  assert.equal(correspondeFiltro(lia, { texto: 'SAO PAULO' }), true);
+  assert.equal(correspondeFiltro(lia, { texto: 'batera' }), true);
+  assert.equal(correspondeFiltro(lia, { texto: '  fontes ' }), true);
+  assert.equal(correspondeFiltro(lia, { texto: 'recife' }), false);
+  assert.equal(correspondeFiltro(lia, { texto: '' }), true);
+});
+
+test('filtrarUsuarios devolve os que passam, na ordem original, e não muda a lista', () => {
+  const { filtrarUsuarios } = require('../codigo-fonte/lib/filtros.js');
+  const lista = [ana, bar, novato];
+  assert.deepEqual(filtrarUsuarios(lista, { estado: 'MG' }).map((u) => u.username), ['bar', 'novato']);
+  assert.equal(lista.length, 3);
+});
+
+test('filtroDaUrl e paraUrl ida e volta (filtro compartilhável pelo endereço)', () => {
+  const { filtroDaUrl, paraUrl } = require('../codigo-fonte/lib/filtros.js');
+  const filtro = { papel: 'Contratante', estado: 'MG', avaliacaoMinima: 4, generos: ['Jazz', 'MPB'], texto: 'bar' };
+  const busca = paraUrl(filtro);
+  assert.equal(busca, '?papel=Contratante&uf=MG&nota=4&genero=Jazz&genero=MPB&q=bar');
+  assert.deepEqual(filtroDaUrl(busca), filtro);
+  assert.deepEqual(filtroDaUrl('?papel=Hacker&nota=9&uf=XX'), { papel: null, estado: '', avaliacaoMinima: 0, generos: [], texto: '' }, 'valores fora da lista são ignorados');
+  assert.equal(paraUrl({}), '');
 });

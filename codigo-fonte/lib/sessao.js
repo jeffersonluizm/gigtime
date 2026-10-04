@@ -10,7 +10,9 @@
   if (ehNode) module.exports = api;
   else raiz.GigSessao = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (constantes, armazenamento) {
-  const { LOGADO, ESCOLHIDO, PAPEL, DESTINO } = constantes.CHAVES_SESSAO;
+  const { LOGADO, ESCOLHIDO, PAPEL, DESTINO, ATIVIDADE } = constantes.CHAVES_SESSAO;
+  const LIMITE_INATIVIDADE_MS = 2 * 60 * 60 * 1000; // 2 horas sem abrir nenhuma página
+  const agoraOu = (agora) => (typeof agora === 'number' ? agora : Date.now());
 
   const comUsername = (valor) => (valor && typeof valor.username === 'string' ? valor : null);
 
@@ -18,12 +20,26 @@
     return comUsername(armazenamento.lerJSON(sessao, LOGADO));
   }
 
-  function entrar(sessao, usuario) {
+  function entrar(sessao, usuario, agora) {
     sessao.setItem(LOGADO, JSON.stringify(armazenamento.usuarioPublico(usuario)));
+    sessao.setItem(ATIVIDADE, String(agoraOu(agora)));
   }
 
   function sair(sessao) {
-    [LOGADO, ESCOLHIDO, PAPEL].forEach((chave) => sessao.removeItem(chave));
+    [LOGADO, ESCOLHIDO, PAPEL, ATIVIDADE].forEach((chave) => sessao.removeItem(chave));
+  }
+
+  function registrarAtividade(sessao, agora) {
+    if (usuarioLogado(sessao)) sessao.setItem(ATIVIDADE, String(agoraOu(agora)));
+  }
+
+  // 'ativa', 'expirada' ou 'sem-sessao'. Sessão de versão anterior (sem atividade gravada) vale.
+  function situacao(sessao, agora) {
+    if (!usuarioLogado(sessao)) return 'sem-sessao';
+    const gravada = sessao.getItem(ATIVIDADE);
+    const ultima = Number(gravada);
+    if (gravada === null || !Number.isFinite(ultima)) return 'ativa';
+    return agoraOu(agora) - ultima > LIMITE_INATIVIDADE_MS ? 'expirada' : 'ativa';
   }
 
   function perfilEscolhido(sessao) {
@@ -35,11 +51,13 @@
   }
 
   // Página que só funciona logada: sem sessão, guarda a volta e manda para o login
-  function exigirLogin(sessao, destino, navegar) {
-    const logado = usuarioLogado(sessao);
-    if (logado) return logado;
+  // Sessão expirada vai para a página que explica o motivo; sem sessão, direto para o login
+  function exigirLogin(sessao, destino, navegar, agora) {
+    const estado = situacao(sessao, agora);
+    if (estado === 'ativa') return usuarioLogado(sessao);
+    if (estado === 'expirada') sair(sessao);
     sessao.setItem(DESTINO, destino);
-    navegar('../Login/login.html');
+    navegar(estado === 'expirada' ? '../Acesso/sessao-expirada.html' : '../Login/login.html');
     return null;
   }
 
@@ -59,5 +77,5 @@
     return destino && DESTINO_VALIDO.test(destino) ? destino : null;
   }
 
-  return { usuarioLogado, entrar, sair, perfilEscolhido, escolherPerfil, exigirLogin, destinoDepoisDoLogin, codificarParametro };
+  return { LIMITE_INATIVIDADE_MS, usuarioLogado, entrar, sair, registrarAtividade, situacao, perfilEscolhido, escolherPerfil, exigirLogin, destinoDepoisDoLogin, codificarParametro };
 });

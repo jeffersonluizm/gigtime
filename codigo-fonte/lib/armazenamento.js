@@ -11,6 +11,7 @@
   // com outros repositórios do mesmo usuário
   const CHAVE_USUARIOS = 'gigtime:users';
   const CHAVE_MENSAGENS = 'gigtime:messages';
+  const CHAVE_LIDAS = 'gigtime:lidas'; // { usuario: { contato: lidaAte (ms) } }
   const CHAVE_SESSAO_ANTIGA = 'users'; // versão publicada antes: usuários no sessionStorage
 
   // Armazenamento cheio (cota do localStorage): Chrome/Edge/Safari e Firefox usam nomes diferentes
@@ -99,5 +100,5 @@
     return copia;
   }
 
-  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, ehErroDeCota, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico };
+  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_LIDAS, ehErroDeCota, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico };
 });

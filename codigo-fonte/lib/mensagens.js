@@ -8,6 +8,7 @@
   else raiz.GigMensagens = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (armazenamento) {
   const CHAVE_MENSAGENS = armazenamento.CHAVE_MENSAGENS; // fonte única da chave
+  const CHAVE_LIDAS = armazenamento.CHAVE_LIDAS;
   const LIMITE_TEXTO = 2000; // caracteres por mensagem (o campo da tela tem o mesmo maxlength)
 
   function lerMensagens(storage) {
@@ -58,6 +59,44 @@
       .sort((x, y) => y.ultima.enviadaEm - x.ultima.enviadaEm);
   }
 
+  // Até quando cada usuário já leu cada conversa: { usuario: { contato: lidaAte } }
+  function lerLidas(storage) {
+    const lidas = armazenamento.lerJSON(storage, CHAVE_LIDAS);
+    return lidas && typeof lidas === 'object' && !Array.isArray(lidas) ? lidas : {};
+  }
+
+  // Devolve false se o navegador recusar por falta de espaço
+  function marcarComoLida(storage, eu, contato, ate) {
+    const lidas = lerLidas(storage);
+    const minhas = Object.assign({}, lidas[eu]);
+    minhas[contato] = typeof ate === 'number' ? ate : Date.now();
+    lidas[eu] = minhas;
+    try {
+      storage.setItem(CHAVE_LIDAS, JSON.stringify(lidas));
+      return true;
+    } catch (erro) {
+      if (armazenamento.ehErroDeCota(erro)) return false;
+      throw erro;
+    }
+  }
+
+  // Mensagens recebidas por `eu` depois da última leitura, por contato (Map contato -> quantidade)
+  function naoLidasPorContato(lista, eu, lidas) {
+    const minhas = (lidas && lidas[eu]) || {};
+    const contagem = new Map();
+    for (const m of lista) {
+      if (m.para !== eu || m.enviadaEm <= (minhas[m.de] || 0)) continue;
+      contagem.set(m.de, (contagem.get(m.de) || 0) + 1);
+    }
+    return contagem;
+  }
+
+  function naoLidas(lista, eu, lidas) {
+    let total = 0;
+    for (const n of naoLidasPorContato(lista, eu, lidas).values()) total += n;
+    return total;
+  }
+
   const dois = (n) => String(n).padStart(2, '0');
 
   // "HH:MM" se foi hoje, "DD/MM" se foi em outro dia
@@ -68,5 +107,5 @@
     return dois(data.getDate()) + '/' + dois(data.getMonth() + 1);
   }
 
-  return { CHAVE_MENSAGENS, LIMITE_TEXTO, lerMensagens, salvarMensagens, enviarMensagem, conversaEntre, listarConversas, formatarHora };
+  return { CHAVE_MENSAGENS, CHAVE_LIDAS, LIMITE_TEXTO, lerMensagens, salvarMensagens, enviarMensagem, conversaEntre, listarConversas, lerLidas, marcarComoLida, naoLidas, naoLidasPorContato, formatarHora };
 });

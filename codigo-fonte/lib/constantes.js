@@ -17,6 +17,7 @@
     ESCOLHIDO: 'clickedUser',
     PAPEL: 'selectedRole',
     DESTINO: 'depoisDoLogin',
+    ATIVIDADE: 'gigtime:atividade',
   });
 
   return { UFS, GENEROS, PAPEIS, FOTO_PADRAO, BANNER_PADRAO, CHAVES_SESSAO };

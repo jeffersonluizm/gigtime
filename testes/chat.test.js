@@ -104,8 +104,8 @@ test('chat lista as conversas existentes e mostra a mensagem recebida', () => {
   const d = w.document;
   const blocos = d.querySelectorAll('.chatlist .chatBlock');
   assert.equal(blocos.length, 1);
-  assert.equal(blocos[0].querySelector('h4').textContent, 'Davi Moraes');
-  assert.equal(blocos[0].querySelector('.message p').textContent, 'Bora tocar?');
+  assert.equal(blocos[0].querySelector('.chatBlock__nome').textContent, 'Davi Moraes');
+  assert.equal(blocos[0].querySelector('.chatBlock__previa').textContent, 'Bora tocar?');
 
   blocos[0].click();
   const delas = d.querySelectorAll('.chat .messagechat.friendMessage p');
@@ -188,13 +188,13 @@ test('chat avisa quando não há espaço para gravar e mantém o texto digitado'
   } finally {
     w.Storage.prototype.setItem = original;
   }
-  assert.equal(w.__alertas.length, 1);
-  assert.match(w.__alertas[0], /espaço/);
+  assert.match(w.document.getElementById('erroEnvio').textContent, /espaço/);
+  assert.equal(w.__alertas, undefined);
   assert.equal(w.document.getElementById('mensagem').value, 'Mensagem grande');
 });
 
 test('balão de mensagem quebra palavras longas (overflow-wrap)', () => {
-  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Chat', 'stylesheet.css'), 'utf8');
+  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Chat', 'chat.css'), 'utf8');
   const regras = [...css.matchAll(/\.messagechat p\s*\{([^}]*)\}/g)].map((m) => m[1]).join('');
   assert.match(regras, /overflow-wrap:\s*anywhere/);
 });
@@ -226,7 +226,7 @@ test('chat atualiza nome e foto do contato quando outra aba edita o perfil dele'
   const d = w.document;
   assert.equal(d.getElementById('nomeContato').textContent, 'Lia Fontes Trio');
   assert.match(d.getElementById('fotoContato').src, /novo\.jpg$/);
-  assert.equal(d.querySelector('.chatlist .chatBlock h4').textContent, 'Lia Fontes Trio');
+  assert.equal(d.querySelector('.chatlist .chatBlock .chatBlock__nome').textContent, 'Lia Fontes Trio');
 });
 
 test('chat não quebra quando o contato da conversa deixa de existir', () => {
@@ -238,7 +238,7 @@ test('chat não quebra quando o contato da conversa deixa de existir', () => {
   const d = w.document;
   assert.equal(d.getElementById('nomeContato').textContent, 'Mensagens');
   assert.equal(d.getElementById('mensagem').disabled, true);
-  assert.equal(d.querySelector('.chatlist .chatBlock h4').textContent, 'lia.batera', 'a conversa antiga continua listada pelo username');
+  assert.equal(d.querySelector('.chatlist .chatBlock .chatBlock__nome').textContent, 'lia.batera', 'a conversa antiga continua listada pelo username');
 });
 
 test('conversa nova com contato que deixou de existir some da lista', () => {
@@ -248,7 +248,7 @@ test('conversa nova com contato que deixou de existir some da lista', () => {
 });
 
 // Telas estreitas: a página alterna entre lista e conversa pela classe "conversa-aberta"
-const container = (w) => w.document.querySelector('body > .container');
+const container = (w) => w.document.querySelector('.chat-app');
 
 test('chat com conversa escolhida marca a tela como conversa aberta', () => {
   const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
@@ -276,17 +276,44 @@ test('"voltar" fecha a conversa e volta para a lista; abrir de novo pela lista r
 });
 
 test('CSS do chat: em tela estreita mostra lista ou conversa e o botão voltar', () => {
-  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Chat', 'stylesheet.css'), 'utf8');
+  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Chat', 'chat.css'), 'utf8');
   const estreita = css.match(/@media\s*\(max-width:\s*767\.98px\)\s*\{([\s\S]*)\}\s*$/);
   assert.ok(estreita, 'existe media query para telas estreitas');
-  assert.match(estreita[1], /\.container\.conversa-aberta \.leftside\s*\{[^}]*display:\s*none/);
-  assert.match(estreita[1], /\.container\.conversa-aberta \.rightside\s*\{[^}]*display:\s*block/);
-  assert.match(estreita[1], /\.imgtext \.voltar\s*\{[^}]*display:\s*flex/);
+  assert.match(estreita[1], /\.chat-app\.conversa-aberta \.chat-lista\s*\{[^}]*display:\s*none/);
+  assert.match(estreita[1], /\.chat-app\.conversa-aberta \.chat-conversa\s*\{[^}]*display:\s*flex/);
+  assert.match(estreita[1], /\.voltar\s*\{[^}]*display:\s*inline-flex/);
 });
 
-test('CSS do chat: altura em tela estreita usa 100dvh com 100vh antes como fallback', () => {
-  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Chat', 'stylesheet.css'), 'utf8');
-  const estreita = css.match(/@media\s*\(max-width:\s*767\.98px\)\s*\{([\s\S]*)\}\s*$/)[1];
-  const container = estreita.match(/\n\s*\.container\s*\{([^}]*)\}/)[1];
-  assert.match(container, /height:\s*calc\(100vh - 100px\);\s*height:\s*calc\(100dvh - 100px\);/);
+test('CSS do chat: altura usa 100dvh com 100vh antes como fallback', () => {
+  const css = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'Chat', 'chat.css'), 'utf8');
+  assert.match(css, /height:\s*calc\(100vh - [^)]+\);\s*height:\s*calc\(100dvh - [^)]+\);/);
+});
+
+// Desempenho: conversas longas mostram as últimas mensagens e carregam as anteriores sob demanda
+test('conversa com muitas mensagens mostra as 100 últimas e carrega as anteriores no botão', () => {
+  const muitas = Array.from({ length: 250 }, (_, i) => msg(i % 2 ? 'davi.sax' : 'lia.batera', i % 2 ? 'lia.batera' : 'davi.sax', 'm' + i, Date.now() - 100000 + i));
+  const w = carregarPagina('Chat/chat.html', {
+    busca: '?com=davi.sax',
+    antes: logado('lia.batera', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify(muitas))),
+  });
+  const d = w.document;
+  assert.equal(d.querySelectorAll('#areaMensagens .messagechat').length, 100);
+  assert.match(d.querySelector('#areaMensagens .messagechat:last-child p').textContent, /^m249/);
+  d.getElementById('carregarAnteriores').click();
+  assert.equal(d.querySelectorAll('#areaMensagens .messagechat').length, 200);
+  d.getElementById('carregarAnteriores').click();
+  assert.equal(d.querySelectorAll('#areaMensagens .messagechat').length, 250);
+  assert.equal(d.getElementById('carregarAnteriores').hidden, true);
+});
+
+test('a lista de conversas mostra o número de não lidas de cada contato e é navegável por teclado', () => {
+  const w = carregarPagina('Chat/chat.html', {
+    antes: logado('lia.batera', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([
+      msg('davi.sax', 'lia.batera', 'um', Date.now() - 300), msg('davi.sax', 'lia.batera', 'dois', Date.now() - 200),
+    ]))),
+  });
+  const bloco = w.document.querySelector('.chatlist .chatBlock');
+  assert.equal(bloco.tagName, 'BUTTON');
+  assert.equal(bloco.querySelector('.contador').textContent, '2');
+  assert.match(bloco.getAttribute('aria-label'), /2 mensagens não lidas/);
 });
