@@ -25,6 +25,7 @@
   }
 
   function limparErros() {
+    form.querySelector('[data-erro-formulario]').textContent = '';
     form.querySelectorAll('.is-invalid').forEach((campo) => campo.classList.remove('is-invalid'));
     form.querySelectorAll('.invalid-feedback').forEach((aviso) => {
       aviso.textContent = '';
@@ -91,7 +92,15 @@
     }
 
     // Grava só este usuário sobre a lista atual (outra aba pode ter mudado outros usuários no meio tempo)
-    if (!GigArmazenamento.substituirUsuario(localStorage, resultado.usuario)) {
+    let gravado;
+    try {
+      gravado = GigArmazenamento.substituirUsuario(localStorage, resultado.usuario);
+    } catch (erro) {
+      if (!GigArmazenamento.ehErroDeCota(erro)) throw erro;
+      form.querySelector('[data-erro-formulario]').textContent = 'Não há espaço no navegador para gravar as alterações. Use links de imagem mais curtos ou restaure os dados de demonstração em Conta.';
+      return;
+    }
+    if (!gravado) {
       alert('Usuário não encontrado!');
       return;
     }

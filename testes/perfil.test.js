@@ -247,6 +247,44 @@ test('EdicaoPerfil não salva sem a senha atual e aponta o campo', async () => {
   assert.equal(davi.city, 'Belo Horizonte');
 });
 
+test('EdicaoPerfil avisa quando o navegador não tem espaço e mantém o que foi digitado', async () => {
+  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('davi.sax') });
+  const $ = (id) => w.document.getElementById(id);
+  $('city').value = 'Niterói';
+  $('senhaAtual').value = 'demo1234';
+  const original = w.Storage.prototype.setItem;
+  w.Storage.prototype.setItem = function (chave, valor) {
+    if (chave === CHAVE_USUARIOS) throw Object.assign(new Error('cheio'), { name: 'QuotaExceededError' });
+    return original.call(this, chave, valor);
+  };
+  $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await esperarAte(() => w.document.querySelector('[data-erro-formulario]').textContent);
+  assert.match(w.document.querySelector('[data-erro-formulario]').textContent, /espaço/);
+  assert.equal($('city').value, 'Niterói');
+});
+
+test('perfil monta o vídeo pelo ID do YouTube, no domínio sem cookies', () => {
+  const w = carregarPagina('Perfil/perfil.html', {
+    antes: (win) => {
+      const lista = JSON.parse(JSON.stringify(require('../codigo-fonte/dados/usuarios-exemplo.js')));
+      lista[0].songLink = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=5';
+      lista[1].songLink = 'https://youtu.be/curto"><b>';
+      win.localStorage.setItem(CHAVE_USUARIOS, JSON.stringify(lista));
+      win.sessionStorage.setItem('clickedUser', JSON.stringify({ username: lista[0].username }));
+    },
+  });
+  assert.equal(w.document.getElementById('songLink').getAttribute('src'), 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ');
+  const outro = carregarPagina('Perfil/perfil.html', {
+    antes: (win) => {
+      const lista = JSON.parse(JSON.stringify(require('../codigo-fonte/dados/usuarios-exemplo.js')));
+      lista[1].songLink = 'https://youtu.be/curto"><b>';
+      win.localStorage.setItem(CHAVE_USUARIOS, JSON.stringify(lista));
+      win.sessionStorage.setItem('clickedUser', JSON.stringify({ username: lista[1].username }));
+    },
+  });
+  assert.equal(outro.document.getElementById('songLink').getAttribute('src') || '', '', 'link inválido não vira embed');
+});
+
 test('perfil do próprio usuário mostra "Editar perfil"', () => {
   const w = carregarPagina('Perfil/perfil.html', { antes: verPerfil('davi.sax', 'davi.sax') });
   const botao = w.document.getElementById('acaoPerfil');

@@ -18,8 +18,10 @@ if (clickedUser) {
     document.getElementById('genres').textContent = clickedUser.genres.join(', ');
     document.getElementById('bannerImg').src = clickedUser.bannerPicLink;
     // Sem música cadastrada, esconde o player (um embed vazio do YouTube mostra erro)
-    if (clickedUser.songLink) {
-        document.getElementById('songLink').src = "https://www.youtube.com/embed/" + clickedUser.songLink.split('/').pop();
+    // O embed sai só do ID validado (11 caracteres), nunca do link guardado
+    const idVideo = GigValidacao.idYoutube(clickedUser.songLink);
+    if (idVideo) {
+        document.getElementById('songLink').src = 'https://www.youtube-nocookie.com/embed/' + idVideo;
     } else {
         document.getElementById('songLink').style.display = 'none';
     }
