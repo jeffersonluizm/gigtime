@@ -27,18 +27,16 @@ users.forEach(user => {
             </a>
             <div class="card-body">
               <h5 class="card-title">${e(user.name)}
-                <i class="fa-solid fa-star mt-2 ms-1 float-end">
-                  <span> ${e(user.rating || 'N/A')}</span>
-                </i>
+                <span class="float-end nota"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#star-fill"></use></svg> ${e(user.rating || 'N/A')}</span>
               </h5>
               
             </div>
             <ul class="list-group list-group-flush">
               <li class="list-group-item">
-                <i class="fa-solid fa-location-dot me-1"></i> ${e(user.city)}/${e(user.state)}
+                <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#geo-alt"></use></svg> ${e(user.city)}/${e(user.state)}
               </li>
               <li class="list-group-item">
-                <i class="fa-solid fa-guitar me-1"></i> ${e((user.genres || []).join(', '))}
+                <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#music-note-beamed"></use></svg> ${e((user.genres || []).join(', '))}
               </li>
             </ul>
           </div>
