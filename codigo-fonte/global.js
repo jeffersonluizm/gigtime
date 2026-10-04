@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Personaliza a navbar para o usuário logado
 
         navbar.innerHTML = `
-        <a class="navbar-brand" href="/Perfil/perfil.html">
+        <a class="navbar-brand" href="../Perfil/perfil.html" id="profileAvatarLink">
             <img src="${loggedInUser.profilePicLink}" alt="Foto de perfil" width="30" height="30" class="shadow object-fit-cover rounded-circle">
         </a>
         <span class="navbar-text text-white me-3">Bem-vindo, ${loggedInUser.username}!</span>
@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <a class="nav-link me-3" href="#" id="logoutLink">Sair</a>
           `;
 
-          document.getElementById('profileLink').addEventListener('click', function () {
+        // Foto e link "Perfil" abrem o perfil do próprio usuário logado
+        ['profileLink', 'profileAvatarLink'].forEach(id => {
+          document.getElementById(id).addEventListener('click', function (event) {
+            event.preventDefault();
             // Obtém o usuário logado
             const loggedInUser = sessionStorage.getItem('loggedInUser');
 
@@ -28,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
             // Redireciona para a página de perfil
             window.location.href = '../Perfil/perfil.html';
+          });
         });
 
         // Adiciona evento de logout
