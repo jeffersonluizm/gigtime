@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Personaliza a navbar para o usuário logado
 
         navbar.innerHTML = `
-        <a class="navbar-brand" href="/Perfil/perfil.html">
+        <a class="navbar-brand" href="../Perfil/perfil.html" id="profileAvatarLink">
             <img src="${loggedInUser.profilePicLink}" alt="Foto de perfil" width="30" height="30" class="shadow object-fit-cover rounded-circle">
         </a>
         <span class="navbar-text text-white me-3">Bem-vindo, ${loggedInUser.username}!</span>
@@ -19,15 +19,23 @@ document.addEventListener('DOMContentLoaded', () => {
         <a class="nav-link me-3" href="#" id="logoutLink">Sair</a>
           `;
 
-          document.getElementById('profileLink').addEventListener('click', function () {
+        // "Perfil" e a foto abrem o perfil do próprio usuário logado
+        document.getElementById('profileLink').addEventListener('click', function () {
             // Obtém o usuário logado
             const loggedInUser = sessionStorage.getItem('loggedInUser');
 
-                // Adiciona o objeto do usuário logado à key 'clickedUser'
-                sessionStorage.setItem('clickedUser', loggedInUser);
-        
+            // Adiciona o objeto do usuário logado à key 'clickedUser'
+            sessionStorage.setItem('clickedUser', loggedInUser);
+
             // Redireciona para a página de perfil
             window.location.href = '../Perfil/perfil.html';
+        });
+
+        // A foto navega pelo próprio href (inclusive Ctrl+clique e clique do meio); só grava o perfil a exibir
+        ['click', 'auxclick'].forEach(evento => {
+            document.getElementById('profileAvatarLink').addEventListener(evento, function () {
+                sessionStorage.setItem('clickedUser', sessionStorage.getItem('loggedInUser'));
+            });
         });
 
         // Adiciona evento de logout
