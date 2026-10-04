@@ -21,32 +21,32 @@
       <!-- Foto de Perfil -->
       <div class="mb-3">
         <label for="profilePicLink" class="form-label">Foto de Perfil</label>
-        <input type="text" class="form-control" id="profilePicLink" placeholder="Insira um link para sua imagem de perfil. Para apagar, envie sem um link." required>
-        <button type="button" class="btn btn-secondary bg-gig-pr text-white my-2" id="sendImgLink">Enviar</button>
+        <input type="url" class="form-control" id="profilePicLink" placeholder="https://... (opcional)">
+        <div class="invalid-feedback" data-campo="profilePicLink"></div>
       </div>
       <!-- Nome de Usuário -->
       <div class="mb-3">
         <label for="username" class="form-label">Nome de Usuário</label>
         <input type="text" class="form-control" id="username" placeholder="Escolha um nome de usuário" required>
-        <div class="invalid-feedback">Por favor, insira um nome de usuário único.</div>
+        <div class="invalid-feedback" data-campo="username"></div>
       </div>
       <!-- Nome -->
       <div class="mb-3">
         <label for="name" class="form-label">Nome</label>
         <input type="text" class="form-control" id="name" placeholder="Escreva seu nome" required>
-        <div class="invalid-feedback">Por favor, insira um nome.</div>
+        <div class="invalid-feedback" data-campo="name"></div>
       </div>
       <!-- Email -->
       <div class="mb-3">
         <label for="email" class="form-label">E-mail</label>
         <input type="email" class="form-control" id="email" placeholder="Digite seu e-mail" required>
-        <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+        <div class="invalid-feedback" data-campo="email"></div>
       </div>
       <!-- Telefone -->
       <div class="mb-3">
         <label for="phone" class="form-label">Telefone</label>
         <input type="tel" class="form-control" id="phone" placeholder="Digite seu telefone" required>
-        <div class="invalid-feedback">Por favor, insira um telefone válido.</div>
+        <div class="invalid-feedback" data-campo="phone"></div>
       </div>
       <!-- Seleção de Perfil -->
       <div class="mb-3">
@@ -56,7 +56,7 @@
           <option value="Músico">Músico</option>
           <option value="Contratante">Contratante</option>
         </select>
-        <div class="invalid-feedback">Por favor, selecione seu perfil.</div>
+        <div class="invalid-feedback" data-campo="role"></div>
       </div>
       <!-- Gêneros músicas -->
       <div class="mb-3">
@@ -87,7 +87,7 @@
             <label class="form-check-label" for="genreJazz">Jazz</label>
           </div>
         </div>
-        <div class="invalid-feedback">Por favor, selecione pelo menos um gênero.</div>
+        <div class="invalid-feedback" data-campo="genres"></div>
       </div>      
       <!-- Estado -->
       <div class="mb-3">
@@ -122,31 +122,33 @@
           <option value="SE">SE</option>
           <option value="TO">TO</option>
         </select>
-        <div class="invalid-feedback">Por favor, selecione seu perfil.</div>
+        <div class="invalid-feedback" data-campo="state"></div>
       </div>
       <!-- Cidade -->
       <div class="mb-3">
         <label for="city" class="form-label">Cidade</label>
         <input type="text" class="form-control" id="city" placeholder="Escreva sua cidade" required>
-        <div class="invalid-feedback">Por favor, insira uma cidade.</div>
+        <div class="invalid-feedback" data-campo="city"></div>
       </div>
       <!-- Link do vídeo -->
       <div class="mb-3">
         <label for="songLink" class="form-label">Vídeo autoral</label>
         <input type="text" class="form-control" id="songLink" placeholder="No Youtube, clique em 'Compartilhar' e cole o link aqui">
+        <div class="invalid-feedback" data-campo="songLink"></div>
       </div>
       <!-- Senha -->
       <div class="mb-3">
         <label for="password" class="form-label">Senha</label>
         <input type="password" class="form-control" id="password" placeholder="Digite uma senha" required>
-        <div class="invalid-feedback">Por favor, insira uma senha.</div>
+        <div class="invalid-feedback" data-campo="senha"></div>
       </div>
       <!-- Confirmação de Senha -->
       <div class="mb-3">
         <label for="confirmPassword" class="form-label">Confirme sua Senha</label>
         <input type="password" class="form-control" id="confirmPassword" placeholder="Confirme sua senha" required>
-        <div class="invalid-feedback">As senhas não coincidem.</div>
+        <div class="invalid-feedback" data-campo="confirmacao"></div>
       </div>
+      <div class="text-danger mb-3" role="alert" data-erro-formulario></div>
       <!-- Botão de Registro -->
       <div class="d-grid">
         <button type="submit" class="btn btn-secondary bg-gig-pr text-white">Registrar</button>
@@ -162,6 +164,8 @@
   <script src="../lib/html.js"></script>
   <script src="../lib/armazenamento.js"></script>
   <script src="../lib/senha.js"></script>
+  <script src="../lib/validacao.js"></script>
+  <script src="../lib/perfil.js"></script>
   <script src="../dados/usuarios-exemplo.js"></script>
   <script src="../global.js"></script>
   <script src="scriptRegistro.js"></script>

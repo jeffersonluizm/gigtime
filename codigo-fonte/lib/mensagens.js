@@ -25,7 +25,7 @@
       storage.setItem(CHAVE_MENSAGENS, JSON.stringify(lista));
       return true;
     } catch (erro) {
-      if (erro && (erro.name === 'QuotaExceededError' || erro.name === 'NS_ERROR_DOM_QUOTA_REACHED')) return false;
+      if (armazenamento.ehErroDeCota(erro)) return false;
       throw erro;
     }
   }

@@ -49,6 +49,14 @@ test('semearSeVazio grava o seed só quando não há usuários', () => {
   assert.deepEqual(A.lerUsuarios(local).map((x) => x.username), ['seed']);
 });
 
+test('ehErroDeCota reconhece o erro de armazenamento cheio do Chrome e do Firefox', () => {
+  const erro = (name) => Object.assign(new Error('x'), { name });
+  assert.equal(A.ehErroDeCota(erro('QuotaExceededError')), true);
+  assert.equal(A.ehErroDeCota(erro('NS_ERROR_DOM_QUOTA_REACHED')), true);
+  assert.equal(A.ehErroDeCota(erro('TypeError')), false);
+  assert.equal(A.ehErroDeCota(null), false);
+});
+
 test('usuarioPublico remove senha e hash do objeto', () => {
   const p = A.usuarioPublico(u('ana', { password: 'x', passwordHash: 'y' }));
   assert.equal('password' in p, false);

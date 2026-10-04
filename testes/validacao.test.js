@@ -15,6 +15,14 @@ test('urlImagem aceita só https e devolve vazio para campo vazio', () => {
   assert.equal(V.urlImagem('https://exemplo.com/' + 'a'.repeat(2100)), null, 'tamanho máximo');
 });
 
+test('urlImagem aceita as ilustrações do próprio site (personas de demonstração)', () => {
+  assert.equal(V.urlImagem('../assets/demo/lia.batera/avatar.svg'), '../assets/demo/lia.batera/avatar.svg');
+  assert.equal(V.urlImagem('../assets/img/avatar-padrao.svg'), '../assets/img/avatar-padrao.svg');
+  assert.equal(V.urlImagem('../userImages/defaultUser.jpg'), '../userImages/defaultUser.jpg', 'foto padrão de versões antigas');
+  assert.equal(V.urlImagem('../assets/../../segredo.svg'), null);
+  assert.equal(V.urlImagem('../Login/login.html'), null);
+});
+
 test('idYoutube extrai o ID dos formatos comuns de link', () => {
   const id = 'dQw4w9WgXcQ';
   for (const link of [

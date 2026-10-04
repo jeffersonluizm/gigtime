@@ -160,22 +160,10 @@
                 <div class="invalid-feedback" data-campo="genres"></div>
             </div>
 
-            <div class="col-12">
-                <h6 class="mt-2 mb-0">Trocar senha (opcional)</h6>
-            </div>
-            <div class="col-sm-12 col-lg-4">
-                <label for="senhaAtual" class="form-label">Senha atual</label>
-                <input type="password" class="form-control" id="senhaAtual" autocomplete="current-password">
+            <div class="col-sm-12 col-lg-6">
+                <label for="senhaAtual" class="form-label">Senha atual (obrigatória para salvar)</label>
+                <input type="password" class="form-control" id="senhaAtual" autocomplete="current-password" required>
                 <div class="invalid-feedback" data-campo="senhaAtual"></div>
-            </div>
-            <div class="col-sm-12 col-lg-4">
-                <label for="novaSenha" class="form-label">Nova senha</label>
-                <input type="password" class="form-control" id="novaSenha" autocomplete="new-password">
-            </div>
-            <div class="col-sm-12 col-lg-4">
-                <label for="confirmacao" class="form-label">Confirme a nova senha</label>
-                <input type="password" class="form-control" id="confirmacao" autocomplete="new-password">
-                <div class="invalid-feedback" data-campo="confirmacao"></div>
             </div>
 
             <div class="col-12 text-center">
@@ -191,6 +179,7 @@
     <script src="../lib/html.js"></script>
     <script src="../lib/armazenamento.js"></script>
     <script src="../lib/senha.js"></script>
+    <script src="../lib/validacao.js"></script>
     <script src="../lib/perfil.js"></script>
     <script src="../dados/usuarios-exemplo.js"></script>
     <script src="../global.js"></script>

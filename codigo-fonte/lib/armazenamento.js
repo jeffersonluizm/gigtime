@@ -13,6 +13,9 @@
   const CHAVE_MENSAGENS = 'gigtime:messages';
   const CHAVE_SESSAO_ANTIGA = 'users'; // versão publicada antes: usuários no sessionStorage
 
+  // Armazenamento cheio (cota do localStorage): Chrome/Edge/Safari e Firefox usam nomes diferentes
+  const ehErroDeCota = (erro) => Boolean(erro) && (erro.name === 'QuotaExceededError' || erro.name === 'NS_ERROR_DOM_QUOTA_REACHED');
+
   function lerJSON(storage, chave) {
     const bruto = storage.getItem(chave);
     if (bruto === null) return null;
@@ -113,5 +116,5 @@
     return destino && DESTINO_VALIDO.test(destino) ? destino : null;
   }
 
-  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_DESTINO, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico, destinoDepoisDoLogin, codificarParametro };
+  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_DESTINO, ehErroDeCota, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico, destinoDepoisDoLogin, codificarParametro };
 });

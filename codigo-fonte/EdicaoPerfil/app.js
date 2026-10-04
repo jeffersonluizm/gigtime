@@ -66,7 +66,7 @@
     CAMPOS_TEXTO.forEach((campo) => { $(campo).value = usuario[campo] || ''; });
     const generos = usuario.genres || [];
     caixasGenero().forEach((caixa) => { caixa.checked = generos.includes(caixa.value); });
-    ['senhaAtual', 'novaSenha', 'confirmacao'].forEach((campo) => { $(campo).value = ''; });
+    $('senhaAtual').value = '';
     atualizarPrevias();
   }
 
@@ -77,15 +77,10 @@
     const dados = {};
     CAMPOS_TEXTO.forEach((campo) => { dados[campo] = $(campo).value; });
     dados.genres = caixasGenero().filter((caixa) => caixa.checked).map((caixa) => caixa.value);
-    const senhas = {
-      atual: $('senhaAtual').value.trim(),
-      nova: $('novaSenha').value.trim(),
-      confirmacao: $('confirmacao').value.trim(),
-    };
 
     let resultado;
     try {
-      resultado = await GigPerfil.atualizarPerfil(GigArmazenamento.lerUsuarios(localStorage), logado.username, dados, senhas);
+      resultado = await GigPerfil.atualizarPerfil(GigArmazenamento.lerUsuarios(localStorage), logado.username, dados, $('senhaAtual').value);
     } catch (erro) {
       alert(erro.message);
       return;

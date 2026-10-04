@@ -20,10 +20,14 @@
     }
   }
 
+  // Ilustrações do próprio site (personas de demonstração e imagens padrão), sem "../" no meio
+  const IMAGEM_LOCAL = /^\.\.\/(assets|userImages)\/(?!.*\.\.)[A-Za-z0-9._\/-]+\.(svg|png|jpe?g|webp)$/;
+
   // '' = campo vazio (usa o padrão); null = inválido; senão o link normalizado
   function urlImagem(valor) {
     const limpo = texto(valor);
     if (!limpo) return '';
+    if (IMAGEM_LOCAL.test(limpo)) return limpo;
     if (limpo.length > TAMANHO_MAXIMO_URL || !/^https:\/\//i.test(limpo)) return null;
     const url = analisar(limpo);
     if (!url || url.protocol !== 'https:' || url.username || url.password || !url.hostname) return null;

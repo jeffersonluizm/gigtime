@@ -45,7 +45,7 @@ test('cadastro não apaga usuário gravado por outra aba durante o hash', async 
   preencherCadastro(w);
   outraAbaDuranteOHash(w, () => adicionar(w, outro('outraaba')));
   w.document.getElementById('registerForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperar();
+  await esperarAte(() => usuarios(w).some((u) => u.username === 'novo'));
   const nomes = usuarios(w).map((u) => u.username);
   assert.ok(nomes.includes('outraaba'));
   assert.ok(nomes.includes('novo'));
@@ -56,7 +56,7 @@ test('cadastro não duplica username registrado por outra aba durante o hash', a
   preencherCadastro(w);
   outraAbaDuranteOHash(w, () => adicionar(w, outro('novo', { email: 'x@ex.com', phone: 'x' })));
   w.document.getElementById('registerForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperar();
+  await esperarAte(() => w.__alertas);
   assert.equal(usuarios(w).filter((u) => u.username === 'novo').length, 1);
   assert.equal(usuarios(w).find((u) => u.username === 'novo').email, 'x@ex.com');
   assert.equal(w.__alertas.length, 1);
@@ -69,8 +69,6 @@ test('edição de perfil não apaga usuário gravado por outra aba durante o has
   const $ = (id) => w.document.getElementById(id);
   $('city').value = 'Niterói';
   $('senhaAtual').value = 'demo1234';
-  $('novaSenha').value = 'nova123';
-  $('confirmacao').value = 'nova123';
   outraAbaDuranteOHash(w, () => adicionar(w, outro('outraaba')));
   $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await esperarAte(() => usuarios(w).find((u) => u.username === 'davi.sax').city === 'Niterói');
