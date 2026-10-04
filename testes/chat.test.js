@@ -211,3 +211,37 @@ test('chat sem login e sem conversa escolhida volta para a lista', () => {
   const w = carregarPagina('Chat/chat.html');
   assert.equal(w.sessionStorage.getItem('depoisDoLogin'), '../Chat/chat.html');
 });
+
+function trocarUsuarios(w, transformar) {
+  const { CHAVE_USUARIOS } = require('../codigo-fonte/lib/armazenamento.js');
+  const lista = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS));
+  w.localStorage.setItem(CHAVE_USUARIOS, JSON.stringify(transformar(lista)));
+  w.dispatchEvent(new w.StorageEvent('storage', { key: CHAVE_USUARIOS }));
+}
+
+test('chat atualiza nome e foto do contato quando outra aba edita o perfil dele', () => {
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  trocarUsuarios(w, (lista) => lista.map((u) => (u.username === 'sonic' ? { ...u, name: 'Super Sonic', profilePicLink: 'novo.jpg' } : u)));
+  const d = w.document;
+  assert.equal(d.getElementById('nomeContato').textContent, 'Super Sonic');
+  assert.match(d.getElementById('fotoContato').src, /novo\.jpg$/);
+  assert.equal(d.querySelector('.chatlist .chatBlock h4').textContent, 'Super Sonic');
+});
+
+test('chat não quebra quando o contato da conversa deixa de existir', () => {
+  const w = carregarPagina('Chat/chat.html', {
+    busca: '?com=sonic',
+    antes: logado('cartola', (win) => win.localStorage.setItem('messages', JSON.stringify([msg('cartola', 'sonic', 'oi', Date.now())]))),
+  });
+  trocarUsuarios(w, (lista) => lista.filter((u) => u.username !== 'sonic'));
+  const d = w.document;
+  assert.equal(d.getElementById('nomeContato').textContent, 'Mensagens');
+  assert.equal(d.getElementById('mensagem').disabled, true);
+  assert.equal(d.querySelector('.chatlist .chatBlock h4').textContent, 'sonic', 'a conversa antiga continua listada pelo username');
+});
+
+test('conversa nova com contato que deixou de existir some da lista', () => {
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
+  trocarUsuarios(w, (lista) => lista.filter((u) => u.username !== 'sonic'));
+  assert.equal(w.document.querySelectorAll('.chatlist .chatBlock').length, 0);
+});

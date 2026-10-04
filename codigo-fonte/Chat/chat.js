@@ -33,7 +33,7 @@
     const lista = $('listaConversas');
     const conversas = GigMensagens.listarConversas(GigMensagens.lerMensagens(localStorage), eu);
     // Conversa nova (aberta pelo "Contate-me") ainda sem mensagens aparece no topo
-    if (contatoAtual && !conversas.some((c) => c.com === contatoAtual)) {
+    if (contatoAtual && buscarUsuario(contatoAtual) && !conversas.some((c) => c.com === contatoAtual)) {
       conversas.unshift({ com: contatoAtual, ultima: null });
     }
 
@@ -145,9 +145,11 @@
     window.location.href = '../Perfil/perfil.html';
   });
 
-  // Mensagem gravada em outra aba (ex.: outro usuário logado em outra aba) atualiza a tela
+  // Mensagem gravada ou perfil editado em outra aba (ex.: outro usuário logado em outra aba) atualiza a tela;
+  // contato removido cai no estado vazio (a conversa antiga continua listada pelo username)
   window.addEventListener('storage', (event) => {
-    if (event.key === null || event.key === GigMensagens.CHAVE_MENSAGENS) renderizar();
+    const chaves = [null, GigMensagens.CHAVE_MENSAGENS, GigArmazenamento.CHAVE_USUARIOS];
+    if (chaves.includes(event.key)) renderizar();
   });
 
   renderizar();
