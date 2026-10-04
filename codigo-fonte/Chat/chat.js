@@ -151,7 +151,7 @@
     renderizarLista(mensagens);
     // Carregar anteriores mantém a posição de leitura; nos demais casos vai para a mensagem mais nova
     area.scrollTop = opcoes.manterRolagem ? area.scrollHeight - alturaAntes : area.scrollHeight;
-    GigLayout.atualizarContador(eu);
+    GigLayout.atualizarContador(eu, mensagens);
   }
 
   function abrirConversa(username) {

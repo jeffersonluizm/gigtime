@@ -68,15 +68,16 @@
       GigSessao.sair(sessionStorage);
       raiz.location.href = '../Acesso/saiu.html';
     });
-    atualizarContador(logado.username);
+    if (!logado.semContador) atualizarContador(logado.username);
   }
 
-  function atualizarContador(eu) {
+  // `mensagens` opcional: quem já leu a lista (o chat) passa ela e evita reler 4 MB de JSON
+  function atualizarContador(eu, mensagens) {
     const link = document.getElementById('linkMensagens');
     if (!link || !raiz.GigMensagens) return;
     let total = 0;
     try {
-      total = GigMensagens.naoLidas(GigMensagens.lerMensagens(localStorage), eu, GigMensagens.lerLidas(localStorage));
+      total = GigMensagens.naoLidas(mensagens || GigMensagens.lerMensagens(localStorage), eu, GigMensagens.lerLidas(localStorage));
     } catch (e) { /* armazenamento indisponível: sem contador */ }
     link.querySelector('.contador')?.remove();
     link.removeAttribute('aria-label');
@@ -171,7 +172,8 @@
     const logado = seguro(() => GigSessao.usuarioLogado(sessionStorage), null);
     const topo = document.getElementById('topo');
     const rodape = document.getElementById('rodape');
-    if (topo) montarTopo(topo, logado);
+    // No chat o contador é atualizado pelo próprio chat.js (que já leu as mensagens)
+    if (topo) montarTopo(topo, logado && document.body.dataset.pagina === 'mensagens' ? Object.assign({}, logado, { semContador: true }) : logado);
     if (rodape) montarRodape(rodape);
     ligarFallbackDeImagens();
     GigAvisos.mostrarPendente();

@@ -149,3 +149,27 @@ test('filtroDaUrl e paraUrl ida e volta (filtro compartilhável pelo endereço)'
   assert.deepEqual(filtroDaUrl('?papel=Hacker&nota=9&uf=XX'), { papel: null, estado: '', avaliacaoMinima: 0, generos: [], texto: '' }, 'valores fora da lista são ignorados');
   assert.equal(paraUrl({}), '');
 });
+
+test('anúncios: mostra 24 perfis por vez e "Mostrar mais" carrega os próximos (desempenho com milhares)', () => {
+  const { gerarUsuarios } = require('../ferramentas/carga/gerar-dados.js');
+  const { CHAVE_USUARIOS } = require('../codigo-fonte/lib/armazenamento.js');
+  const w = carregarPagina('anuncios/anuncios.html', {
+    antes: (win) => win.localStorage.setItem(CHAVE_USUARIOS, JSON.stringify(gerarUsuarios(60, 'a.svg'))),
+  });
+  const d = w.document;
+  const cards = () => d.querySelectorAll('#anuncios > .col').length;
+  assert.equal(cards(), 24);
+  assert.equal(d.getElementById('resumoResultados').textContent, '60 perfis encontrados');
+  const mais = d.getElementById('mostrarMais');
+  assert.equal(mais.hidden, false);
+  assert.match(mais.textContent, /36/);
+  mais.click();
+  assert.equal(cards(), 48);
+  mais.click();
+  assert.equal(cards(), 60);
+  assert.equal(mais.hidden, true);
+  // filtrar volta para a primeira página do novo resultado
+  marcar(w, 'radioMusician');
+  assert.ok(cards() <= 24);
+  assert.ok([...d.querySelectorAll('#anuncios > .col')].every((c) => !c.hidden));
+});

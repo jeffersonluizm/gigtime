@@ -9,7 +9,8 @@
 
   function textoNota(rating) {
     const nota = Number(rating);
-    return nota > 0 ? nota.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : 'Novo';
+    // toFixed em vez de toLocaleString: com milhares de cards o Intl por chamada pesa (ver docs/carga)
+    return nota > 0 ? nota.toFixed(1).replace('.', ',') : 'Novo';
   }
 
   // opcoes.selos: mostra os selos (Explorar); opcoes.classeColuna: classes extras da coluna

@@ -1,25 +1,29 @@
 // Explorar: lista de perfis com filtros (regra em lib/filtros.js, card em ui/cards.js).
-// Os cards são desenhados uma vez; filtrar só mostra/esconde (atributo hidden), usando um Map
-// username -> usuário (antes era users.find por card: O(n²), ver docs/carga).
+// Desempenho (ver docs/carga): o filtro roda sobre os dados, não sobre o DOM, e só POR_PAGINA cards
+// são desenhados por vez ("Mostrar mais" acrescenta a próxima página). Antes eram desenhados todos os
+// cards e o filtro fazia users.find por card (O(n²)); com 5 mil perfis isso levava mais de 1 s por clique.
 // O filtro vai para o endereço (?papel=...&uf=...), então a busca pode ser compartilhada.
 (function () {
+  const POR_PAGINA = 24;
   const $ = (id) => document.getElementById(id);
   const form = $('filtros');
   const lista = $('anuncios');
   const vazio = $('semResultados');
   const resumo = $('resumoResultados');
+  const mais = $('mostrarMais');
 
   GigFormulario.preencherUFs($('state'), 'Todos os estados');
   GigFormulario.montarGeneros($('generos'), 'genero', 'form-check-inline');
 
-  const porNota = (a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0) || String(a.name).localeCompare(String(b.name), 'pt-BR');
+  const colador = new Intl.Collator('pt-BR'); // um só comparador: localeCompare por par é lento com milhares
+  const porNota = (a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0) || colador.compare(String(a.name), String(b.name));
   const usuarios = GigArmazenamento.lerUsuarios(localStorage).sort(porNota);
   const porUsername = new Map(usuarios.map((u) => [u.username, u]));
-
-  lista.innerHTML = usuarios.map((u) => GigCards.html(u, { selos: true })).join('');
-  lista.removeAttribute('aria-busy');
-  const cards = Array.from(lista.children).map((el) => ({ el, usuario: porUsername.get(el.dataset.username) }));
   GigCards.ligarCliques(lista, (username) => porUsername.get(username));
+  lista.removeAttribute('aria-busy');
+
+  let filtrados = usuarios;
+  let mostrados = 0;
 
   function filtroDaTela() {
     const papel = form.querySelector('input[name="papel"]:checked');
@@ -43,16 +47,30 @@
     $('busca').value = filtro.texto || '';
   }
 
+  function atualizarMais() {
+    const restantes = filtrados.length - mostrados;
+    mais.hidden = restantes <= 0;
+    mais.textContent = `Mostrar mais perfis (${restantes} restantes)`;
+  }
+
+  // Acrescenta a próxima página de cards; devolve o primeiro card novo (para levar o foco até ele)
+  function desenharProximos() {
+    const pagina = filtrados.slice(mostrados, mostrados + POR_PAGINA);
+    const antes = lista.children.length;
+    lista.insertAdjacentHTML('beforeend', pagina.map((u) => GigCards.html(u, { selos: true })).join(''));
+    mostrados += pagina.length;
+    atualizarMais();
+    return lista.children[antes] || null;
+  }
+
   function filtrarCards() {
     const filtro = filtroDaTela();
-    let visiveis = 0;
-    for (const { el, usuario } of cards) {
-      const passa = !usuario || GigFiltros.correspondeFiltro(usuario, filtro);
-      el.hidden = !passa;
-      if (passa) visiveis++;
-    }
-    vazio.hidden = visiveis > 0;
-    resumo.textContent = visiveis === 1 ? '1 perfil encontrado' : `${visiveis} perfis encontrados`;
+    filtrados = GigFiltros.filtrarUsuarios(usuarios, filtro);
+    mostrados = 0;
+    lista.replaceChildren();
+    desenharProximos();
+    vazio.hidden = filtrados.length > 0;
+    resumo.textContent = filtrados.length === 1 ? '1 perfil encontrado' : `${filtrados.length} perfis encontrados`;
     history.replaceState(null, '', window.location.pathname + GigFiltros.paraUrl(filtro));
   }
 
@@ -61,6 +79,11 @@
     filtrarCards();
   }
 
+  mais.addEventListener('click', () => {
+    const primeiro = desenharProximos();
+    const link = primeiro && primeiro.querySelector('.card-title a');
+    if (link) link.focus();
+  });
   form.addEventListener('change', filtrarCards);
   form.addEventListener('input', (event) => { if (event.target.id === 'busca') filtrarCards(); });
   form.addEventListener('submit', (event) => event.preventDefault());

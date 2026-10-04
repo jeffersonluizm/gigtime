@@ -111,7 +111,8 @@ const CENARIOS = {
     for (let i = 0; i < REPETICOES; i++) {
       const { contexto, pagina } = await novaPagina(navegador);
       await prepararDados(pagina, { usuarios });
-      await marcarPronto(pagina, '#anuncios .card', 5000);
+      // antes: desenha os 5 mil cards de uma vez; depois: desenha a primeira página (24) e pagina o resto
+      await marcarPronto(pagina, '#anuncios .card', versao === 'antes' ? 5000 : 24);
       await pagina.goto(base + ROTAS.explorar);
       prontos.push(await esperarPronto(pagina));
       // H3: troca o estado 5 vezes e mede cada troca até o próximo frame
@@ -207,7 +208,8 @@ const CENARIOS = {
     await pagina.goto(base + ROTAS.chat + '?com=' + encodeURIComponent(usuarios[1].username));
     await pagina.waitForTimeout(500);
     await pagina.fill('#mensagem', 'Mensagem que não cabe mais'.repeat(20));
-    await pagina.click('#enviar');
+    // submit direto: na versão antes o botão é só um ícone de CDN (bloqueado aqui), sem área visível
+    await pagina.evaluate(() => document.getElementById('chatForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true })));
     await pagina.waitForTimeout(500);
     const depois = await pagina.evaluate(() => ({
       gravadas: JSON.parse(localStorage.getItem('gigtime:messages')).length,
