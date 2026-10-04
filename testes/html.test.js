@@ -65,3 +65,9 @@ test('navbar do usuário logado mostra o nome como texto', () => {
   assert.equal(w.document.getElementById('nomeUsuario').textContent, MALICIOSO.name);
   assert.equal(w.document.getElementById('profileAvatar').getAttribute('src'), MALICIOSO.profilePicLink);
 });
+
+test('icone monta o <svg> do sprite, decorativo e sem aceitar nome com caracteres especiais', () => {
+  const { icone } = require('../codigo-fonte/lib/html.js');
+  assert.equal(icone('star-fill'), '<svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#star-fill"></use></svg>');
+  assert.throws(() => icone('x"><script>'), /ícone inválido/);
+});

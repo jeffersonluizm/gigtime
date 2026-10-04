@@ -3,7 +3,7 @@
 // A página só declara <header id="topo">, <main id="conteudo"> e <footer id="rodape">;
 // <body data-pagina="..."> marca o link ativo e data-topo="simples" usa o topo reduzido (telas de acesso).
 (function (raiz) {
-  const icone = (nome) => `<svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#${nome}"></use></svg>`;
+  const icone = (nome) => raiz.GigHTML.icone(nome);
   const FALLBACK = { avatar: () => GigConstantes.FOTO_PADRAO, banner: () => GigConstantes.BANNER_PADRAO, destaque: () => GigConstantes.BANNER_PADRAO };
 
   function linksDoMenu(logado) {

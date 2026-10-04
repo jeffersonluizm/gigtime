@@ -3,7 +3,7 @@
 // do nome (stretched-link); a foto tem um link fora da tabulação, para o clique do mouse.
 (function (raiz) {
   const e = (valor) => raiz.GigHTML.escaparHTML(valor);
-  const icone = (nome) => `<svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#${nome}"></use></svg>`;
+  const icone = (nome) => raiz.GigHTML.icone(nome);
 
   const linkDoPerfil = (username) => '../Perfil/perfil.html?u=' + encodeURIComponent(username);
 

@@ -13,7 +13,7 @@
   const POR_PAGINA = 100;
   const eu = logado.username;
   const $ = (id) => document.getElementById(id);
-  const icone = (nome) => `<svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#${nome}"></use></svg>`;
+  const icone = GigHTML.icone;
   let usuarios = new Map();
   const recarregarUsuarios = () => { usuarios = new Map(GigArmazenamento.lerUsuarios(localStorage).map((u) => [u.username, u])); };
   recarregarUsuarios();

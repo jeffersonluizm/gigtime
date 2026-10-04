@@ -1,4 +1,4 @@
-// Escape de HTML para montar templates com dados de usuário (nome, cidade, links...).
+// Escape de HTML para montar templates com dados de usuário (nome, cidade, links...) e o ícone do sprite.
 // Todo dado vindo do storage passa por escaparHTML antes de entrar em innerHTML/insertAdjacentHTML,
 // inclusive dentro de atributos entre aspas (id="...", src="...").
 (function (raiz, fabrica) {
@@ -13,5 +13,11 @@
     return String(valor).replace(/[&<>"']/g, (c) => TROCAS[c]);
   }
 
-  return { escaparHTML };
+  // Ícone do sprite próprio (assets/icones.svg), sempre decorativo: o texto ao lado é que dá o sentido
+  function icone(nome) {
+    if (!/^[a-z0-9-]+$/.test(nome)) throw new Error('ícone inválido: ' + nome);
+    return `<svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#${nome}"></use></svg>`;
+  }
+
+  return { escaparHTML, icone };
 });

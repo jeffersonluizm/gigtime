@@ -6,7 +6,7 @@
   const CHAVE_PENDENTE = 'gigtime:aviso';
   const DURACAO_MS = 6000;
   const ICONES = { sucesso: 'check-circle-fill', erro: 'exclamation-triangle-fill', info: 'info-circle' };
-  const icone = (nome) => `<svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#${nome}"></use></svg>`;
+  const icone = (nome) => raiz.GigHTML.icone(nome);
 
   function regiao() {
     let el = document.getElementById('avisos');
