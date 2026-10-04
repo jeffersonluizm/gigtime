@@ -1,0 +1,9 @@
+# 404.html: a CSP autoriza o script e o estilo inline pelo hash do texto exato.
+# Sem conversão de fim de linha (core.autocrlf=true no Windows mudaria o hash).
+404.html -text
+*.png binary
+*.jpg binary
+*.webp binary
+*.gif binary
+*.woff2 binary
+*.pdf binary
