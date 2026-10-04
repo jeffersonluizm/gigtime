@@ -21,3 +21,7 @@
   }
 }
 
+/* Reserva a altura da lista: o rodapé não "pula" quando os cards chegam (CLS medido no Lighthouse) */
+.resultados {
+  min-height: 100vh;
+}

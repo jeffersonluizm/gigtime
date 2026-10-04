@@ -26,9 +26,13 @@ for (const [nome, rota] of Object.entries(PAGINAS)) {
       const args = [...(process.env.LIGHTHOUSE_BIN ? [] : ['--yes', 'lighthouse@12']), base + rota, `--chrome-path="${CHROME}"`, '--chrome-flags=--headless=new',
         '--only-categories=performance,accessibility,best-practices', '--output=json', `--output-path="${arquivo}"`, '--quiet'];
       if (perfil === 'desktop') args.push('--preset=desktop');
-      execFileSync(comando, args, { stdio: 'ignore', shell: true, timeout: 180000 });
+      try {
+        execFileSync(comando, args, { stdio: 'ignore', shell: true, timeout: 180000 });
+      } catch (e) { /* o Lighthouse sai com erro quando a página não pinta; o JSON traz o motivo */ }
+      if (!fs.existsSync(arquivo)) { rodadas.push({ erro: 'sem relatório' }); continue; }
       const r = JSON.parse(fs.readFileSync(arquivo, 'utf8'));
       fs.unlinkSync(arquivo);
+      if (r.runtimeError && r.runtimeError.code !== 'NO_ERROR') { rodadas.push({ erro: r.runtimeError.code }); continue; }
       rodadas.push({
         desempenho: Math.round(r.categories.performance.score * 100),
         acessibilidade: Math.round(r.categories.accessibility.score * 100),
@@ -42,8 +46,12 @@ for (const [nome, rota] of Object.entries(PAGINAS)) {
       });
     }
     const chaves = ['desempenho', 'acessibilidade', 'boasPraticas', 'lcpMs', 'fcpMs', 'tbtMs', 'cls', 'pesoKB'];
-    resultado[`${nome}-${perfil}`] = Object.fromEntries(chaves.map((k) => [k, mediana(rodadas.map((r) => r[k]))]));
-    resultado[`${nome}-${perfil}`].falhasAcessibilidade = [...new Set(rodadas.flatMap((r) => r.falhasAcessibilidade))];
+    const validas = rodadas.filter((r) => !r.erro);
+    resultado[`${nome}-${perfil}`] = validas.length
+      ? Object.fromEntries(chaves.map((k) => [k, mediana(validas.map((r) => r[k]))]))
+      : { erro: rodadas.map((r) => r.erro).join(', ') };
+    resultado[`${nome}-${perfil}`].rodadasComErro = rodadas.length - validas.length;
+    resultado[`${nome}-${perfil}`].falhasAcessibilidade = [...new Set(validas.flatMap((r) => r.falhasAcessibilidade))];
     console.log(versao, nome, perfil, JSON.stringify(resultado[`${nome}-${perfil}`]));
   }
 }
