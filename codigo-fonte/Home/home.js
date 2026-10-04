@@ -41,8 +41,7 @@ users.forEach(user => {
               </li>
             </ul>
           </div>
-        </div>       
-      </div>
+        </div>
   `;
 
   // Adiciona o card ao container sem sobrescrever os elementos existentes
