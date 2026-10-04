@@ -16,9 +16,9 @@ echo  Endereco: %URL%
 echo  Para encerrar: Ctrl+C (ou feche esta janela)
 echo.
 
-rem Abre o navegador depois de 2 segundos, dando tempo para o servidor subir
+rem Abre o navegador so quando o servidor responder (desiste em 20 s se ele nao subir)
 if not defined GIGTIME_SEM_NAVEGADOR (
-    start "" /b powershell -NoProfile -Command "Start-Sleep -Seconds 2; Start-Process '%URL%'"
+    start "" /b powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0ferramentas\abrir-quando-pronto.ps1" -Url "%URL%"
 )
 
 python --version >nul 2>&1
