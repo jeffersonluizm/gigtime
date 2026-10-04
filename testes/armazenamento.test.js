@@ -89,7 +89,7 @@ test('home e anúncios montam os cards a partir do localStorage', () => {
 
 test('clicar num card guarda o perfil escolhido sem senha', () => {
   const w = carregarPagina('Anúncios/anuncios.html');
-  w.document.getElementById('cartola').dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
+  w.document.querySelector('#anuncios > .col[data-username="cartola"] a').dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
   const escolhido = JSON.parse(w.sessionStorage.getItem('clickedUser'));
   assert.equal(escolhido.username, 'cartola');
   assert.equal('password' in escolhido || 'passwordHash' in escolhido, false);

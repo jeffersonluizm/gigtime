@@ -55,7 +55,7 @@ test('cards dos anúncios não interpretam HTML e o clique ainda abre o perfil c
   semInjecao(w);
   const col = w.document.querySelector('#anuncios > .col');
   assert.equal(col.dataset.username, MALICIOSO.username);
-  w.document.getElementById(MALICIOSO.username).dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
+  col.querySelector('a.link-perfil').dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
   assert.equal(JSON.parse(w.sessionStorage.getItem('clickedUser')).username, MALICIOSO.username);
 });
 
