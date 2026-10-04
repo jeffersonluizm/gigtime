@@ -61,11 +61,17 @@
   const CHAVE_DESTINO = 'depoisDoLogin';
   const DESTINO_VALIDO = /^\.\.\/[A-Za-zÀ-ÿ]+\/[A-Za-z]+\.html(\?[A-Za-z0-9_=%.&-]*)?$/;
 
+  // encodeURIComponent deixa ' ( ) * ! ~ sem codificar; aqui eles também viram %XX,
+  // para o valor caber na lista de caracteres aceitos em DESTINO_VALIDO
+  function codificarParametro(valor) {
+    return encodeURIComponent(String(valor)).replace(/[!'()*~]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+  }
+
   function destinoDepoisDoLogin(sessao) {
     const destino = sessao.getItem(CHAVE_DESTINO);
     sessao.removeItem(CHAVE_DESTINO);
     return destino && DESTINO_VALIDO.test(destino) ? destino : null;
   }
 
-  return { CHAVE_USUARIOS, CHAVE_DESTINO, lerJSON, lerUsuarios, salvarUsuarios, migrarDaSessao, semearSeVazio, usuarioPublico, destinoDepoisDoLogin };
+  return { CHAVE_USUARIOS, CHAVE_DESTINO, lerJSON, lerUsuarios, salvarUsuarios, migrarDaSessao, semearSeVazio, usuarioPublico, destinoDepoisDoLogin, codificarParametro };
 });

@@ -3,9 +3,12 @@
 (function () {
   const logado = GigArmazenamento.lerJSON(sessionStorage, 'loggedInUser');
 
+  const pedido = new URLSearchParams(window.location.search).get('com');
+
   // Exige login: guarda a conversa pedida para o login voltar para ela
   if (!logado) {
-    sessionStorage.setItem(GigArmazenamento.CHAVE_DESTINO, '../Chat/chat.html' + window.location.search);
+    const busca = pedido ? '?com=' + GigArmazenamento.codificarParametro(pedido) : '';
+    sessionStorage.setItem(GigArmazenamento.CHAVE_DESTINO, '../Chat/chat.html' + busca);
     window.location.href = '../Login/login.html';
     return;
   }
@@ -17,7 +20,6 @@
   const buscarUsuario = (username) => usuarios().find((u) => u.username === username);
 
   // Conversa aberta: a do endereço, se for de um usuário existente e não for o próprio logado
-  const pedido = new URLSearchParams(window.location.search).get('com');
   let contatoAtual = pedido && pedido !== eu && buscarUsuario(pedido) ? pedido : null;
 
   function criar(tag, classe, texto) {

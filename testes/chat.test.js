@@ -197,3 +197,17 @@ test('balão de mensagem quebra palavras longas (overflow-wrap)', () => {
   const regras = [...css.matchAll(/\.messagechat p\s*\{([^}]*)\}/g)].map((m) => m[1]).join('');
   assert.match(regras, /overflow-wrap:\s*anywhere/);
 });
+
+test("chat sem login guarda a conversa de username com ' ( ) * ! ~ e o login volta para ela", () => {
+  const A = require('../codigo-fonte/lib/armazenamento.js');
+  const estranho = "o'brien(1)*!~ x";
+  const w = carregarPagina('Chat/chat.html', { busca: '?com=' + encodeURIComponent(estranho) });
+  const destino = A.destinoDepoisDoLogin(w.sessionStorage);
+  assert.ok(destino, 'o destino passa na lista de caminhos aceitos');
+  assert.equal(new URLSearchParams(destino.split('?')[1]).get('com'), estranho);
+});
+
+test('chat sem login e sem conversa escolhida volta para a lista', () => {
+  const w = carregarPagina('Chat/chat.html');
+  assert.equal(w.sessionStorage.getItem('depoisDoLogin'), '../Chat/chat.html');
+});
