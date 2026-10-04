@@ -13,7 +13,7 @@ async function base() {
     {
       username: 'ana', name: 'Ana', email: 'ana@ex.com', phone: '1', role: 'Músico', state: 'PR', city: 'Curitiba',
       genres: ['Jazz'], rating: 4.2, badges: ['Jazz Lover'], profilePicLink: 'a.jpg', bannerPicLink: 'b.jpg',
-      songLink: '', userPicsLinks: ['x'], passwordHash: await S.hashSenha('ana', 'velha'),
+      songLink: '', userPicsLinks: ['x'], passwordHash: await S.gerarHash('velha', { iteracoes: 1000 }),
     },
     {
       username: 'bia', name: 'Bia', email: 'bia@ex.com', phone: '2', role: 'Contratante', state: 'MG', city: 'BH',

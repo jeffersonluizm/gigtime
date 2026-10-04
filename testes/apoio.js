@@ -38,6 +38,8 @@ function carregarPagina(relativo, { busca = '', antes } = {}) {
   Object.defineProperty(window, 'crypto', { value: webcrypto, configurable: true });
   window.TextEncoder = TextEncoder;
   window.alert = (msg) => { (window.__alertas ||= []).push(msg); };
+  // PBKDF2 com 600 mil iterações leva ~0,1 s por hash; nas páginas de teste o custo é reduzido
+  window.GIGTIME_ITERACOES_PBKDF2 = 1000;
   if (antes) antes(window);
 
   const scripts = [...window.document.querySelectorAll('script[src]')]

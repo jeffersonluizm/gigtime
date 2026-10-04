@@ -9,13 +9,14 @@ const A = require('../codigo-fonte/lib/armazenamento.js');
 // Troca o WebCrypto da página por um que executa `efeito` (a "outra aba") durante o primeiro hash
 function outraAbaDuranteOHash(w, efeito) {
   let feito = false;
+  const disparar = () => { if (!feito) { feito = true; efeito(); } };
   const subtle = {
-    digest: async (alg, dados) => {
-      if (!feito) { feito = true; efeito(); }
-      return webcrypto.subtle.digest(alg, dados);
-    },
+    digest: async (alg, dados) => { disparar(); return webcrypto.subtle.digest(alg, dados); },
+    importKey: (...args) => webcrypto.subtle.importKey(...args),
+    deriveBits: async (...args) => { disparar(); return webcrypto.subtle.deriveBits(...args); },
   };
-  Object.defineProperty(w, 'crypto', { value: { subtle }, configurable: true });
+  const getRandomValues = (bytes) => webcrypto.getRandomValues(bytes);
+  Object.defineProperty(w, 'crypto', { value: { subtle, getRandomValues }, configurable: true });
 }
 
 const usuarios = (w) => JSON.parse(w.localStorage.getItem(A.CHAVE_USUARIOS));

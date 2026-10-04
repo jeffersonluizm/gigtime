@@ -12,10 +12,10 @@ document.getElementById('loginForm').addEventListener('submit', async function (
   }
 
   // Verifica se o usuário está registrado na memória local (a senha é comparada pelo hash)
-  const registeredUsers = GigArmazenamento.lerUsuarios(localStorage);
+  // Hash de formato antigo (SHA-256 ou texto puro) vira PBKDF2 neste login
   let user;
   try {
-      user = await GigSenha.autenticar(registeredUsers, username, password);
+      user = await GigSenha.autenticarEAtualizar(localStorage, GigArmazenamento.CHAVE_USUARIOS, username, password);
   } catch (erro) {
       alert(erro.message);
       return;

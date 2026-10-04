@@ -78,7 +78,7 @@
       songLink: texto(dados.songLink),
     });
     if (trocarSenha) {
-      usuario.passwordHash = await senha().hashSenha(username, nova);
+      usuario.passwordHash = await senha().gerarHash(nova);
       delete usuario.password;
     }
     const novos = usuarios.slice();

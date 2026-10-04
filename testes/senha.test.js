@@ -7,38 +7,109 @@ const { CHAVE_USUARIOS, CHAVE_MENSAGENS } = require('../codigo-fonte/lib/armazen
 
 const sha = (texto) => createHash('sha256').update(texto, 'utf8').digest('hex');
 
-test('hashSenha calcula SHA-256 em hexadecimal com o username como sal', async () => {
-  assert.equal(await S.hashSenha('ana', 'segredo'), sha('gigtime:ana:segredo'));
+const RAPIDO = { iteracoes: 1000 };
+const FORMATO = /^pbkdf2-sha256\$(\d+)\$([A-Za-z0-9+/=]+)\$([A-Za-z0-9+/=]+)$/;
+
+test('gerarHash usa PBKDF2-SHA256 com 600 mil iterações por padrão', async () => {
+  assert.equal(S.ITERACOES_PADRAO, 600000);
+  const hash = await S.gerarHash('segredo');
+  const [, iteracoes, sal] = hash.match(FORMATO);
+  assert.equal(Number(iteracoes), 600000);
+  assert.equal(Buffer.from(sal, 'base64').length, 16, 'sal de 16 bytes');
 });
 
-test('hashSenha dá resultados diferentes para a mesma senha em usuários diferentes', async () => {
-  assert.notEqual(await S.hashSenha('ana', '123'), await S.hashSenha('bia', '123'));
+test('gerarHash sorteia o sal: a mesma senha gera hashes diferentes', async () => {
+  assert.notEqual(await S.gerarHash('123', RAPIDO), await S.gerarHash('123', RAPIDO));
 });
 
-test('autenticar aceita a senha certa e recusa a errada ou usuário inexistente', async () => {
-  const usuarios = [{ username: 'ana', passwordHash: sha('gigtime:ana:segredo') }];
+test('gerarHash aceita número de iterações injetado (testes) pelo global GIGTIME_ITERACOES_PBKDF2', async () => {
+  globalThis.GIGTIME_ITERACOES_PBKDF2 = 1234;
+  try {
+    assert.equal(Number((await S.gerarHash('x')).match(FORMATO)[1]), 1234);
+  } finally {
+    delete globalThis.GIGTIME_ITERACOES_PBKDF2;
+  }
+});
+
+test('conferirSenha aceita a senha certa e recusa a errada', async () => {
+  const hash = await S.gerarHash('segredo', RAPIDO);
+  assert.equal(await S.conferirSenha({ username: 'ana', passwordHash: hash }, 'segredo'), true);
+  assert.equal(await S.conferirSenha({ username: 'ana', passwordHash: hash }, 'errada'), false);
+  assert.equal(await S.conferirSenha({ username: 'ana', passwordHash: 'pbkdf2-sha256$x$y$z' }, 'segredo'), false, 'hash malformado não passa');
+});
+
+test('autenticar aceita PBKDF2, o SHA-256 legado e o texto puro legado', async () => {
+  const usuarios = [
+    { username: 'ana', passwordHash: await S.gerarHash('segredo', RAPIDO) },
+    { username: 'bia', passwordHash: sha('gigtime:bia:legado') },
+    { username: 'caio', password: 'velha' },
+  ];
   assert.equal((await S.autenticar(usuarios, 'ana', 'segredo')).username, 'ana');
+  assert.equal((await S.autenticar(usuarios, 'bia', 'legado')).username, 'bia');
+  assert.equal((await S.autenticar(usuarios, 'caio', 'velha')).username, 'caio');
   assert.equal(await S.autenticar(usuarios, 'ana', 'errada'), null);
-  assert.equal(await S.autenticar(usuarios, 'bia', 'segredo'), null);
+  assert.equal(await S.autenticar(usuarios, 'bia', 'errada'), null);
+  assert.equal(await S.autenticar(usuarios, 'zeca', 'segredo'), null);
 });
 
-test('autenticar ainda aceita usuário antigo com senha em texto puro', async () => {
-  const usuarios = [{ username: 'ana', password: 'velha' }];
-  assert.equal((await S.autenticar(usuarios, 'ana', 'velha')).username, 'ana');
-  assert.equal(await S.autenticar(usuarios, 'ana', 'outra'), null);
+test('precisaAtualizar marca legado e PBKDF2 com menos iterações que o padrão', async () => {
+  assert.equal(S.precisaAtualizar({ passwordHash: sha('x') }), true);
+  assert.equal(S.precisaAtualizar({ password: 'x' }), true);
+  assert.equal(S.precisaAtualizar({ passwordHash: await S.gerarHash('x', RAPIDO) }), true);
+  assert.equal(S.precisaAtualizar({ passwordHash: 'pbkdf2-sha256$600000$c2Fs$aGFzaA==' }), false);
+  assert.equal(S.precisaAtualizar({ passwordHash: 'pbkdf2-sha256$1000$c2Fs$aGFzaA==' }, { iteracoes: 1000 }), false);
 });
 
-test('migrarSenhasDoStorage troca senha em texto puro por hash e mantém os demais', async () => {
+test('autenticarEAtualizar troca o hash legado por PBKDF2 no login certo', async () => {
+  const local = new StorageMemoria({
+    [CHAVE_USUARIOS]: JSON.stringify([
+      { username: 'ana', passwordHash: sha('gigtime:ana:segredo') },
+      { username: 'bia', password: 'velha' },
+    ]),
+  });
+  const ana = await S.autenticarEAtualizar(local, CHAVE_USUARIOS, 'ana', 'segredo', RAPIDO);
+  assert.equal(ana.username, 'ana');
+  const [salva] = JSON.parse(local.getItem(CHAVE_USUARIOS));
+  assert.match(salva.passwordHash, FORMATO);
+  assert.ok(await S.autenticar([salva], 'ana', 'segredo'));
+  await S.autenticarEAtualizar(local, CHAVE_USUARIOS, 'bia', 'velha', RAPIDO);
+  const bia = JSON.parse(local.getItem(CHAVE_USUARIOS))[1];
+  assert.equal('password' in bia, false, 'texto puro sai no login');
+  assert.match(bia.passwordHash, FORMATO);
+});
+
+test('autenticarEAtualizar com senha errada devolve null e não grava nada', async () => {
+  const inicial = JSON.stringify([{ username: 'ana', passwordHash: sha('gigtime:ana:segredo') }]);
+  const local = new StorageMemoria({ [CHAVE_USUARIOS]: inicial });
+  assert.equal(await S.autenticarEAtualizar(local, CHAVE_USUARIOS, 'ana', 'errada', RAPIDO), null);
+  assert.equal(local.getItem(CHAVE_USUARIOS), inicial);
+});
+
+test('autenticarEAtualizar relê o storage antes de gravar (não apaga o que outra aba gravou)', async () => {
+  const local = new StorageMemoria({ [CHAVE_USUARIOS]: JSON.stringify([{ username: 'ana', passwordHash: sha('gigtime:ana:segredo') }]) });
+  const original = local.getItem.bind(local);
+  let leituras = 0;
+  local.getItem = (chave) => {
+    leituras++;
+    if (leituras === 2) local.dados.set(CHAVE_USUARIOS, JSON.stringify(JSON.parse(original(chave)).concat([{ username: 'novo', passwordHash: 'h' }])));
+    return original(chave);
+  };
+  await S.autenticarEAtualizar(local, CHAVE_USUARIOS, 'ana', 'segredo', RAPIDO);
+  assert.deepEqual(JSON.parse(original(CHAVE_USUARIOS)).map((u) => u.username), ['ana', 'novo']);
+});
+
+test('migrarSenhasDoStorage troca senha em texto puro por PBKDF2 e mantém os demais', async () => {
   const local = new StorageMemoria({
     [CHAVE_USUARIOS]: JSON.stringify([
       { username: 'ana', password: 'velha' },
       { username: 'bia', passwordHash: 'abc' },
     ]),
   });
-  assert.equal(await S.migrarSenhasDoStorage(local), 1);
+  assert.equal(await S.migrarSenhasDoStorage(local, CHAVE_USUARIOS, RAPIDO), 1);
   const [ana, bia] = JSON.parse(local.getItem(CHAVE_USUARIOS));
   assert.equal('password' in ana, false);
-  assert.equal(ana.passwordHash, sha('gigtime:ana:velha'));
+  assert.match(ana.passwordHash, FORMATO);
+  assert.ok(await S.autenticar([ana], 'ana', 'velha'));
   assert.deepEqual(bia, { username: 'bia', passwordHash: 'abc' });
 });
 
@@ -58,7 +129,8 @@ test('global.js converte as senhas antigas migradas da sessão', async () => {
   await esperar();
   const [antigo] = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS));
   assert.equal('password' in antigo, false);
-  assert.equal(antigo.passwordHash, sha('gigtime:antigo:p'));
+  assert.match(antigo.passwordHash, FORMATO);
+  assert.ok(await S.autenticar([antigo], 'antigo', 'p'));
 });
 
 function preencher(w, campos) {
@@ -96,5 +168,6 @@ test('cadastro guarda o hash da senha e não a senha', async () => {
   const novo = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'novo');
   assert.ok(novo, 'usuário cadastrado');
   assert.equal('password' in novo, false);
-  assert.equal(novo.passwordHash, sha('gigtime:novo:minhasenha'));
+  assert.match(novo.passwordHash, FORMATO);
+  assert.ok(await S.autenticar([novo], 'novo', 'minhasenha'));
 });

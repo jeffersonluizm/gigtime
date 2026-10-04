@@ -83,10 +83,10 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         return;
     }
   
-    // Guarda só o hash SHA-256 da senha, nunca o texto puro
+    // Guarda só o hash PBKDF2 da senha, nunca o texto puro
     let passwordHash;
     try {
-      passwordHash = await GigSenha.hashSenha(username, password);
+      passwordHash = await GigSenha.gerarHash(password);
     } catch (erro) {
       alert(erro.message);
       return;
