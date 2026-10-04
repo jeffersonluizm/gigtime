@@ -92,8 +92,15 @@ document.getElementById('registerForm').addEventListener('submit', async functio
       return;
     }
 
+    // Relê os usuários: outra aba pode ter cadastrado alguém enquanto o hash era calculado
+    const atuais = GigArmazenamento.lerUsuarios(localStorage);
+    if (atuais.some(user => user.username === username || user.email === email || user.phone === phone)) {
+      alert('Este nome de usuário, e-mail ou telefone acabou de ser cadastrado em outra aba. Revise os dados.');
+      return;
+    }
+
     // Adiciona novo usuário
-    users.push({ 
+    atuais.push({ 
       username,
       name,
       email,
@@ -118,7 +125,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
       passwordHash
     });
     
-    GigArmazenamento.salvarUsuarios(localStorage, users);
+    GigArmazenamento.salvarUsuarios(localStorage, atuais);
   
     alert('Registro realizado com sucesso!');
     window.location.href = '../Login/login.html'; // Ajuste o caminho conforme necessário

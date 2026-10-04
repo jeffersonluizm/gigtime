@@ -95,7 +95,11 @@
       return;
     }
 
-    GigArmazenamento.salvarUsuarios(localStorage, resultado.usuarios);
+    // Grava só este usuário sobre a lista atual (outra aba pode ter mudado outros usuários no meio tempo)
+    if (!GigArmazenamento.substituirUsuario(localStorage, resultado.usuario)) {
+      alert('Usuário não encontrado!');
+      return;
+    }
     const publico = JSON.stringify(GigArmazenamento.usuarioPublico(resultado.usuario));
     sessionStorage.setItem('loggedInUser', publico);
     sessionStorage.setItem('clickedUser', publico);

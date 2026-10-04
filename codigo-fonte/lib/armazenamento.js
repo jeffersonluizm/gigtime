@@ -31,6 +31,17 @@
   // A versão anterior do site guardava os usuários no sessionStorage.
   // Leva esses usuários para o localStorage (mesclando por username, o local vence)
   // e apaga a cópia antiga. Devolve true se havia algo para migrar.
+  // Troca um usuário (pelo username) relendo a lista do storage na hora de gravar,
+  // para não desfazer o que outra aba gravou enquanto esta página esperava (ex.: hash da senha)
+  function substituirUsuario(storage, usuario) {
+    const atuais = lerUsuarios(storage);
+    const indice = atuais.findIndex((u) => u.username === usuario.username);
+    if (indice < 0) return false;
+    atuais[indice] = usuario;
+    salvarUsuarios(storage, atuais);
+    return true;
+  }
+
   function migrarDaSessao(local, sessao) {
     const antigos = lerJSON(sessao, CHAVE_USUARIOS);
     if (!Array.isArray(antigos)) return false;
@@ -73,5 +84,5 @@
     return destino && DESTINO_VALIDO.test(destino) ? destino : null;
   }
 
-  return { CHAVE_USUARIOS, CHAVE_DESTINO, lerJSON, lerUsuarios, salvarUsuarios, migrarDaSessao, semearSeVazio, usuarioPublico, destinoDepoisDoLogin, codificarParametro };
+  return { CHAVE_USUARIOS, CHAVE_DESTINO, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, semearSeVazio, usuarioPublico, destinoDepoisDoLogin, codificarParametro };
 });
