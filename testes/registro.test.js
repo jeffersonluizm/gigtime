@@ -35,6 +35,17 @@ test('cadastro recusa link de imagem sem https e telefone sem DDD', async () => 
   assert.equal(usuarios(w).some((u) => u.username === 'carla.gaita'), false);
 });
 
+test('cadastro: apresentação e disponibilidade opcionais vão para o perfil novo', async () => {
+  const w = carregarPagina('Registro/registro.html');
+  preencher(w, { bio: 'Gaita e voz.', disponibilidade: 'Domingos' });
+  enviar(w);
+  await esperarAte(() => w.sessionStorage.getItem('loggedInUser'));
+  const carla = usuarios(w).find((u) => u.username === 'carla.gaita');
+  assert.equal(carla.bio, 'Gaita e voz.');
+  assert.equal(carla.disponibilidade, 'Domingos');
+  assert.match(JSON.parse(w.sessionStorage.getItem('gigtime:aviso')).texto, /Conta criada/);
+});
+
 test('cadastro com sucesso já entra na conta (sessão sem hash)', async () => {
   const w = carregarPagina('Registro/registro.html');
   preencher(w);

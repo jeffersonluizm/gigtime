@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Algo deu errado | GigTime</title>
+  <meta name="description" content="Não foi possível abrir o GigTime neste navegador. Veja o motivo provável e como resolver.">
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="preload" href="../assets/fontes/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/componentes.css">
+</head>
+<body data-pagina="erro" data-topo="simples">
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+
+  <main id="conteudo" tabindex="-1" class="acesso">
+    <div class="painel largo">
+      <svg class="icone icone-g mb-3 text-gig-erro" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#exclamation-triangle-fill"></use></svg>
+      <h1>Algo deu errado</h1>
+      <p class="lead" id="motivoErro">Não conseguimos abrir o GigTime neste navegador.</p>
+      <h2 class="h5 mt-4">O que costuma resolver</h2>
+      <ul>
+        <li>Permitir que o site guarde dados (armazenamento local / cookies) nas configurações do navegador.</li>
+        <li>Sair da navegação anônima: em alguns navegadores ela bloqueia o armazenamento.</li>
+        <li>Abrir o site por <code>https://</code> ou por <code>http://localhost</code> (o <code>iniciar.bat</code> faz isso). Aberto direto do disco (<code>file://</code>), a criptografia das senhas não funciona.</li>
+      </ul>
+      <a class="btn btn-gig mt-2" href="../Home/home.html">Tentar de novo</a>
+    </div>
+  </main>
+
+  <footer id="rodape"></footer>
+
+  <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="../lib/html.js"></script>
+  <script src="../lib/constantes.js"></script>
+  <script src="../lib/armazenamento.js"></script>
+  <script src="../lib/senha.js"></script>
+  <script src="../lib/validacao.js"></script>
+  <script src="../lib/perfil.js"></script>
+  <script src="../lib/sessao.js"></script>
+  <script src="../lib/mensagens.js"></script>
+  <script src="../dados/usuarios-exemplo.js"></script>
+  <script src="../inicializacao.js"></script>
+  <script src="../ui/avisos.js"></script>
+  <script src="../ui/formularios.js"></script>
+  <script src="../ui/cards.js"></script>
+  <script src="../ui/layout.js"></script>
+  <script src="erro.js"></script>
+</body>
+</html>

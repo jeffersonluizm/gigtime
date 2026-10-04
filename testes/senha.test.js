@@ -122,7 +122,7 @@ test('o seed não traz senha em texto puro e as senhas de demonstração funcion
   assert.ok(await S.autenticar(usuarios, 'casa.lume', 'demo1234'));
 });
 
-test('global.js converte as senhas antigas migradas da sessão', async () => {
+test('inicializacao.js converte as senhas antigas migradas da sessão', async () => {
   const w = carregarPagina('Home/home.html', {
     antes: (win) => win.sessionStorage.setItem('users', JSON.stringify([{ username: 'antigo', role: 'Músico', genres: [], badges: [], password: 'p' }])),
   });
@@ -151,9 +151,29 @@ test('login com senha errada não loga e avisa', async () => {
   const w = carregarPagina('Login/login.html');
   preencher(w, { username: 'davi.sax', password: 'errada123' });
   w.document.getElementById('loginForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperarAte(() => w.__alertas);
+  const erro = w.document.querySelector('[data-erro-formulario]');
+  await esperarAte(() => erro.textContent);
   assert.equal(w.sessionStorage.getItem('loggedInUser'), null);
-  assert.deepEqual(w.__alertas, ['Usuário ou senha inválidos!']);
+  assert.match(erro.textContent, /Usuário ou senha incorretos/);
+  assert.equal(w.__alertas, undefined, 'sem alert()');
+  assert.equal(w.document.getElementById('password').value, '', 'a senha digitada é apagada');
+});
+
+test('login: a página oferece as contas de demonstração e o caminho honesto para quem esqueceu a senha', () => {
+  const w = carregarPagina('Login/login.html');
+  const d = w.document;
+  assert.match(d.getElementById('contasDemo').textContent, /lia\.batera/);
+  assert.match(d.getElementById('contasDemo').textContent, /demo1234/);
+  assert.ok(d.querySelector('a[href="../Acesso/esqueci-senha.html"]'));
+  assert.ok(d.querySelector('a[href="../Registro/registro.html"]'));
+});
+
+test('login com sucesso deixa um aviso de boas-vindas para a próxima página', async () => {
+  const w = carregarPagina('Login/login.html');
+  preencher(w, { username: 'lia.batera', password: 'demo1234' });
+  w.document.getElementById('loginForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await esperarAte(() => w.sessionStorage.getItem('gigtime:aviso'));
+  assert.match(JSON.parse(w.sessionStorage.getItem('gigtime:aviso')).texto, /Lia Fontes/);
 });
 
 test('cadastro guarda o hash da senha e não a senha', async () => {

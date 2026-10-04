@@ -5,116 +5,125 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GigTime - Perfil</title>
+  <title>Perfil | GigTime</title>
+  <meta name="description" content="Perfil de músico ou contratante no GigTime: gêneros, disponibilidade, fotos e vídeo.">
   <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="preload" href="../assets/fontes/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
-  <link rel="stylesheet" href="../global.css">
-  <link rel="stylesheet" href="stylePerfil.css">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/componentes.css">
+  <link rel="stylesheet" href="perfil.css">
 </head>
-  <body>
-         <!--Barra de navegação-->
-         <nav class="navbar navbar-expand-sm fixed-top bg-gig-pr" data-bs-theme="dark">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="../Home/home.html">
-              <img src="../assets/img/logo-claro.svg" alt="" width="30" height="30" class="d-inline-block align-text-top">
-              GigTime
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <div class="navbar-nav ms-auto">
-              
-              </div>
-            </div>
-          </div>
-        </nav>
+<body data-pagina="perfil">
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
 
-    <div class="header__wrapper">
-      <header><img id="bannerImg" src="" class="w-100"/></header>
-      <div class="cols__container">
-        <div class="left__col">
-          <div class="img__container">
-            <img id="profilePic" src="" alt="User Profile Picute" />
-            <span></span>
-          </div>
-          <h2 id="name"></h2>
+  <main id="conteudo" tabindex="-1">
+    <div id="perfilCarregando" class="estado carregando">Carregando perfil</div>
 
-          <ul class="about">
-            <li><span id="badges" class="badge"></span></li>
-            <li><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#person"></use></svg><span id="role"></span></li>
-            <li><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#envelope"></use></svg><span id="email"></span></li>
-            <li><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#telephone"></use></svg><span id="phone"></span></li>
-            <li><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#geo-alt"></use></svg><span id="location"></span></li>
-            <li><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#music-note-beamed"></use></svg><span id="genres"></span></li>
-          </ul>
-
-          <div class="content">
-            <iframe id="songLink"
-              width="336" 
-              height="189" 
-              src="" 
-              title="Video do YouTube" 
-              frameborder="0" 
-              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" 
-              referrerpolicy="strict-origin-when-cross-origin" 
-              allowfullscreen>
-            </iframe>
-          </div>
-        </div>
-        <div class="right__col">
-          <nav>
-            <ul>
-              <li><a href="">Destaques</a></li>
-              <!-- <li><a href="">Albums</a></li> -->
-            </ul>
-            
-            <button type="button" id="acaoPerfil">Contate-me</button>
-
-
-          </nav>
-
-          <div class="photos">
-            <img id="img1" src="" alt="Foto Destaque 1" />
-            <img id="img2" src="" alt="Foto Destaque 2" />
-            <img id="img3" src="" alt="Foto Destaque 3" />
-            <img id="img4" src="" alt="Foto Destaque 4" />
-            <img id="img5" src="" alt="Foto Destaque 5" />
-            <img id="img6" src="" alt="Foto Destaque 6" />
-          </div>
-        </div>
+    <div id="perfilNaoEncontrado" class="container py-5" hidden>
+      <div class="estado estado-erro painel">
+        <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#emoji-frown"></use></svg>
+        <h1 class="h3">Perfil não encontrado</h1>
+        <p class="mb-2">O endereço pode estar errado ou a conta foi apagada neste navegador.</p>
+        <a class="btn btn-gig" href="../anuncios/anuncios.html">Explorar perfis</a>
       </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal" id="modal">
-    <button class="close-btn" id="close-btn">&times;</button>
-    <img id="modal-img" src="" alt="Imagem Ampliada">
-    </div>
-    
-    <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
-    
-    <script src="../lib/html.js"></script>
-    
-    <script src="../lib/constantes.js"></script>
-    
-    <script src="../lib/armazenamento.js"></script>
-    
-    <script src="../lib/senha.js"></script>
-    
-    <script src="../lib/validacao.js"></script>
-    
-    <script src="../lib/perfil.js"></script>
-    
-    <script src="../lib/sessao.js"></script>
-    
-    <script src="../dados/usuarios-exemplo.js"></script>
-    
-    <script src="../inicializacao.js"></script>
-    
-    <script src="../ui/navbar.js"></script>
-    
-    <script src="perfil.js"></script>
-  </body>
-</html>
+    <article id="perfil" hidden>
+      <div class="perfil-banner">
+        <img id="bannerImg" src="../assets/img/banner-padrao.svg" alt="" width="1500" height="500" data-fallback="banner">
+      </div>
+      <div class="container">
+        <div class="perfil-cabecalho">
+          <img id="profilePic" class="perfil-foto" src="../assets/img/avatar-padrao.svg" alt="" width="160" height="160" data-fallback="avatar">
+          <div class="perfil-identidade">
+            <p class="sobretitulo mb-1" id="role"></p>
+            <h1 id="name" class="mb-1"></h1>
+            <p class="texto-suave mb-2"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#geo-alt"></use></svg> <span id="location"></span></p>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <span class="nota" id="nota"></span>
+              <ul class="selos m-0" id="badges" aria-label="Selos"></ul>
+            </div>
+          </div>
+          <div class="perfil-acoes">
+            <a class="btn btn-gig btn-lg" id="acaoPerfil" href="../Chat/chat.html">Contate-me</a>
+          </div>
+        </div>
 
+        <div class="row g-4 mt-1">
+          <div class="col-lg-4">
+            <section class="painel mb-4" aria-labelledby="tituloSobre">
+              <h2 class="h5" id="tituloSobre">Sobre</h2>
+              <p id="bio" class="mb-3"></p>
+              <dl class="dados-perfil mb-0">
+                <dt><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#music-note-beamed"></use></svg> Gêneros</dt>
+                <dd><ul class="chips" id="genres"></ul></dd>
+                <dt><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#calendar-check"></use></svg> Disponibilidade</dt>
+                <dd id="disponibilidade"></dd>
+              </dl>
+            </section>
+
+            <section class="painel" aria-labelledby="tituloContato">
+              <h2 class="h5" id="tituloContato">Contato</h2>
+              <dl class="dados-perfil mb-0" id="contatoVisivel" hidden>
+                <dt><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#envelope"></use></svg> E-mail</dt>
+                <dd id="email"></dd>
+                <dt><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#telephone"></use></svg> Telefone</dt>
+                <dd id="phone"></dd>
+              </dl>
+              <p class="mb-0" id="contatoOculto" hidden>
+                <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#lock"></use></svg>
+                <a href="../Login/login.html" id="entrarParaVer">Entre</a> para ver e-mail e telefone.
+              </p>
+            </section>
+          </div>
+
+          <div class="col-lg-8">
+            <section class="painel mb-4" aria-labelledby="tituloVideo" id="secaoVideo">
+              <h2 class="h5" id="tituloVideo">Vídeo</h2>
+              <div class="ratio ratio-16x9" id="videoMoldura" hidden>
+                <iframe id="songLink" title="Vídeo do YouTube" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
+              </div>
+              <p class="texto-suave mb-0" id="semVideo" hidden>Nenhum vídeo cadastrado ainda.</p>
+            </section>
+
+            <section class="painel" aria-labelledby="tituloDestaques">
+              <h2 class="h5" id="tituloDestaques">Destaques</h2>
+              <ul class="galeria" id="galeria"></ul>
+              <p class="texto-suave mb-0" id="semDestaques" hidden>Nenhuma foto de destaque ainda.</p>
+            </section>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <dialog class="dialogo dialogo-foto" id="modal" aria-label="Foto ampliada">
+      <img id="modal-img" src="../assets/img/banner-padrao.svg" alt="">
+      <div class="acoes">
+        <button type="button" class="btn btn-gig-secundario" id="close-btn">Fechar</button>
+      </div>
+    </dialog>
+  </main>
+
+  <footer id="rodape"></footer>
+
+  <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="../lib/html.js"></script>
+  <script src="../lib/constantes.js"></script>
+  <script src="../lib/armazenamento.js"></script>
+  <script src="../lib/senha.js"></script>
+  <script src="../lib/validacao.js"></script>
+  <script src="../lib/perfil.js"></script>
+  <script src="../lib/sessao.js"></script>
+  <script src="../lib/mensagens.js"></script>
+  <script src="../dados/usuarios-exemplo.js"></script>
+  <script src="../inicializacao.js"></script>
+  <script src="../ui/avisos.js"></script>
+  <script src="../ui/formularios.js"></script>
+  <script src="../ui/cards.js"></script>
+  <script src="../ui/layout.js"></script>
+  <script src="perfil.js"></script>
+</body>
+</html>

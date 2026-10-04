@@ -62,6 +62,6 @@ test('cards dos anúncios não interpretam HTML e o clique ainda abre o perfil c
 test('navbar do usuário logado mostra o nome como texto', () => {
   const w = carregarPagina('Home/home.html', { antes: comMalicioso(true) });
   semInjecao(w);
-  assert.match(w.document.querySelector('.navbar-nav').textContent, /Bem-vindo, x"><img src=x id=injU>!/);
-  assert.equal(w.document.querySelector('#profileAvatarLink img').getAttribute('src'), MALICIOSO.profilePicLink);
+  assert.equal(w.document.getElementById('nomeUsuario').textContent, MALICIOSO.name);
+  assert.equal(w.document.getElementById('profileAvatar').getAttribute('src'), MALICIOSO.profilePicLink);
 });

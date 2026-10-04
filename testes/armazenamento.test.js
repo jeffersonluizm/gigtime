@@ -64,14 +64,14 @@ test('usuarioPublico remove senha e hash do objeto', () => {
   assert.equal(p.username, 'ana');
 });
 
-test('global.js grava os usuários de exemplo no localStorage e não no sessionStorage', () => {
+test('inicializacao.js grava os usuários de exemplo no localStorage e não no sessionStorage', () => {
   const w = carregarPagina('Home/home.html');
   const lista = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS));
   assert.equal(lista.length, 10);
   assert.equal(w.sessionStorage.getItem('users'), null);
 });
 
-test('global.js migra usuários de uma aba aberta na versão antiga', () => {
+test('inicializacao.js migra usuários de uma aba aberta na versão antiga', () => {
   const w = carregarPagina('Home/home.html', {
     antes: (win) => win.sessionStorage.setItem('users', JSON.stringify([u('antigo', { role: 'Músico', genres: [], badges: [], password: 'p' })])),
   });
@@ -79,7 +79,7 @@ test('global.js migra usuários de uma aba aberta na versão antiga', () => {
   assert.deepEqual(nomes, ['antigo'], 'quem já tinha dados mantém os dados e não recebe seed por cima');
 });
 
-test('global.js limpa senha antiga do usuário logado guardado na sessão', () => {
+test('inicializacao.js limpa senha antiga do usuário logado guardado na sessão', () => {
   const w = carregarPagina('Home/home.html', {
     antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify(u('lia.batera', { password: 'demo1234', profilePicLink: 'x' }))),
   });
@@ -88,10 +88,11 @@ test('global.js limpa senha antiga do usuário logado guardado na sessão', () =
   assert.equal('password' in logado, false);
 });
 
-test('home e anúncios montam os cards a partir do localStorage', () => {
+test('home mostra os 4 mais bem avaliados de cada papel e anúncios mostra todos', () => {
   const home = carregarPagina('Home/home.html');
-  assert.equal(home.document.querySelectorAll('#anunciosMusic .card').length, 5);
-  assert.equal(home.document.querySelectorAll('#anunciosContrat .card').length, 5);
+  assert.equal(home.document.querySelectorAll('#anunciosMusic .card').length, 4);
+  assert.equal(home.document.querySelectorAll('#anunciosContrat .card').length, 4);
+  assert.equal(home.document.querySelector('#anunciosMusic [data-username]').dataset.username, 'banda.aurora', 'nota 5 primeiro');
   const anuncios = carregarPagina('anuncios/anuncios.html');
   assert.equal(anuncios.document.querySelectorAll('#anuncios .card').length, 10);
 });

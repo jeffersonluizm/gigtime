@@ -3,6 +3,16 @@
 // (a sessão vale por aba). Quem vinha de versões antigas é migrado aqui.
 // Cada passo é isolado: armazenamento cheio ou bloqueado não pode derrubar a página.
 (function () {
+  // Armazenamento bloqueado (ex.: cookies desativados): sem ele o site não funciona; vai para a página de erro
+  try {
+    window.localStorage.getItem(GigArmazenamento.CHAVE_USUARIOS);
+  } catch (erro) {
+    if (!/\/Sistema\/erro\.html$/.test(window.location.pathname)) {
+      (window.__gigNavegar || ((destino) => window.location.replace(destino)))('../Sistema/erro.html?motivo=armazenamento');
+    }
+    return;
+  }
+
   function tentarGravar(descricao, passo) {
     try {
       passo();

@@ -40,6 +40,8 @@ function carregarPagina(relativo, { busca = '', antes } = {}) {
   window.alert = (msg) => { (window.__alertas ||= []).push(msg); };
   // PBKDF2 com 600 mil iterações leva ~0,1 s por hash; nas páginas de teste o custo é reduzido
   window.GIGTIME_ITERACOES_PBKDF2 = 1000;
+  // O jsdom não navega; o redirecionamento feito pelo inicializacao.js fica registrado aqui
+  window.__gigNavegar = (destino) => { window.__redirecionadoPara = destino; };
   if (antes) antes(window);
 
   const scripts = [...window.document.querySelectorAll('script[src]')]
@@ -47,7 +49,12 @@ function carregarPagina(relativo, { busca = '', antes } = {}) {
     .filter((src) => !/^https?:/.test(src));
   for (const src of scripts) {
     const caminho = path.join(path.dirname(arquivo), src);
-    window.eval(fs.readFileSync(caminho, 'utf8'));
+    try {
+      window.eval(fs.readFileSync(caminho, 'utf8'));
+    } catch (erro) {
+      // Depois de um redirecionamento a página real já teria saído; os scripts seguintes podem falhar
+      if (!window.__redirecionadoPara) throw erro;
+    }
   }
   window.document.dispatchEvent(new window.Event('DOMContentLoaded'));
   window.dispatchEvent(new window.Event('load'));

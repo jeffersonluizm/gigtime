@@ -12,7 +12,7 @@ const SITE = path.join(__dirname, '..', 'codigo-fonte');
 const ICONES = [
   'arrow-counterclockwise', 'arrow-left', 'award', 'box-arrow-right', 'building', 'calendar-check', 'chat-dots', 'check-circle-fill',
   'chevron-down', 'clock', 'code-slash', 'download', 'emoji-frown', 'envelope', 'exclamation-triangle-fill', 'eye', 'eye-slash',
-  'funnel', 'gear', 'geo-alt', 'hdd-stack', 'house', 'image', 'info-circle', 'lock', 'mic', 'music-note-beamed', 'people',
+  'funnel', 'gear', 'geo-alt', 'hdd-stack', 'house', 'image', 'info-circle', 'list', 'lock', 'mic', 'music-note-beamed', 'people',
   'person', 'person-circle', 'play-circle', 'question-circle', 'search', 'send-fill', 'shield-lock', 'sliders', 'star-fill',
   'telephone', 'trash', 'x-lg',
 ];

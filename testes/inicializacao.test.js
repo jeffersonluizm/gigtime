@@ -1,11 +1,11 @@
-// O global.js roda em todas as páginas: falha de armazenamento não pode derrubar navbar nem seed
+// O inicializacao.js roda em todas as páginas: falha de armazenamento não pode derrubar navbar nem seed
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { carregarPagina } = require('./apoio');
 
 const usuario = (username) => ({ username, name: username, role: 'Músico', genres: ['Rock'], badges: [], passwordHash: 'h' });
 
-test('global.js não quebra a página quando o armazenamento está cheio', () => {
+test('inicializacao.js não quebra a página quando o armazenamento está cheio', () => {
   const avisos = [];
   const w = carregarPagina('Home/home.html', {
     antes: (win) => {

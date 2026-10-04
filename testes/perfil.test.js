@@ -314,3 +314,63 @@ test('EdicaoPerfil mantém um estado fora da lista de UFs (ex.: "GH") e deixa sa
   assert.equal(lia.city, 'Station Square');
   assert.equal(lia.state, 'GH');
 });
+
+test('perfil abre pelo endereço ?u= mesmo sem nada na sessão', () => {
+  const w = carregarPagina('Perfil/perfil.html', { busca: '?u=casa.lume' });
+  assert.equal(w.document.getElementById('name').textContent, 'Casa Lume');
+  assert.equal(w.document.title, 'Casa Lume | GigTime');
+});
+
+test('perfil inexistente mostra o estado de não encontrado, sem alert', () => {
+  const w = carregarPagina('Perfil/perfil.html', { busca: '?u=ninguem' });
+  assert.equal(w.document.getElementById('perfilNaoEncontrado').hidden, false);
+  assert.equal(w.document.getElementById('perfil').hidden, true);
+  assert.equal(w.__alertas, undefined);
+});
+
+test('perfil: e-mail e telefone só aparecem para quem está logado', () => {
+  const visitante = carregarPagina('Perfil/perfil.html', { busca: '?u=casa.lume' });
+  assert.equal(visitante.document.getElementById('contatoVisivel').hidden, true);
+  assert.equal(visitante.document.getElementById('email').textContent, '');
+  assert.equal(visitante.document.getElementById('contatoOculto').hidden, false);
+  const logado = carregarPagina('Perfil/perfil.html', { busca: '?u=casa.lume', antes: logadoComo('davi.sax') });
+  assert.equal(logado.document.getElementById('email').textContent, 'casa.lume@example.com');
+});
+
+test('perfil: as fotos de destaque são botões que abrem o diálogo', () => {
+  const w = carregarPagina('Perfil/perfil.html', { busca: '?u=lia.batera' });
+  const botoes = w.document.querySelectorAll('#galeria button');
+  assert.equal(botoes.length, 3);
+  botoes[1].click();
+  assert.ok(w.document.getElementById('modal').hasAttribute('open'));
+  assert.match(w.document.getElementById('modal-img').getAttribute('alt'), /Foto 2 de Lia Fontes/);
+  w.document.getElementById('close-btn').click();
+  assert.equal(w.document.getElementById('modal').hasAttribute('open'), false);
+});
+
+test('EdicaoPerfil salva apresentação e disponibilidade e avisa o sucesso sem alert', async () => {
+  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('davi.sax') });
+  const $ = (id) => w.document.getElementById(id);
+  assert.equal($('bio').value, require('../codigo-fonte/dados/usuarios-exemplo.js').find((u) => u.username === 'davi.sax').bio);
+  $('bio').value = 'Sax tenor e soprano.';
+  $('disponibilidade').value = 'Sábados à noite';
+  $('senhaAtual').value = 'demo1234';
+  $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await esperarAte(() => w.sessionStorage.getItem('gigtime:aviso'));
+  const davi = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'davi.sax');
+  assert.equal(davi.bio, 'Sax tenor e soprano.');
+  assert.equal(davi.disponibilidade, 'Sábados à noite');
+  assert.match(JSON.parse(w.sessionStorage.getItem('gigtime:aviso')).texto, /atualizado/);
+  assert.equal(w.__alertas, undefined);
+});
+
+test('EdicaoPerfil com sessão expirada vai para a página de sessão expirada', () => {
+  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', {
+    antes: (win) => {
+      logadoComo('davi.sax')(win);
+      win.sessionStorage.setItem('gigtime:atividade', String(Date.now() - 3 * 60 * 60 * 1000));
+    },
+  });
+  assert.equal(w.sessionStorage.getItem('loggedInUser'), null);
+  assert.equal(w.sessionStorage.getItem('depoisDoLogin'), '../EdicaoPerfil/EdicaoPerfil.html');
+});

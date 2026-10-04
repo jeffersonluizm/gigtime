@@ -31,7 +31,7 @@ test('anúncios: usuário "state" não sequestra o select de estado', () => {
   assert.equal(w.sessionStorage.getItem('clickedUser'), null, 'clicar no filtro não abre perfil');
   select.value = 'MG';
   select.dispatchEvent(new w.Event('change', { bubbles: true }));
-  const visiveis = [...w.document.querySelectorAll('#anuncios > .col')].filter((c) => c.style.display !== 'none').map((c) => c.dataset.username);
+  const visiveis = [...w.document.querySelectorAll('#anuncios > .col')].filter((c) => !c.hidden).map((c) => c.dataset.username);
   assert.deepEqual(visiveis, ['bh']);
 });
 

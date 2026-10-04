@@ -1,0 +1,21 @@
+.filtros legend {
+  margin-bottom: .5rem;
+}
+
+.grupo-papel .btn {
+  border-radius: 999px;
+  margin-right: .25rem;
+}
+
+.grupo-papel .btn-check:checked + .btn {
+  background: var(--gig-indigo);
+  border-color: var(--gig-indigo);
+  color: var(--gig-superficie);
+}
+
+@media (min-width: 992px) {
+  .filtros {
+    position: sticky;
+    top: calc(var(--gig-altura-topo) + 16px);
+  }
+}

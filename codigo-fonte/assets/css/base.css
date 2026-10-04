@@ -1,0 +1,138 @@
+/* Base: tipografia, foco visível, ícones e estrutura comum a todas as páginas. Cores só via tokens.css. */
+
+html {
+  scroll-padding-top: calc(var(--gig-altura-topo) + 16px);
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--gig-fonte-texto);
+  background-color: var(--gig-fundo);
+  color: var(--gig-texto);
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6, .titulo-marca {
+  font-family: var(--gig-fonte-titulo);
+  color: var(--gig-texto-forte);
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+
+h1, .h1 {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.4rem);
+  line-height: 1.08;
+}
+
+a {
+  color: var(--gig-indigo);
+  text-underline-offset: .18em;
+}
+
+a:hover {
+  color: var(--gig-indigo-escuro);
+}
+
+.texto-suave {
+  color: var(--gig-texto-suave);
+}
+
+/* Foco sempre visível no teclado (o Bootstrap só mostra em alguns componentes) */
+:focus-visible {
+  outline: 3px solid var(--gig-foco);
+  outline-offset: 2px;
+}
+
+.form-control:focus, .form-select:focus, .form-check-input:focus, .btn:focus-visible {
+  border-color: var(--gig-foco);
+  box-shadow: 0 0 0 .25rem var(--bs-focus-ring-color);
+}
+
+.form-check-input:checked {
+  background-color: var(--gig-laranja);
+  border-color: var(--gig-laranja);
+}
+
+.form-label, legend.form-label {
+  font-weight: 600;
+  color: var(--gig-texto-forte);
+}
+
+.form-text {
+  color: var(--gig-texto-suave);
+}
+
+.invalid-feedback {
+  color: var(--gig-erro-texto);
+}
+
+/* Link "pular para o conteúdo": aparece só no foco do teclado */
+.pular-conteudo {
+  position: absolute;
+  left: 12px;
+  top: -60px;
+  z-index: 2000;
+  padding: .6rem 1rem;
+  border-radius: var(--gig-raio-p);
+  background: var(--gig-escuro);
+  color: var(--gig-fundo);
+  font-weight: 600;
+}
+
+.pular-conteudo:focus {
+  top: 12px;
+  color: var(--gig-fundo);
+}
+
+/* Ícones do sprite assets/icones.svg */
+.icone {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  vertical-align: -.125em;
+  flex-shrink: 0;
+}
+
+.icone-g {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Imagem externa que não carregou: some a imagem quebrada, fica o fundo neutro */
+img.imagem-falhou {
+  background: var(--gig-superficie-2);
+}
+
+.conteudo-estreito {
+  max-width: 760px;
+}
+
+.conteudo-texto {
+  max-width: 68ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.text-gig-laranja {
+  color: var(--gig-laranja);
+}
+
+.text-gig-erro {
+  color: var(--gig-erro);
+}

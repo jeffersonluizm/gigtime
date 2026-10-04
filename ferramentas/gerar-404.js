@@ -1,0 +1,78 @@
+// Gera o 404.html da raiz (o GitHub Pages serve esse arquivo para qualquer endereço que não existe).
+// A página pode aparecer em qualquer caminho, então não dá para usar links relativos: um script curto
+// calcula a base do site. Script e estilo são inline e entram na CSP pelo hash SHA-256 (sem 'unsafe-inline').
+// Uso: node ferramentas/gerar-404.js
+const fs = require('node:fs');
+const path = require('node:path');
+const { createHash } = require('node:crypto');
+
+const hash = (texto) => "'sha256-" + createHash('sha256').update(texto).digest('base64') + "'";
+
+const script = `
+  (function () {
+    var caminho = window.location.pathname;
+    var i = caminho.indexOf('/codigo-fonte/');
+    var base = '/';
+    if (i >= 0) {
+      base = caminho.slice(0, i + 1);
+    } else if (/\\.github\\.io$/.test(window.location.hostname)) {
+      var primeiro = caminho.split('/').filter(Boolean)[0];
+      if (primeiro) base = '/' + primeiro + '/';
+    }
+    var links = document.querySelectorAll('[data-destino]');
+    for (var j = 0; j < links.length; j++) links[j].href = base + 'codigo-fonte/' + links[j].getAttribute('data-destino');
+  })();
+`;
+
+const estilo = `
+  :root { --laranja: #c2410c; --laranja-escuro: #9a3412; --indigo: #484f9f; --fundo: #fcf6f3; --texto: #2b211d; --suave: #6b5a52; }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: var(--fundo); color: var(--texto);
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; }
+  main { max-width: 520px; text-align: center; }
+  svg { width: 96px; height: 96px; }
+  h1 { font-size: 2rem; margin: 16px 0 8px; color: #1f1410; }
+  p { color: var(--suave); line-height: 1.6; }
+  .acoes { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 24px; }
+  a { display: inline-block; padding: 10px 20px; border-radius: 999px; font-weight: 600; text-decoration: none; }
+  .principal { background: var(--laranja); color: #fff; }
+  .principal:hover { background: var(--laranja-escuro); }
+  .secundario { border: 1px solid var(--indigo); color: var(--indigo); }
+  a:focus-visible { outline: 3px solid var(--indigo); outline-offset: 2px; }
+`;
+
+const csp = `default-src 'self'; script-src ${hash(script)}; style-src ${hash(estilo)}; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'`;
+
+const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="${csp}">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Página não encontrada | GigTime</title>
+  <!-- Arquivo GERADO por ferramentas/gerar-404.js: os hashes da CSP dependem do texto exato do script e do estilo -->
+  <style>${estilo}</style>
+</head>
+<body>
+  <main>
+    <svg viewBox="0 0 64 64" role="img" aria-label="GigTime">
+      <path d="M32 61C20.5 51.5 5 35.5 5 20.5 5 9.5 17 3 32 3s27 6.5 27 17.5C59 35.5 43.5 51.5 32 61Z" fill="#c2410c"/>
+      <circle cx="32" cy="24" r="13" fill="none" stroke="#fcf6f3" stroke-width="3.5"/>
+      <path d="M32 16v8l6 4" fill="none" stroke="#f7b801" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h1>Página não encontrada</h1>
+    <p>Essa página saiu do repertório. O endereço pode ter mudado ou estar digitado errado.</p>
+    <div class="acoes">
+      <a class="principal" href="codigo-fonte/Home/home.html" data-destino="Home/home.html">Ir para o início</a>
+      <a class="secundario" href="codigo-fonte/anuncios/anuncios.html" data-destino="anuncios/anuncios.html">Explorar perfis</a>
+    </div>
+  </main>
+  <script>${script}</script>
+</body>
+</html>
+`;
+
+fs.writeFileSync(path.join(__dirname, '..', '404.html'), html);
+console.log('404.html gerado');

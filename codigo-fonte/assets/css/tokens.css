@@ -1,0 +1,76 @@
+/* Identidade visual do GigTime: a única fonte de cores, fontes, raios e sombras.
+   Contraste WCAG AA conferido em testes/identidade.test.js (texto normal >= 4.5:1). */
+
+@font-face {
+  font-family: "Outfit";
+  src: url("../fontes/outfit-latin-wght-normal.woff2") format("woff2-variations"), url("../fontes/outfit-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("../fontes/inter-latin-wght-normal.woff2") format("woff2-variations"), url("../fontes/inter-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Marca */
+  --gig-laranja: #c2410c;          /* navbar, botões e links de destaque (5,18:1 com branco) */
+  --gig-laranja-escuro: #9a3412;   /* hover e pressionado (7,31:1 com branco) */
+  --gig-laranja-vivo: #ff5629;     /* só decorativo: ilustrações, bordas, detalhes (nunca texto) */
+  --gig-indigo: #484f9f;           /* links e ações secundárias (6,78:1 sobre o fundo) */
+  --gig-indigo-escuro: #2f3470;
+  --gig-roxo: #5d3a76;
+  --gig-amarelo: #f7b801;          /* selos e notas, sempre com texto escuro (10,13:1) */
+  --gig-amarelo-claro: #fde7c2;
+
+  /* Superfícies e texto */
+  --gig-fundo: #fcf6f3;
+  --gig-superficie: #ffffff;
+  --gig-superficie-2: #f3ebe6;
+  --gig-borda: #e7d8cf;
+  --gig-texto: #2b211d;
+  --gig-texto-forte: #1f1410;
+  --gig-texto-suave: #6b5a52;      /* 6,11:1 sobre o fundo */
+  --gig-escuro: #1f1410;           /* rodapé */
+  --gig-sobre-escuro: #d9c9bf;     /* texto no rodapé (11,2:1) */
+
+  /* Estados */
+  --gig-sucesso: #15803d;
+  --gig-sucesso-fundo: #dcfce7;
+  --gig-sucesso-texto: #166534;
+  --gig-erro: #b91c1c;
+  --gig-erro-fundo: #fee2e2;
+  --gig-erro-texto: #991b1b;
+  --gig-foco: #484f9f;
+
+  /* Tipografia */
+  --gig-fonte-titulo: "Outfit", "Segoe UI", system-ui, sans-serif;
+  --gig-fonte-texto: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+
+  /* Forma */
+  --gig-raio-p: 8px;
+  --gig-raio: 14px;
+  --gig-raio-g: 22px;
+  --gig-sombra: 0 1px 2px rgba(31, 20, 16, .06), 0 4px 14px rgba(31, 20, 16, .06);
+  --gig-sombra-forte: 0 10px 30px rgba(31, 20, 16, .14);
+  --gig-altura-topo: 64px;
+
+  /* Bootstrap lendo os tokens da marca */
+  --bs-body-font-family: var(--gig-fonte-texto);
+  --bs-body-color: var(--gig-texto);
+  --bs-body-bg: var(--gig-fundo);
+  --bs-link-color: var(--gig-indigo);
+  --bs-link-color-rgb: 72, 79, 159;
+  --bs-link-hover-color: var(--gig-indigo-escuro);
+  --bs-link-hover-color-rgb: 47, 52, 112;
+  --bs-border-color: var(--gig-borda);
+  --bs-border-radius: var(--gig-raio-p);
+  --bs-focus-ring-color: rgba(72, 79, 159, .35);
+  --bs-form-invalid-color: var(--gig-erro-texto);
+  --bs-form-invalid-border-color: var(--gig-erro);
+}

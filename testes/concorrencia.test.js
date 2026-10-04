@@ -56,10 +56,12 @@ test('cadastro não duplica username registrado por outra aba durante o hash', a
   preencherCadastro(w);
   outraAbaDuranteOHash(w, () => adicionar(w, outro('novo', { email: 'x@ex.com', phone: 'x' })));
   w.document.getElementById('registerForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperarAte(() => w.__alertas);
+  const erro = w.document.querySelector('[data-erro-formulario]');
+  await esperarAte(() => erro.textContent);
   assert.equal(usuarios(w).filter((u) => u.username === 'novo').length, 1);
   assert.equal(usuarios(w).find((u) => u.username === 'novo').email, 'x@ex.com');
-  assert.equal(w.__alertas.length, 1);
+  assert.match(erro.textContent, /outra aba/);
+  assert.equal(w.__alertas, undefined);
 });
 
 test('edição de perfil não apaga usuário gravado por outra aba durante o hash', async () => {

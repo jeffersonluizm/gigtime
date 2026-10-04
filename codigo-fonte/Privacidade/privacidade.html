@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacidade e dados | GigTime</title>
+  <meta name="description" content="O que o GigTime guarda no seu navegador, quem pode ver, o que vai para outros sites e como apagar tudo.">
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="preload" href="../assets/fontes/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/componentes.css">
+</head>
+<body data-pagina="privacidade">
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+
+  <main id="conteudo" tabindex="-1">
+    <div class="container py-4 py-lg-5 conteudo-texto">
+      <span class="sobretitulo">Privacidade</span>
+      <h1 class="h2">Seus dados ficam com você</h1>
+      <p class="lead texto-suave">O GigTime não tem servidor. Nada do que você cadastra é enviado para nós: fica guardado no armazenamento deste navegador (Web Storage).</p>
+
+      <div class="alerta my-4">
+        <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#shield-lock"></use></svg>
+        <p class="mb-0"><strong>É uma demonstração.</strong> Não use uma senha que você usa em outros sites e não cadastre dados que não queira deixar neste computador.</p>
+      </div>
+
+      <h2 class="h4 mt-5">O que fica guardado</h2>
+      <div class="table-responsive painel p-0 mb-4">
+        <table class="table mb-0">
+          <thead>
+            <tr><th scope="col">Onde</th><th scope="col">Chave</th><th scope="col">O que tem</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>localStorage</td><td><code>gigtime:users</code></td><td>Perfis: nome, e-mail, telefone, cidade, gêneros, links de imagem e vídeo, e a senha só como hash PBKDF2 (nunca o texto da senha).</td></tr>
+            <tr><td>localStorage</td><td><code>gigtime:messages</code></td><td>Mensagens do chat: quem enviou, para quem, texto e horário.</td></tr>
+            <tr><td>localStorage</td><td><code>gigtime:lidas</code></td><td>Até quando você já leu cada conversa, para o contador de não lidas.</td></tr>
+            <tr><td>sessionStorage</td><td><code>loggedInUser</code>, <code>gigtime:atividade</code></td><td>Quem está logado nesta aba (sem senha) e a hora da última atividade. Some ao fechar a aba.</td></tr>
+            <tr><td>sessionStorage</td><td><code>clickedUser</code>, <code>depoisDoLogin</code>, <code>gigtime:aviso</code></td><td>Perfil aberto, página para voltar depois do login e o próximo aviso a mostrar.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="h4 mt-5">Quem pode ver</h2>
+      <p>Qualquer pessoa que use <strong>este mesmo navegador</strong> neste computador, porque os dados ficam nele sem criptografia (exceto a senha, guardada só como hash). Em computador compartilhado, apague seus dados ao terminar.</p>
+
+      <h2 class="h4 mt-5">O que vai para outros sites</h2>
+      <ul>
+        <li><strong>Imagens por link.</strong> Fotos de perfil, banners e destaques que você informa são carregadas do site de origem, que pode ver o endereço IP de quem abre o perfil.</li>
+        <li><strong>Vídeo do YouTube.</strong> O vídeo é exibido pelo domínio <code>youtube-nocookie.com</code>, que não grava cookies até você dar play.</li>
+        <li>Não usamos cookies, analytics nem rastreadores. Bootstrap, fontes e ícones são servidos pelo próprio site.</li>
+      </ul>
+
+      <h2 class="h4 mt-5">Como apagar</h2>
+      <ul class="mb-0">
+        <li>Em <a href="../Conta/conta.html">Conta e dados</a>: baixe uma cópia, apague a sua conta (perfil e conversas) ou restaure a demonstração.</li>
+        <li>Sem conseguir entrar: <a href="../Acesso/esqueci-senha.html">Esqueci minha senha</a> também restaura a demonstração.</li>
+        <li>Pelo navegador: limpar os dados do site apaga tudo de uma vez.</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer id="rodape"></footer>
+
+  <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="../lib/html.js"></script>
+  <script src="../lib/constantes.js"></script>
+  <script src="../lib/armazenamento.js"></script>
+  <script src="../lib/senha.js"></script>
+  <script src="../lib/validacao.js"></script>
+  <script src="../lib/perfil.js"></script>
+  <script src="../lib/sessao.js"></script>
+  <script src="../lib/mensagens.js"></script>
+  <script src="../dados/usuarios-exemplo.js"></script>
+  <script src="../inicializacao.js"></script>
+  <script src="../ui/avisos.js"></script>
+  <script src="../ui/formularios.js"></script>
+  <script src="../ui/cards.js"></script>
+  <script src="../ui/layout.js"></script>
+</body>
+</html>

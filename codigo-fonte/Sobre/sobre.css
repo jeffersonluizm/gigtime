@@ -1,0 +1,125 @@
+.indice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: 1.25rem;
+}
+
+.indice a {
+  padding: .3rem .8rem;
+  border-radius: 999px;
+  background: var(--gig-superficie);
+  border: 1px solid var(--gig-borda);
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+}
+
+.indice a:hover {
+  border-color: var(--gig-indigo);
+}
+
+.diagrama svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.diagrama {
+  overflow-x: auto;
+}
+
+.diagrama svg {
+  min-width: 640px;
+}
+
+.d-moldura {
+  fill: var(--gig-fundo);
+  stroke: var(--gig-borda);
+  stroke-width: 2;
+}
+
+.d-caixa {
+  stroke-width: 2;
+}
+
+.d-paginas {
+  fill: var(--gig-amarelo-claro);
+  stroke: var(--gig-amarelo);
+}
+
+.d-ui {
+  fill: var(--gig-superficie);
+  stroke: var(--gig-indigo);
+}
+
+.d-lib {
+  fill: var(--gig-superficie);
+  stroke: var(--gig-laranja);
+  stroke-width: 3;
+}
+
+.d-dados {
+  fill: var(--gig-superficie-2);
+  stroke: var(--gig-texto-suave);
+}
+
+.d-externo {
+  fill: var(--gig-superficie);
+  stroke: var(--gig-roxo);
+}
+
+.d-futuro {
+  fill: var(--gig-fundo);
+  stroke: var(--gig-texto-suave);
+  stroke-dasharray: 8 6;
+}
+
+.d-rotulo {
+  font-family: var(--gig-fonte-texto);
+  font-size: 15px;
+  font-weight: 600;
+  fill: var(--gig-texto-suave);
+}
+
+.d-titulo {
+  font-family: var(--gig-fonte-titulo);
+  font-size: 21px;
+  font-weight: 700;
+  fill: var(--gig-texto-forte);
+  text-anchor: middle;
+}
+
+.d-texto {
+  font-family: var(--gig-fonte-texto);
+  font-size: 15px;
+  fill: var(--gig-texto);
+  text-anchor: middle;
+}
+
+.d-linha {
+  stroke: var(--gig-texto-suave);
+  stroke-width: 2.5;
+  fill: none;
+}
+
+.d-tracejada {
+  stroke-dasharray: 7 6;
+}
+
+.d-seta {
+  fill: var(--gig-texto-suave);
+}
+
+.lista-decisoes li + li {
+  margin-top: .6rem;
+}
+
+.tabela-carga caption {
+  caption-side: top;
+  color: var(--gig-texto-suave);
+}
+
+.tabela-carga td, .tabela-carga th {
+  padding: .7rem 1rem;
+}

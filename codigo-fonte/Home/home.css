@@ -1,0 +1,67 @@
+.hero {
+  padding: clamp(2rem, 1.5rem + 3vw, 4.5rem) 0 clamp(1rem, .5rem + 2vw, 2.5rem);
+  background:
+    radial-gradient(circle at 85% 10%, rgba(247, 184, 1, .18), transparent 40%),
+    radial-gradient(circle at 10% 90%, rgba(255, 86, 41, .12), transparent 45%);
+}
+
+.hero__foto {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 800 / 562;
+  object-fit: cover;
+  border-radius: var(--gig-raio-g);
+  box-shadow: var(--gig-sombra-forte);
+}
+
+.passos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  counter-reset: passo;
+}
+
+.passos li {
+  position: relative;
+  counter-increment: passo;
+}
+
+.passos li::before {
+  content: counter(passo);
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  font-family: var(--gig-fonte-titulo);
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--gig-superficie-2);
+}
+
+.passos .icone {
+  color: var(--gig-laranja);
+}
+
+.faixa-demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: clamp(1.25rem, 1rem + 1.5vw, 2rem);
+  border-radius: var(--gig-raio-g);
+  background: var(--gig-amarelo-claro);
+  color: var(--gig-texto-forte);
+}
+
+.faixa-demo > div:first-child {
+  max-width: 62ch;
+}
+
+.faixa-demo code {
+  color: var(--gig-laranja-escuro);
+  font-weight: 600;
+}
