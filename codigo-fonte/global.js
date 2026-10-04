@@ -10,14 +10,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (loggedInUser) {
         // Personaliza a navbar para o usuário logado
 
+        // O template não leva dados do usuário; foto e nome entram por src/textContent (sem HTML)
         navbar.innerHTML = `
         <a class="navbar-brand" href="../Perfil/perfil.html" id="profileAvatarLink">
-            <img src="${loggedInUser.profilePicLink}" alt="Foto de perfil" width="30" height="30" class="shadow object-fit-cover rounded-circle">
+            <img alt="Foto de perfil" width="30" height="30" class="shadow object-fit-cover rounded-circle">
         </a>
-        <span class="navbar-text text-white me-3">Bem-vindo, ${loggedInUser.username}!</span>
+        <span class="navbar-text text-white me-3" id="saudacaoUsuario"></span>
         <a class="nav-link me-3" href="#" id="profileLink">Perfil</a>
+        <a class="nav-link me-3" href="../Chat/chat.html">Mensagens</a>
         <a class="nav-link me-3" href="#" id="logoutLink">Sair</a>
           `;
+        navbar.querySelector('#profileAvatarLink img').src = loggedInUser.profilePicLink || '../userImages/defaultUser.jpg';
+        document.getElementById('saudacaoUsuario').textContent = `Bem-vindo, ${loggedInUser.username}!`;
 
         // "Perfil" e a foto abrem o perfil do próprio usuário logado
         document.getElementById('profileLink').addEventListener('click', function () {
@@ -52,9 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }});
 
-// Adiciona usuário padrão na memória local
-if (!sessionStorage.getItem('users')) {
-    sessionStorage.setItem('users', JSON.stringify([
+// Usuários de exemplo, gravados no localStorage só quando ainda não há nenhum usuário.
+// passwordHash = SHA-256 de "gigtime:<username>:<senha>" (ver lib/senha.js); as senhas de demonstração estão no README.
+const USUARIOS_EXEMPLO = [
         {
             username: 'sonic',
             name: 'Sonic Hedgehog',
@@ -77,7 +81,7 @@ if (!sessionStorage.getItem('users')) {
                 "https://preview.redd.it/a-sonic-plush-holding-the-crush40-guitar-v0-msf38un6lgi91.jpg?auto=webp&s=7af1ab047d2caf047b8dcacfadf5aaded621c3ea",
                 "https://pbs.twimg.com/media/FmeeQ3AWQAUkre7?format=jpg&name=4096x4096",
             ],
-            password: 'sonic'
+            passwordHash: 'ec837339f61e8a35c0a90e526c732fd87ad2a86399f44e15686b62b7359f4da0'
         },
         {
             username: 'cartola',
@@ -101,7 +105,7 @@ if (!sessionStorage.getItem('users')) {
                 "https://i.postimg.cc/CxNBK6LZ/highlight-5.jpg",
                 "https://i.postimg.cc/z3Y5w5pJ/highlight-2.jpg",
             ],
-            password: 'cartolinha'
+            passwordHash: 'ffcc0f73f2ff4099183563acf852fe3e1afeccf781f8b173cecb76e0f9987240'
         },
         {
             username: 'maria123',
@@ -125,7 +129,7 @@ if (!sessionStorage.getItem('users')) {
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'maria123'
+            passwordHash: '717d0c15137e60b977e7cb8335e08dad1250ccacefe46ee6a12d2fc776c1f314'
         },
         {
             username: 'lucas98',
@@ -149,7 +153,7 @@ if (!sessionStorage.getItem('users')) {
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'lucas98'
+            passwordHash: 'f5e14504ff3269b70f2842c83323bd8af6fa936214110dd959709ad68b1ae9c4'
         },
         {
             username: 'ana.pereira',
@@ -173,7 +177,7 @@ if (!sessionStorage.getItem('users')) {
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'ana.pereira'
+            passwordHash: '3429b0e9801648cfcf9d99cee50fa1c150ccd084f5b1499df6aa955337debdf4'
         },
         {
             username: 'joao_souza',
@@ -197,7 +201,7 @@ if (!sessionStorage.getItem('users')) {
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'joao.souza'
+            passwordHash: '490790c6e51b3c530ac3a0763ee0d5c58628747bac6e0dda8d0d62614d4185ae'
         },
         {
             username: 'carol.martins',
@@ -221,7 +225,7 @@ if (!sessionStorage.getItem('users')) {
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'carol.martins'
+            passwordHash: 'acdcde187586742c9b28102649a5b3a6feb22738c844bb6b70d23672b69f8c29'
         },
         {
             username: 'joaoshow',
@@ -245,7 +249,7 @@ if (!sessionStorage.getItem('users')) {
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'joaoshow123'
+            passwordHash: 'fae2df09db1825270a9f7081215af2d57233ff21c1a96ff2e3c645783c3a647e'
         },
         {
             username: 'jazzburger',
@@ -269,7 +273,7 @@ if (!sessionStorage.getItem('users')) {
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'plannerpro2024'
+            passwordHash: '3b864c16ba14a5ed022e4397fb87e9827a25f9651f1878569e23976eb156b6b9'
         },
         {
             username: 'operahouse',
@@ -293,8 +297,30 @@ if (!sessionStorage.getItem('users')) {
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'evento2024'
+            passwordHash: '971c82f043ddc4bee9f338e05b610d39d9ae8fcb6e65e4aaf3068403f28811a7'
         }
-        
-    ]));
+];
+
+// Dados (usuários e mensagens) ficam no localStorage; o usuário logado fica no sessionStorage,
+// ou seja, a sessão vale por aba. Quem vinha da versão antiga (usuários no sessionStorage) é migrado.
+// Cada passo isolado: armazenamento cheio ou bloqueado não pode derrubar a navbar nem o resto da página
+function tentarGravar(descricao, passo) {
+    try {
+        passo();
+    } catch (erro) {
+        console.warn(`GigTime: não foi possível ${descricao} (${erro.name}: ${erro.message})`);
+    }
 }
+tentarGravar('migrar as chaves antigas', () => GigArmazenamento.migrarChavesAntigas(localStorage));
+tentarGravar('migrar os usuários da sessão antiga', () => GigArmazenamento.migrarDaSessao(localStorage, sessionStorage));
+tentarGravar('gravar os usuários de exemplo', () => GigArmazenamento.semearSeVazio(localStorage, USUARIOS_EXEMPLO));
+// Senhas em texto puro de versões antigas viram hash (assíncrono; o login aceita as duas formas)
+GigSenha.migrarSenhasDoStorage(localStorage, GigArmazenamento.CHAVE_USUARIOS).catch(erro => console.warn(erro.message));
+
+// Objetos copiados para a sessão não guardam senha (versões antigas guardavam o usuário inteiro)
+['loggedInUser', 'clickedUser'].forEach(chave => {
+    const salvo = GigArmazenamento.lerJSON(sessionStorage, chave);
+    if (salvo && ('password' in salvo || 'passwordHash' in salvo)) {
+        tentarGravar('limpar a senha da sessão', () => sessionStorage.setItem(chave, JSON.stringify(GigArmazenamento.usuarioPublico(salvo))));
+    }
+});

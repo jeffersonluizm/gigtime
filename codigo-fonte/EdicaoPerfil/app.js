@@ -1,200 +1,116 @@
-// Função genérica para manipular upload de imagens
-function handleImageUpload(inputSelector, displaySelector, placeholderText, imgClass) {
-  const inputFile = document.querySelector(inputSelector);
-  const displayElement = document.querySelector(displaySelector);
+// Edição do perfil do usuário logado, gravando no mesmo modelo `users` do cadastro (localStorage).
+// As regras de validação e de troca de senha ficam em lib/perfil.js.
+(function () {
+  const logado = GigArmazenamento.lerJSON(sessionStorage, 'loggedInUser');
 
-  displayElement.textContent = placeholderText; // Define o texto inicial
-
-  inputFile.addEventListener("change", function (e) {
-    const file = e.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.addEventListener("load", function (e) {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        img.classList.add(imgClass);
-
-        displayElement.innerHTML = ""; // Limpa o texto ou conteúdo anterior
-        displayElement.appendChild(img); // Adiciona a imagem
-      });
-
-      reader.readAsDataURL(file); // Lê o arquivo como Base64
-    } else {
-      displayElement.textContent = placeholderText; // Retorna o texto padrão
-    }
-  });
-}
-
-// Configura os uploads
-handleImageUpload("#banner_input", ".bannerimg", "Escolher um Banner", "banner_input");
-handleImageUpload("#icon_input", ".iconimg", "Escolher um perfil", "icon_input");
-
-// Função para manipular upload de vídeos
-function handleVideoUpload(inputSelector, displaySelector, placeholderText, videoClass) {
-  const inputFile = document.querySelector(inputSelector);
-  const displayElement = document.querySelector(displaySelector);
-
-  displayElement.textContent = placeholderText; // Define o texto inicial
-
-  inputFile.addEventListener("change", function (e) {
-    const file = e.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.addEventListener("load", function (e) {
-        const video = document.createElement("video");
-        video.src = e.target.result;
-        video.classList.add(videoClass);
-        video.controls = true; // Adiciona controles ao vídeo
-
-        displayElement.innerHTML = ""; // Limpa o texto ou conteúdo anterior
-        displayElement.appendChild(video); // Adiciona o vídeo
-      });
-
-      reader.readAsDataURL(file); // Lê o arquivo como Base64
-    } else {
-      displayElement.textContent = placeholderText; // Retorna o texto padrão
-    }
-  });
-}
-
-// Configura o upload de vídeos
-handleVideoUpload("#video_input", ".videomovie", "Escolher um vídeo destaque", "video_input");
-
-// Função para limpar todos os campos do formulário
-function limparFormulario() {
-  // Limpar campos de texto
-  document.querySelectorAll('input[type="text"], textarea').forEach(input => input.value = "");
-
-  // Limpar os campos de seleção (dropdown)
-  document.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
-
-  // Limpar os inputs de arquivo (para imagem e vídeo)
-  document.getElementById("banner_input").value = "";
-  document.getElementById("icon_input").value = "";
-  document.getElementById("video_input").value = "";
-
-  // Limpar o conteúdo de exibição das imagens e vídeos
-  document.querySelector(".bannerimg").innerHTML = "";
-  document.querySelector(".iconimg").innerHTML = "";
-  document.querySelector(".videomovie").innerHTML = "";
-
-  // Garantir que os vídeos e imagens sejam removidos após limpar
-  const videoElement = document.querySelector(".videomovie video");
-  if (videoElement) {
-      videoElement.remove(); // Remove o vídeo se existir
+  // Exige login: guarda esta página para o login voltar para cá
+  if (!logado) {
+    sessionStorage.setItem(GigArmazenamento.CHAVE_DESTINO, '../EdicaoPerfil/EdicaoPerfil.html');
+    window.location.href = '../Login/login.html';
+    return;
   }
 
-  const imgElements = document.querySelectorAll(".bannerimg img, .iconimg img");
-  imgElements.forEach(img => img.remove()); // Remove todas as imagens dentro da área de banner e ícone
-}
+  const $ = (id) => document.getElementById(id);
+  const form = $('editForm');
+  const caixasGenero = () => Array.from(document.querySelectorAll('#genres input[type="checkbox"]'));
+  const CAMPOS_TEXTO = ['profilePicLink', 'bannerPicLink', 'name', 'email', 'phone', 'role', 'state', 'city', 'songLink'];
 
-// Adicionar o evento de clique ao botão de limpar
-document.getElementById("clear_button").addEventListener("click", limparFormulario);
+  function usuarioAtual() {
+    return GigArmazenamento.lerUsuarios(localStorage).find((u) => u.username === logado.username);
+  }
 
-// Função para salvar os dados no localStorage
-function salvarFormulario() {
-  const nome = document.querySelector('input[placeholder="Nome"]').value;
-  const usuario = document.querySelector('input[placeholder="@Usuário"]').value;
-  const estiloMusical = document.querySelectorAll('select')[0].value;
-  const estado = document.querySelectorAll('select')[1].value;
-  const numero = document.querySelector('input[placeholder="Número"]').value;
-  const cidade = document.querySelector('input[placeholder="Cidade"]').value;
-  const sobreVoce = document.querySelectorAll('textarea')[0].value;
-  const habilidades = document.querySelectorAll('textarea')[1].value;
+  function atualizarPrevias() {
+    $('profilePreview').src = $('profilePicLink').value.trim() || GigPerfil.FOTO_PADRAO;
+    $('bannerPreview').src = $('bannerPicLink').value.trim() || GigPerfil.BANNER_PADRAO;
+  }
 
-  // Coleta as imagens e vídeos (convertendo para Base64)
-  const bannerInput = document.getElementById("banner_input").files[0];
-  const iconInput = document.getElementById("icon_input").files[0];
-  const videoInput = document.getElementById("video_input").files[0];
+  function limparErros() {
+    form.querySelectorAll('.is-invalid').forEach((campo) => campo.classList.remove('is-invalid'));
+    form.querySelectorAll('.invalid-feedback').forEach((aviso) => {
+      aviso.textContent = '';
+      aviso.classList.remove('d-block');
+    });
+  }
 
-  const salvarDados = (bannerBase64, iconBase64, videoBase64) => {
-    const formularioData = {
-      nome,
-      usuario,
-      estiloMusical,
-      estado,
-      numero,
-      cidade,
-      sobreVoce,
-      habilidades,
-      banner: bannerBase64 || null,
-      icon: iconBase64 || null,
-      video: videoBase64 || null,
+  function mostrarErros(erros) {
+    erros.forEach(({ campo, mensagem }) => {
+      const entrada = $(campo);
+      if (entrada) entrada.classList.add('is-invalid');
+      const aviso = form.querySelector(`.invalid-feedback[data-campo="${campo}"]`);
+      if (aviso) {
+        aviso.textContent = mensagem;
+        aviso.classList.add('d-block');
+      }
+    });
+  }
+
+  // Valor gravado que não está entre as opções (ex.: estado "GH" do usuário de exemplo Sonic)
+  // vira uma opção extra, para não ser apagado ao salvar
+  function garantirOpcao(select, valor) {
+    if (!valor || Array.from(select.options).some((opcao) => opcao.value === valor)) return;
+    select.add(new Option(valor, valor));
+  }
+
+  // Preenche o formulário com os dados gravados (também usado por "Desfazer alterações")
+  function preencher() {
+    const usuario = usuarioAtual();
+    if (!usuario) {
+      alert('Usuário não encontrado!');
+      window.location.href = '../Home/home.html';
+      return;
+    }
+    limparErros();
+    $('username').value = usuario.username;
+    garantirOpcao($('role'), usuario.role);
+    garantirOpcao($('state'), usuario.state);
+    CAMPOS_TEXTO.forEach((campo) => { $(campo).value = usuario[campo] || ''; });
+    const generos = usuario.genres || [];
+    caixasGenero().forEach((caixa) => { caixa.checked = generos.includes(caixa.value); });
+    ['senhaAtual', 'novaSenha', 'confirmacao'].forEach((campo) => { $(campo).value = ''; });
+    atualizarPrevias();
+  }
+
+  async function salvar(event) {
+    event.preventDefault();
+    limparErros();
+
+    const dados = {};
+    CAMPOS_TEXTO.forEach((campo) => { dados[campo] = $(campo).value; });
+    dados.genres = caixasGenero().filter((caixa) => caixa.checked).map((caixa) => caixa.value);
+    const senhas = {
+      atual: $('senhaAtual').value.trim(),
+      nova: $('novaSenha').value.trim(),
+      confirmacao: $('confirmacao').value.trim(),
     };
 
-    localStorage.setItem('formularioData', JSON.stringify(formularioData));
-    alert("Formulário salvo com sucesso!");
-  };
-
-  // Função auxiliar para converter arquivos para Base64
-  const toBase64 = (file) =>
-    new Promise((resolve) => {
-      if (!file) {
-        resolve(null);
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.readAsDataURL(file);
-    });
-
-  // Processa os arquivos de forma assíncrona e salva os dados
-  Promise.all([
-    toBase64(bannerInput),
-    toBase64(iconInput),
-    toBase64(videoInput),
-  ]).then(([bannerBase64, iconBase64, videoBase64]) => {
-    salvarDados(bannerBase64, iconBase64, videoBase64);
-  });
-}
-
-// Função para carregar os dados do localStorage
-function carregarFormulario() {
-  const dadosSalvos = localStorage.getItem('formularioData');
-
-  if (dadosSalvos) {
-    const formularioData = JSON.parse(dadosSalvos);
-
-    document.querySelector('input[placeholder="Nome"]').value = formularioData.nome || "";
-    document.querySelector('input[placeholder="@Usuário"]').value = formularioData.usuario || "";
-    document.querySelectorAll('select')[0].value = formularioData.estiloMusical || "Estilo Musical";
-    document.querySelectorAll('select')[1].value = formularioData.estado || "Estado";
-    document.querySelector('input[placeholder="Número"]').value = formularioData.numero || "";
-    document.querySelector('input[placeholder="Cidade"]').value = formularioData.cidade || "";
-    document.querySelectorAll('textarea')[0].value = formularioData.sobreVoce || "";
-    document.querySelectorAll('textarea')[1].value = formularioData.habilidades || "";
-
-    // Restaura imagens e vídeos
-    if (formularioData.banner) {
-      const bannerImg = document.createElement("img");
-      bannerImg.src = formularioData.banner;
-      document.querySelector(".bannerimg").innerHTML = "";
-      document.querySelector(".bannerimg").appendChild(bannerImg);
+    let resultado;
+    try {
+      resultado = await GigPerfil.atualizarPerfil(GigArmazenamento.lerUsuarios(localStorage), logado.username, dados, senhas);
+    } catch (erro) {
+      alert(erro.message);
+      return;
+    }
+    if (!resultado.ok) {
+      mostrarErros(resultado.erros);
+      return;
     }
 
-    if (formularioData.icon) {
-      const iconImg = document.createElement("img");
-      iconImg.src = formularioData.icon;
-      document.querySelector(".iconimg").innerHTML = "";
-      document.querySelector(".iconimg").appendChild(iconImg);
+    // Grava só este usuário sobre a lista atual (outra aba pode ter mudado outros usuários no meio tempo)
+    if (!GigArmazenamento.substituirUsuario(localStorage, resultado.usuario)) {
+      alert('Usuário não encontrado!');
+      return;
     }
-
-    if (formularioData.video) {
-      const videoElement = document.createElement("video");
-      videoElement.src = formularioData.video;
-      videoElement.controls = true;
-      document.querySelector(".videomovie").innerHTML = "";
-      document.querySelector(".videomovie").appendChild(videoElement);
-    }
+    const publico = JSON.stringify(GigArmazenamento.usuarioPublico(resultado.usuario));
+    sessionStorage.setItem('loggedInUser', publico);
+    sessionStorage.setItem('clickedUser', publico);
+    alert('Perfil atualizado com sucesso!');
+    window.location.href = '../Perfil/perfil.html';
   }
-}
 
-// Adiciona os eventos de clique nos botões
-document.getElementById('salvar_button').addEventListener('click', salvarFormulario);
+  $('profilePicLink').addEventListener('input', atualizarPrevias);
+  $('bannerPicLink').addEventListener('input', atualizarPrevias);
+  $('clear_button').addEventListener('click', preencher);
+  form.addEventListener('submit', salvar);
 
-// Carrega os dados do formulário ao abrir a página
-window.onload = carregarFormulario;
+  preencher();
+})();

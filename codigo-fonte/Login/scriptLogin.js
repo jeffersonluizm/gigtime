@@ -1,23 +1,32 @@
 // Adiciona evento ao formulário
-document.getElementById('loginForm').addEventListener('submit', function (event) {
+document.getElementById('loginForm').addEventListener('submit', async function (event) {
   event.preventDefault(); // Previne envio padrão do formulário
 
   // Obtém os valores dos campos
   const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value.trim();
 
-  // Verifica se o usuário está registrado na memória local
-  const registeredUsers = JSON.parse(sessionStorage.getItem('users')) || [];
-  const user = registeredUsers.find(user => user.username === username && user.password === password);
-
   if (!username || !password) {
       this.classList.add('was-validated'); // Marca os campos para validação
-  } else if (user) {
-      // Armazena o nome de usuário no sessionStorage
-      sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+      return;
+  }
 
-      // Redireciona para a página de anúncios
-      const redirectionPath = '../Anúncios/anuncios.html';
+  // Verifica se o usuário está registrado na memória local (a senha é comparada pelo hash)
+  const registeredUsers = GigArmazenamento.lerUsuarios(localStorage);
+  let user;
+  try {
+      user = await GigSenha.autenticar(registeredUsers, username, password);
+  } catch (erro) {
+      alert(erro.message);
+      return;
+  }
+
+  if (user) {
+      // Armazena o nome de usuário no sessionStorage
+      sessionStorage.setItem('loggedInUser', JSON.stringify(GigArmazenamento.usuarioPublico(user)));
+
+      // Volta para a página que pediu login (chat, edição de perfil) ou vai para os anúncios
+      const redirectionPath = GigArmazenamento.destinoDepoisDoLogin(sessionStorage) || '../Anúncios/anuncios.html';
       window.location.href = redirectionPath;
   } else {
       alert('Usuário ou senha inválidos!');

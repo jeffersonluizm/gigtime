@@ -1,7 +1,10 @@
 window.addEventListener('load', function () {
 
-// Recupera os dados do usuário armazenados no sessionStorage
-const clickedUser = JSON.parse(sessionStorage.getItem('clickedUser'));
+// Recupera o perfil escolhido (sessionStorage) e busca a versão atual dele no modelo (localStorage),
+// para refletir edições feitas depois do clique
+const escolhido = JSON.parse(sessionStorage.getItem('clickedUser'));
+const clickedUser = escolhido && (GigArmazenamento.lerUsuarios(localStorage).find(u => u.username === escolhido.username) || escolhido);
+const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
   
 if (clickedUser) {
     // Preenche os dados do perfil com as informações do usuário
@@ -26,6 +29,13 @@ if (clickedUser) {
     document.getElementById('img4').src = clickedUser.userPicsLinks[3];
     document.getElementById('img5').src = clickedUser.userPicsLinks[4];
     document.getElementById('img6').src = clickedUser.userPicsLinks[5];
+
+    // Próprio perfil: "Editar perfil"; perfil de outra pessoa: "Contate-me"
+    const acao = GigPerfil.acaoDoPerfil(clickedUser, loggedInUser);
+    const botaoAcao = document.getElementById('acaoPerfil');
+    botaoAcao.textContent = acao.texto;
+    botaoAcao.dataset.href = acao.href;
+    botaoAcao.addEventListener('click', () => { window.location.href = acao.href; });
 
     document.body.classList.add('loaded')
 } else {

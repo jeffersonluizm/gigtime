@@ -13,7 +13,7 @@ document.getElementById('sendImgLink').addEventListener('click', function () {
   }
 });
 
-document.getElementById('registerForm').addEventListener('submit', function (event) {
+document.getElementById('registerForm').addEventListener('submit', async function (event) {
     event.preventDefault();
   
     const username = document.getElementById('username').value.trim();
@@ -48,8 +48,8 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
       return;
     }
 
-    // Recupera ou inicializa os usuários no sessionStorage
-    const users = JSON.parse(sessionStorage.getItem('users')) || [];
+    // Recupera ou inicializa os usuários no localStorage
+    const users = GigArmazenamento.lerUsuarios(localStorage);
     
       // Variável para controlar se há erro
     let hasError = false;
@@ -83,8 +83,24 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
         return;
     }
   
+    // Guarda só o hash SHA-256 da senha, nunca o texto puro
+    let passwordHash;
+    try {
+      passwordHash = await GigSenha.hashSenha(username, password);
+    } catch (erro) {
+      alert(erro.message);
+      return;
+    }
+
+    // Relê os usuários: outra aba pode ter cadastrado alguém enquanto o hash era calculado
+    const atuais = GigArmazenamento.lerUsuarios(localStorage);
+    if (atuais.some(user => user.username === username || user.email === email || user.phone === phone)) {
+      alert('Este nome de usuário, e-mail ou telefone acabou de ser cadastrado em outra aba. Revise os dados.');
+      return;
+    }
+
     // Adiciona novo usuário
-    users.push({ 
+    atuais.push({ 
       username,
       name,
       email,
@@ -106,10 +122,10 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
         "https://picsum.photos/600/1000?x=5",
         "https://picsum.photos/600/1000?x=6",
     ],
-      password
+      passwordHash
     });
     
-    sessionStorage.setItem('users', JSON.stringify(users));
+    GigArmazenamento.salvarUsuarios(localStorage, atuais);
   
     alert('Registro realizado com sucesso!');
     window.location.href = '../Login/login.html'; // Ajuste o caminho conforme necessário

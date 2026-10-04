@@ -4,16 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style_edit.css">
-    <script src="app.js" defer></script> <!-- Adicionei "defer" para carregar o script após o HTML -->
+    <link rel="icon" type="image/png" href="https://flaticons.net/icon.php?slug_category=miscellaneous&slug_icon=electric-guitar-01">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="../global.css">
-    <title>Edit-GigTime</title>
+    <link rel="stylesheet" type="text/css" href="style_edit.css">
+    <title>GigTime - Editar perfil</title>
 </head>
 
-<body>
+<body class="bg-gig">
     <!--Barra de navegação-->
     <nav class="navbar navbar-expand-sm fixed-top bg-gig-pr" data-bs-theme="dark">
         <div class="container-fluid">
@@ -35,137 +34,166 @@
         </div>
     </nav>
 
-    <div class="text-center">
-        <div class="row">
-            <div class="col-12">
-                <center>
-                    <!--Input para banner-->
-                    <label class="banner" for="banner_input" tabindex="0">
-                        <span class="bannerimg" style="width: 100%;"></span>
-                    </label>
-
-                    <input type="file" name="banner_input" id="banner_input" accept="image/*">
-                    <br>
-                </center>
-            </div>
+    <div class="container text-center mt-6 pb-5">
+        <!-- Pré-visualização do banner e da foto de perfil (vêm dos links abaixo) -->
+        <div class="banner mx-auto">
+            <span class="bannerimg w-100 h-100"><img id="bannerPreview" src="" alt="Banner" class="w-100 h-100 object-fit-cover"></span>
         </div>
-        <div class="container text-center">
-            <div class="row">
-                <div class="col-12">
-                    <center>
-                        <!--Input para icon-->
-                        <label class="icon" for="icon_input" tabindex="0">
-                            <span class="iconimg"></span>
-                        </label>
+        <div class="icon mx-auto mt-3">
+            <span class="iconimg w-100 h-100"><img id="profilePreview" src="" alt="Foto de perfil" class="w-100 h-100 object-fit-cover"></span>
+        </div>
 
-                        <input type="file" name="icon_input" id="icon_input" accept="image/*">
-                        <br>
-                    </center>
-                </div>
-
-
-
-                <div class="col-sm-12 col-lg-6">
-                    <input class="form-control" type="text" placeholder="Nome" aria-label="default input example">
-                </div>
-                <div class="col-sm-12 col-lg-6">
-                    <input class="form-control" type="text" placeholder="@Usuário" aria-label="default input example">
-                </div>
-
-                <div class="col-sm-12 col-lg-6">
-                    <br>
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>Estilo Musical</option>
-                        <option value="1">Pop</option>
-                        <option value="2">Rock</option>
-                        <option value="3">Rap</option>
-                        <option value="4">Jazz</option>
-                        <option value="5">Blues</option>
-                        <option value="6">Reggae</option>
-                        <option value="7">Sertanejo</option>
-                        <option value="8">Eletrônica</option>
-                        <option value="9">Música clássica</option>
-                    </select>
-                </div>
-                <div class="col-sm-12 col-lg-6">
-                    <br>
-                    <select class="form-select" aria-label="Default select example">
-                        <option selected>Estado</option>
-                        <option value="27">AC</option>
-                        <option value="1">AL</option>
-                        <option value="2">AP</option>
-                        <option value="3">AM</option>
-                        <option value="4">BA</option>
-                        <option value="5">CE</option>
-                        <option value="6">DF</option>
-                        <option value="7">ES</option>
-                        <option value="8">GO</option>
-                        <option value="9">MA</option>
-                        <option value="10">MT</option>
-                        <option value="11">MS</option>
-                        <option value="12">MG</option>
-                        <option value="13">PA</option>
-                        <option value="14">PB</option>
-                        <option value="15">PR</option>
-                        <option value="16">PE</option>
-                        <option value="17">PI</option>
-                        <option value="18">RJ</option>
-                        <option value="19">RN</option>
-                        <option value="20">RS</option>
-                        <option value="21">RO</option>
-                        <option value="22">RR</option>
-                        <option value="23">SC</option>
-                        <option value="24">SP</option>
-                        <option value="25">SE</option>
-                        <option value="26">TO</option>
-                    </select>
-                </div>
-                <div class="col-sm-12 col-lg-6">
-                    <br>
-                    <input class="form-control" type="text" placeholder="Número" aria-label="default input example">
-                </div>
-                <div class="col-sm-12 col-lg-6">
-                    <br>
-                    <input class="form-control" type="text" placeholder="Cidade" aria-label="default input example">
-                </div>
-                <div class="col-sm-12 col-lg-6">
-                    <br>
-                    <label for="exampleFormControlTextarea1" class="form-label">Escreva um pouco sobre você</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                </div>
-                <div class="col-sm-12 col-lg-6">
-                    <br>
-                    <label for="exampleFormControlTextarea1" class="form-label">Descreva suas Habilidades</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                </div>
-                <center>
-                    <div class="col-12">
-                        <br>
-                        <!--Input para banner-->
-                        <label class="video" for="video_input" tabindex="0">
-                            <span class="videomovie" style="width: 100%;"></span>
-                        </label>
-
-                        <input type="file" name="video_input" id="video_input" accept="video/*">
-                        <br>
-                </center>
-                <div class="col-lg-12">
-                    <br>
-                    <button type="button" class="btn btn-danger" id="clear_button">Limpar Formulário</button>
-                    <button type="button" class="btn btn-primary" id="salvar_button">Salvar</button>
-                </div>
+        <form id="editForm" class="row g-3 mt-2 text-start" novalidate>
+            <div class="col-sm-12 col-lg-6">
+                <label for="profilePicLink" class="form-label">Foto de perfil (link)</label>
+                <input type="text" class="form-control" id="profilePicLink" placeholder="Link da imagem. Vazio usa a foto padrão.">
+            </div>
+            <div class="col-sm-12 col-lg-6">
+                <label for="bannerPicLink" class="form-label">Banner (link)</label>
+                <input type="text" class="form-control" id="bannerPicLink" placeholder="Link da imagem do banner">
             </div>
 
+            <div class="col-sm-12 col-lg-6">
+                <label for="username" class="form-label">Nome de usuário</label>
+                <input type="text" class="form-control" id="username" readonly aria-describedby="usernameAjuda">
+                <div id="usernameAjuda" class="form-text">O nome de usuário não pode ser alterado.</div>
+            </div>
+            <div class="col-sm-12 col-lg-6">
+                <label for="name" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="name" required>
+                <div class="invalid-feedback" data-campo="name"></div>
+            </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-                crossorigin="anonymous"></script>
+            <div class="col-sm-12 col-lg-6">
+                <label for="email" class="form-label">E-mail</label>
+                <input type="email" class="form-control" id="email" required>
+                <div class="invalid-feedback" data-campo="email"></div>
+            </div>
+            <div class="col-sm-12 col-lg-6">
+                <label for="phone" class="form-label">Telefone</label>
+                <input type="tel" class="form-control" id="phone" required>
+                <div class="invalid-feedback" data-campo="phone"></div>
+            </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-                crossorigin="anonymous">
-                </script>
-            <script src="../global.js"></script>
+            <div class="col-sm-12 col-lg-6">
+                <label for="role" class="form-label">Perfil</label>
+                <select id="role" class="form-select" required>
+                    <option value="">Escolha seu perfil...</option>
+                    <option value="Músico">Músico</option>
+                    <option value="Contratante">Contratante</option>
+                </select>
+                <div class="invalid-feedback" data-campo="role"></div>
+            </div>
+            <div class="col-sm-12 col-lg-6">
+                <label for="state" class="form-label">Estado</label>
+                <select id="state" class="form-select" required>
+                    <option value="">Escolha seu estado...</option>
+                    <option value="AC">AC</option>
+                    <option value="AL">AL</option>
+                    <option value="AP">AP</option>
+                    <option value="AM">AM</option>
+                    <option value="BA">BA</option>
+                    <option value="CE">CE</option>
+                    <option value="DF">DF</option>
+                    <option value="ES">ES</option>
+                    <option value="GO">GO</option>
+                    <option value="MA">MA</option>
+                    <option value="MT">MT</option>
+                    <option value="MS">MS</option>
+                    <option value="MG">MG</option>
+                    <option value="PA">PA</option>
+                    <option value="PB">PB</option>
+                    <option value="PR">PR</option>
+                    <option value="PE">PE</option>
+                    <option value="PI">PI</option>
+                    <option value="RJ">RJ</option>
+                    <option value="RN">RN</option>
+                    <option value="RS">RS</option>
+                    <option value="RO">RO</option>
+                    <option value="RR">RR</option>
+                    <option value="SC">SC</option>
+                    <option value="SP">SP</option>
+                    <option value="SE">SE</option>
+                    <option value="TO">TO</option>
+                </select>
+                <div class="invalid-feedback" data-campo="state"></div>
+            </div>
+
+            <div class="col-sm-12 col-lg-6">
+                <label for="city" class="form-label">Cidade</label>
+                <input type="text" class="form-control" id="city" required>
+                <div class="invalid-feedback" data-campo="city"></div>
+            </div>
+            <div class="col-sm-12 col-lg-6">
+                <label for="songLink" class="form-label">Vídeo autoral</label>
+                <input type="text" class="form-control" id="songLink" placeholder="No Youtube, clique em 'Compartilhar' e cole o link aqui">
+            </div>
+
+            <div class="col-12">
+                <span class="form-label d-block">Gêneros</span>
+                <div id="genres">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="genreSertanejo" value="Sertanejo">
+                        <label class="form-check-label" for="genreSertanejo">Sertanejo</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="genreRock" value="Rock">
+                        <label class="form-check-label" for="genreRock">Rock</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="genreMPB" value="MPB">
+                        <label class="form-check-label" for="genreMPB">MPB</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="genrePop" value="Pop">
+                        <label class="form-check-label" for="genrePop">Pop</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="genreForró" value="Forró">
+                        <label class="form-check-label" for="genreForró">Forró</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="genreJazz" value="Jazz">
+                        <label class="form-check-label" for="genreJazz">Jazz</label>
+                    </div>
+                </div>
+                <div class="invalid-feedback" data-campo="genres"></div>
+            </div>
+
+            <div class="col-12">
+                <h6 class="mt-2 mb-0">Trocar senha (opcional)</h6>
+            </div>
+            <div class="col-sm-12 col-lg-4">
+                <label for="senhaAtual" class="form-label">Senha atual</label>
+                <input type="password" class="form-control" id="senhaAtual" autocomplete="current-password">
+                <div class="invalid-feedback" data-campo="senhaAtual"></div>
+            </div>
+            <div class="col-sm-12 col-lg-4">
+                <label for="novaSenha" class="form-label">Nova senha</label>
+                <input type="password" class="form-control" id="novaSenha" autocomplete="new-password">
+            </div>
+            <div class="col-sm-12 col-lg-4">
+                <label for="confirmacao" class="form-label">Confirme a nova senha</label>
+                <input type="password" class="form-control" id="confirmacao" autocomplete="new-password">
+                <div class="invalid-feedback" data-campo="confirmacao"></div>
+            </div>
+
+            <div class="col-12 text-center">
+                <button type="button" class="btn btn-danger" id="clear_button">Desfazer alterações</button>
+                <button type="submit" class="btn btn-primary" id="salvar_button">Salvar</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="../lib/html.js"></script>
+    <script src="../lib/armazenamento.js"></script>
+    <script src="../lib/senha.js"></script>
+    <script src="../lib/perfil.js"></script>
+    <script src="../global.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>

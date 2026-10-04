@@ -294,6 +294,7 @@ body {
     position: relative;
     right: 0;
     text-align: justify;
+    overflow-wrap: anywhere;
     max-width: 65%;
     padding: 12px;
     background: var(--primaryColor);
@@ -392,10 +393,114 @@ footer a{
     color: inherit;
 }
 
+/* Chat funcional (chat.js): nome do contato no cabeçalho e botão de enviar */
+.imgtext h4 span.nomeContato{
+    font-size: 1em;
+    color: inherit;
+}
 
+.chatNavbar2 a{
+    color: inherit;
+}
 
+.chatInput .enviar{
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
 
+.chatInput .enviar:disabled{
+    cursor: default;
+    opacity: 0.5;
+}
 
+/* Responsividade: as colunas podem encolher (sem rolagem horizontal) e o texto longo quebra */
+.container .leftside,
+.container .rightside,
+.chatlist .chatBlock .details{
+    min-width: 0;
+}
 
+.message p{
+    overflow-wrap: anywhere;
+}
 
+.imgtext h4{
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
 
+/* Botão de voltar para a lista: só aparece em telas estreitas */
+.imgtext .voltar{
+    display: none;
+    align-items: center;
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.6em;
+    margin-right: 10px;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* Telas estreitas: mostra a lista de conversas OU a conversa aberta, ocupando a largura toda */
+@media (max-width: 767.98px){
+    /* navbar (60px) + chat + rodapé (40px) cabem exatamente na altura da tela */
+    body{
+        display: block;
+        padding-top: 60px;
+    }
+
+    .container{
+        width: 100%;
+        height: calc(100vh - 100px);
+        height: calc(100dvh - 100px); /* barra de endereço móvel; 100vh acima fica de fallback */
+        padding: 0;
+    }
+
+    footer{
+        position: static;
+        margin-top: 0;
+        height: 40px;
+    }
+
+    .container .leftside,
+    .container .rightside{
+        flex: 0 0 100%;
+    }
+
+    .container .leftside{
+        border-right: none;
+    }
+
+    .container .rightside,
+    .container.conversa-aberta .leftside{
+        display: none;
+    }
+
+    .container.conversa-aberta .rightside{
+        display: block;
+    }
+
+    .imgtext .voltar{
+        display: flex;
+    }
+
+    .chat{
+        padding: 15px;
+    }
+
+    .messagechat p{
+        max-width: 85%;
+    }
+
+    .chatInput input{
+        margin: 0 10px 0 0;
+    }
+
+    .chatNavbar2 li{
+        margin-left: 10px;
+    }
+}
