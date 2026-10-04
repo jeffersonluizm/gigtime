@@ -303,10 +303,11 @@ const USUARIOS_EXEMPLO = [
 
 // Dados (usuários e mensagens) ficam no localStorage; o usuário logado fica no sessionStorage,
 // ou seja, a sessão vale por aba. Quem vinha da versão antiga (usuários no sessionStorage) é migrado.
+GigArmazenamento.migrarChavesAntigas(localStorage);
 GigArmazenamento.migrarDaSessao(localStorage, sessionStorage);
 GigArmazenamento.semearSeVazio(localStorage, USUARIOS_EXEMPLO);
 // Senhas em texto puro de versões antigas viram hash (assíncrono; o login aceita as duas formas)
-GigSenha.migrarSenhasDoStorage(localStorage).catch(erro => console.warn(erro.message));
+GigSenha.migrarSenhasDoStorage(localStorage, GigArmazenamento.CHAVE_USUARIOS).catch(erro => console.warn(erro.message));
 
 // Objetos copiados para a sessão não guardam senha (versões antigas guardavam o usuário inteiro)
 ['loggedInUser', 'clickedUser'].forEach(chave => {

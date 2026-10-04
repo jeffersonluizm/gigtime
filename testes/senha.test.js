@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const { createHash } = require('node:crypto');
 const { StorageMemoria, carregarPagina, esperar } = require('./apoio');
 const S = require('../codigo-fonte/lib/senha.js');
+const { CHAVE_USUARIOS, CHAVE_MENSAGENS } = require('../codigo-fonte/lib/armazenamento.js');
 
 const sha = (texto) => createHash('sha256').update(texto, 'utf8').digest('hex');
 
@@ -29,13 +30,13 @@ test('autenticar ainda aceita usuário antigo com senha em texto puro', async ()
 
 test('migrarSenhasDoStorage troca senha em texto puro por hash e mantém os demais', async () => {
   const local = new StorageMemoria({
-    users: JSON.stringify([
+    [CHAVE_USUARIOS]: JSON.stringify([
       { username: 'ana', password: 'velha' },
       { username: 'bia', passwordHash: 'abc' },
     ]),
   });
   assert.equal(await S.migrarSenhasDoStorage(local), 1);
-  const [ana, bia] = JSON.parse(local.getItem('users'));
+  const [ana, bia] = JSON.parse(local.getItem(CHAVE_USUARIOS));
   assert.equal('password' in ana, false);
   assert.equal(ana.passwordHash, sha('gigtime:ana:velha'));
   assert.deepEqual(bia, { username: 'bia', passwordHash: 'abc' });
@@ -43,7 +44,7 @@ test('migrarSenhasDoStorage troca senha em texto puro por hash e mantém os dema
 
 test('o seed não traz senha em texto puro e as senhas de demonstração funcionam', async () => {
   const w = carregarPagina('Home/home.html');
-  const usuarios = JSON.parse(w.localStorage.getItem('users'));
+  const usuarios = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS));
   assert.equal(usuarios.some((u) => 'password' in u), false);
   assert.ok(usuarios.every((u) => /^[0-9a-f]{64}$/.test(u.passwordHash)));
   assert.ok(await S.autenticar(usuarios, 'sonic', 'sonic'));
@@ -55,7 +56,7 @@ test('global.js converte as senhas antigas migradas da sessão', async () => {
     antes: (win) => win.sessionStorage.setItem('users', JSON.stringify([{ username: 'antigo', role: 'Músico', genres: [], badges: [], password: 'p' }])),
   });
   await esperar();
-  const [antigo] = JSON.parse(w.localStorage.getItem('users'));
+  const [antigo] = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS));
   assert.equal('password' in antigo, false);
   assert.equal(antigo.passwordHash, sha('gigtime:antigo:p'));
 });
@@ -92,7 +93,7 @@ test('cadastro guarda o hash da senha e não a senha', async () => {
   w.document.getElementById('genreRock').checked = true;
   w.document.getElementById('registerForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await esperar();
-  const novo = JSON.parse(w.localStorage.getItem('users')).find((u) => u.username === 'novo');
+  const novo = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'novo');
   assert.ok(novo, 'usuário cadastrado');
   assert.equal('password' in novo, false);
   assert.equal(novo.passwordHash, sha('gigtime:novo:minhasenha'));

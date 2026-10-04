@@ -2,6 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { StorageMemoria, carregarPagina } = require('./apoio');
 const A = require('../codigo-fonte/lib/armazenamento.js');
+const { CHAVE_USUARIOS, CHAVE_MENSAGENS } = require('../codigo-fonte/lib/armazenamento.js');
 
 const u = (username, extra = {}) => ({ username, name: username.toUpperCase(), ...extra });
 
@@ -13,7 +14,7 @@ test('salvarUsuarios grava em JSON e lerUsuarios devolve o mesmo conteúdo', () 
   const local = new StorageMemoria();
   A.salvarUsuarios(local, [u('ana')]);
   assert.deepEqual(A.lerUsuarios(local), [u('ana')]);
-  assert.equal(JSON.parse(local.getItem('users'))[0].username, 'ana');
+  assert.equal(JSON.parse(local.getItem(CHAVE_USUARIOS))[0].username, 'ana');
 });
 
 test('migrarDaSessao copia os usuários da versão antiga (sessionStorage) para o localStorage', () => {
@@ -25,7 +26,7 @@ test('migrarDaSessao copia os usuários da versão antiga (sessionStorage) para 
 });
 
 test('migrarDaSessao mescla por username e o localStorage vence em conflito', () => {
-  const local = new StorageMemoria({ users: JSON.stringify([u('ana', { city: 'Local' })]) });
+  const local = new StorageMemoria({ [CHAVE_USUARIOS]: JSON.stringify([u('ana', { city: 'Local' })]) });
   const sessao = new StorageMemoria({ users: JSON.stringify([u('ana', { city: 'Sessao' }), u('caio')]) });
   A.migrarDaSessao(local, sessao);
   const lista = A.lerUsuarios(local);
@@ -37,7 +38,7 @@ test('migrarDaSessao não faz nada sem dados antigos e ignora JSON inválido', (
   const local = new StorageMemoria();
   assert.equal(A.migrarDaSessao(local, new StorageMemoria()), false);
   assert.equal(A.migrarDaSessao(local, new StorageMemoria({ users: '{quebrado' })), false);
-  assert.equal(local.getItem('users'), null);
+  assert.equal(local.getItem(CHAVE_USUARIOS), null);
 });
 
 test('semearSeVazio grava o seed só quando não há usuários', () => {
@@ -56,7 +57,7 @@ test('usuarioPublico remove senha e hash do objeto', () => {
 
 test('global.js grava os usuários de exemplo no localStorage e não no sessionStorage', () => {
   const w = carregarPagina('Home/home.html');
-  const lista = JSON.parse(w.localStorage.getItem('users'));
+  const lista = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS));
   assert.equal(lista.length, 10);
   assert.equal(w.sessionStorage.getItem('users'), null);
 });
@@ -65,7 +66,7 @@ test('global.js migra usuários de uma aba aberta na versão antiga', () => {
   const w = carregarPagina('Home/home.html', {
     antes: (win) => win.sessionStorage.setItem('users', JSON.stringify([u('antigo', { role: 'Músico', genres: [], badges: [], password: 'p' })])),
   });
-  const nomes = JSON.parse(w.localStorage.getItem('users')).map((x) => x.username);
+  const nomes = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).map((x) => x.username);
   assert.deepEqual(nomes, ['antigo'], 'quem já tinha dados mantém os dados e não recebe seed por cima');
 });
 

@@ -7,7 +7,11 @@
   if (typeof module === 'object' && module.exports) module.exports = api;
   else raiz.GigArmazenamento = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
-  const CHAVE_USUARIOS = 'users';
+  // Prefixo "gigtime:" porque, no GitHub Pages, o site divide a origem (e o localStorage)
+  // com outros repositórios do mesmo usuário
+  const CHAVE_USUARIOS = 'gigtime:users';
+  const CHAVE_MENSAGENS = 'gigtime:messages';
+  const CHAVE_SESSAO_ANTIGA = 'users'; // versão publicada antes: usuários no sessionStorage
 
   function lerJSON(storage, chave) {
     const bruto = storage.getItem(chave);
@@ -28,9 +32,6 @@
     storage.setItem(CHAVE_USUARIOS, JSON.stringify(lista));
   }
 
-  // A versão anterior do site guardava os usuários no sessionStorage.
-  // Leva esses usuários para o localStorage (mesclando por username, o local vence)
-  // e apaga a cópia antiga. Devolve true se havia algo para migrar.
   // Troca um usuário (pelo username) relendo a lista do storage na hora de gravar,
   // para não desfazer o que outra aba gravou enquanto esta página esperava (ex.: hash da senha)
   function substituirUsuario(storage, usuario) {
@@ -42,15 +43,44 @@
     return true;
   }
 
+  // A versão anterior do site guardava os usuários no sessionStorage.
+  // Leva esses usuários para o localStorage (mesclando por username, o local vence)
+  // e apaga a cópia antiga. Devolve true se havia algo para migrar.
   function migrarDaSessao(local, sessao) {
-    const antigos = lerJSON(sessao, CHAVE_USUARIOS);
+    const antigos = lerJSON(sessao, CHAVE_SESSAO_ANTIGA);
     if (!Array.isArray(antigos)) return false;
     const atuais = lerUsuarios(local);
     const existentes = new Set(atuais.map((u) => u.username));
     const novos = antigos.filter((u) => u && !existentes.has(u.username));
     salvarUsuarios(local, atuais.concat(novos));
-    sessao.removeItem(CHAVE_USUARIOS);
+    sessao.removeItem(CHAVE_SESSAO_ANTIGA);
     return true;
+  }
+
+  // Chaves sem prefixo usadas antes ("users" e "messages"). Só migra o que tem a forma dos dados
+  // do GigTime; dado de outro site na mesma origem fica intocado.
+  const ehUsuario = (u) => Boolean(u) && typeof u.username === 'string' && typeof u.role === 'string'
+    && Array.isArray(u.genres) && ('passwordHash' in u || 'password' in u);
+  const ehMensagem = (m) => Boolean(m) && typeof m.id === 'string' && typeof m.de === 'string'
+    && typeof m.para === 'string' && typeof m.texto === 'string' && typeof m.enviadaEm === 'number';
+
+  function migrarChave(storage, antiga, nova, valido, identificador) {
+    const antigos = lerJSON(storage, antiga);
+    if (!Array.isArray(antigos) || antigos.length === 0 || !antigos.every(valido)) return false;
+    const atuais = lerJSON(storage, nova);
+    const lista = Array.isArray(atuais) ? atuais : [];
+    const existentes = new Set(lista.map((item) => item && item[identificador]));
+    const novos = antigos.filter((item) => !existentes.has(item[identificador]));
+    storage.setItem(nova, JSON.stringify(lista.concat(novos)));
+    storage.removeItem(antiga);
+    return true;
+  }
+
+  // Devolve true se migrou alguma coisa; rodar de novo não muda nada
+  function migrarChavesAntigas(local) {
+    const usuarios = migrarChave(local, 'users', CHAVE_USUARIOS, ehUsuario, 'username');
+    const mensagens = migrarChave(local, 'messages', CHAVE_MENSAGENS, ehMensagem, 'id');
+    return usuarios || mensagens;
   }
 
   function semearSeVazio(storage, seed) {
@@ -84,5 +114,5 @@
     return destino && DESTINO_VALIDO.test(destino) ? destino : null;
   }
 
-  return { CHAVE_USUARIOS, CHAVE_DESTINO, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, semearSeVazio, usuarioPublico, destinoDepoisDoLogin, codificarParametro };
+  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_DESTINO, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico, destinoDepoisDoLogin, codificarParametro };
 });

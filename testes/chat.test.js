@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const { StorageMemoria, carregarPagina } = require('./apoio');
 const M = require('../codigo-fonte/lib/mensagens.js');
 const P = require('../codigo-fonte/lib/perfil.js');
+const { CHAVE_USUARIOS, CHAVE_MENSAGENS } = require('../codigo-fonte/lib/armazenamento.js');
 
 const msg = (de, para, texto, enviadaEm) => ({ id: `${enviadaEm}-${de}`, de, para, texto, enviadaEm });
 
@@ -51,7 +52,7 @@ test('ler e salvar mensagens no storage', () => {
   assert.deepEqual(M.lerMensagens(local), []);
   M.salvarMensagens(local, [msg('ana', 'bia', 'oi', 1)]);
   assert.equal(M.lerMensagens(local)[0].texto, 'oi');
-  assert.deepEqual(M.lerMensagens(new StorageMemoria({ messages: 'quebrado' })), []);
+  assert.deepEqual(M.lerMensagens(new StorageMemoria({ [CHAVE_MENSAGENS]: 'quebrado' })), []);
 });
 
 test('formatarHora mostra hora no mesmo dia e data nos outros', () => {
@@ -84,7 +85,7 @@ test('chat aberto pelo perfil mostra a pessoa e envia mensagem gravada no localS
   d.getElementById('mensagem').value = 'Olá, Sonic!';
   d.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
 
-  const salvas = JSON.parse(w.localStorage.getItem('messages'));
+  const salvas = JSON.parse(w.localStorage.getItem(CHAVE_MENSAGENS));
   assert.equal(salvas.length, 1);
   assert.equal(salvas[0].de, 'cartola');
   assert.equal(salvas[0].para, 'sonic');
@@ -96,7 +97,7 @@ test('chat aberto pelo perfil mostra a pessoa e envia mensagem gravada no localS
 
 test('chat lista as conversas existentes e mostra a mensagem recebida', () => {
   const w = carregarPagina('Chat/chat.html', {
-    antes: logado('sonic', (win) => win.localStorage.setItem('messages', JSON.stringify([
+    antes: logado('sonic', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([
       msg('cartola', 'sonic', 'Bora tocar?', Date.now() - 1000),
     ]))),
   });
@@ -125,13 +126,13 @@ test('chat não envia mensagem vazia', () => {
   const w = carregarPagina('Chat/chat.html', { busca: '?com=sonic', antes: logado('cartola') });
   w.document.getElementById('mensagem').value = '   ';
   w.document.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  assert.equal(w.localStorage.getItem('messages'), null);
+  assert.equal(w.localStorage.getItem(CHAVE_MENSAGENS), null);
 });
 
 test('chat atualiza quando outra aba grava mensagem', () => {
   const w = carregarPagina('Chat/chat.html', { busca: '?com=cartola', antes: logado('sonic') });
-  w.localStorage.setItem('messages', JSON.stringify([msg('cartola', 'sonic', 'Chegou?', Date.now())]));
-  w.dispatchEvent(new w.StorageEvent('storage', { key: 'messages' }));
+  w.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([msg('cartola', 'sonic', 'Chegou?', Date.now())]));
+  w.dispatchEvent(new w.StorageEvent('storage', { key: CHAVE_MENSAGENS }));
   assert.equal(w.document.querySelectorAll('.chat .friendMessage').length, 1);
 });
 
@@ -231,7 +232,7 @@ test('chat atualiza nome e foto do contato quando outra aba edita o perfil dele'
 test('chat não quebra quando o contato da conversa deixa de existir', () => {
   const w = carregarPagina('Chat/chat.html', {
     busca: '?com=sonic',
-    antes: logado('cartola', (win) => win.localStorage.setItem('messages', JSON.stringify([msg('cartola', 'sonic', 'oi', Date.now())]))),
+    antes: logado('cartola', (win) => win.localStorage.setItem(CHAVE_MENSAGENS, JSON.stringify([msg('cartola', 'sonic', 'oi', Date.now())]))),
   });
   trocarUsuarios(w, (lista) => lista.filter((u) => u.username !== 'sonic'));
   const d = w.document;

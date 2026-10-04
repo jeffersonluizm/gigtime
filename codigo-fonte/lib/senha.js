@@ -7,7 +7,7 @@
   if (typeof module === 'object' && module.exports) module.exports = api;
   else raiz.GigSenha = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (raiz) {
-  const CHAVE_USUARIOS = 'users';
+  const CHAVE_USUARIOS = 'gigtime:users'; // padrão; o global.js passa GigArmazenamento.CHAVE_USUARIOS
 
   async function hashSenha(username, senha) {
     const sutil = raiz.crypto && raiz.crypto.subtle;
@@ -35,10 +35,10 @@
 
   // Troca `password` (texto puro) por `passwordHash` em todos os usuários antigos do storage.
   // Devolve quantos foram convertidos.
-  async function migrarSenhasDoStorage(storage) {
+  async function migrarSenhasDoStorage(storage, chave = CHAVE_USUARIOS) {
     let usuarios;
     try {
-      usuarios = JSON.parse(storage.getItem(CHAVE_USUARIOS)) || [];
+      usuarios = JSON.parse(storage.getItem(chave)) || [];
     } catch (e) {
       return 0;
     }
@@ -48,7 +48,7 @@
     for (const u of antigos) hashes.set(u.username, { senha: u.password, hash: await hashSenha(u.username, u.password) });
 
     // Relê antes de gravar para não perder alterações feitas enquanto os hashes eram calculados
-    const atuais = JSON.parse(storage.getItem(CHAVE_USUARIOS)) || [];
+    const atuais = JSON.parse(storage.getItem(chave)) || [];
     let convertidos = 0;
     const novos = atuais.map((u) => {
       const calculado = u && hashes.get(u.username);
@@ -58,7 +58,7 @@
       convertidos++;
       return copia;
     });
-    storage.setItem(CHAVE_USUARIOS, JSON.stringify(novos));
+    storage.setItem(chave, JSON.stringify(novos));
     return convertidos;
   }
 

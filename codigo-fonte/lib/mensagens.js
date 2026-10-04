@@ -5,7 +5,7 @@
   if (typeof module === 'object' && module.exports) module.exports = api;
   else raiz.GigMensagens = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
-  const CHAVE_MENSAGENS = 'messages';
+  const CHAVE_MENSAGENS = 'gigtime:messages'; // mesma chave de GigArmazenamento.CHAVE_MENSAGENS
   const LIMITE_TEXTO = 2000; // caracteres por mensagem (o campo da tela tem o mesmo maxlength)
 
   function lerMensagens(storage) {

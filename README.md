@@ -56,8 +56,10 @@ Contas de demonstração (criadas na primeira visita): `sonic` / `sonic`, `carto
 
 Tudo fica no navegador de quem usa o site:
 
-* `localStorage['users']`: usuários cadastrados (inclui os de demonstração). A senha é guardada só como hash SHA-256 (WebCrypto) de `gigtime:<usuário>:<senha>`; o nome de usuário funciona como sal e por isso não pode ser alterado na edição de perfil.
-* `localStorage['messages']`: mensagens do chat.
+* `localStorage['gigtime:users']`: usuários cadastrados (inclui os de demonstração). A senha é guardada só como hash SHA-256 (WebCrypto) de `gigtime:<usuário>:<senha>`; o nome de usuário funciona como sal e por isso não pode ser alterado na edição de perfil.
+* `localStorage['gigtime:messages']`: mensagens do chat.
+
+As chaves do `localStorage` levam o prefixo `gigtime:` porque, no GitHub Pages, o site divide a origem com outros repositórios do mesmo usuário. Chaves antigas sem prefixo (`users`, `messages`) são migradas automaticamente, desde que tenham o formato dos dados do GigTime; dado de outro site fica intocado.
 * `sessionStorage['loggedInUser']`: usuário logado, sem senha. A sessão vale por aba: fechar a aba encerra o login, e duas abas podem estar logadas com usuários diferentes (útil para testar o chat entre duas pessoas).
 
 Quem usou a versão anterior (usuários no `sessionStorage`, senhas em texto puro) tem os dados levados para o `localStorage` e as senhas convertidas em hash automaticamente na próxima visita.

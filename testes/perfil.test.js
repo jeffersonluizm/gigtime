@@ -6,6 +6,7 @@ const { StorageMemoria, carregarPagina, esperar, RAIZ } = require('./apoio');
 const P = require('../codigo-fonte/lib/perfil.js');
 const S = require('../codigo-fonte/lib/senha.js');
 const A = require('../codigo-fonte/lib/armazenamento.js');
+const { CHAVE_USUARIOS, CHAVE_MENSAGENS } = require('../codigo-fonte/lib/armazenamento.js');
 
 async function base() {
   return [
@@ -138,7 +139,7 @@ test('EdicaoPerfil salva no modelo users e atualiza a sessão', async () => {
   $('genreRock').checked = true;
   $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await esperar();
-  const cartola = JSON.parse(w.localStorage.getItem('users')).find((u) => u.username === 'cartola');
+  const cartola = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'cartola');
   assert.equal(cartola.city, 'Niterói');
   assert.deepEqual(cartola.genres, ['Sertanejo', 'Rock', 'MPB']);
   assert.equal(JSON.parse(w.sessionStorage.getItem('loggedInUser')).city, 'Niterói');
@@ -152,7 +153,7 @@ test('EdicaoPerfil mostra erro e não salva com campo obrigatório vazio', async
   $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await esperar();
   assert.ok($('name').classList.contains('is-invalid'));
-  const cartola = JSON.parse(w.localStorage.getItem('users')).find((u) => u.username === 'cartola');
+  const cartola = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'cartola');
   assert.equal(cartola.name, 'Cartola');
 });
 
@@ -189,7 +190,7 @@ test('EdicaoPerfil mantém um estado fora da lista de UFs (ex.: seed "GH") e dei
   $('city').value = 'Station Square';
   $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
   await esperar();
-  const sonic = JSON.parse(w.localStorage.getItem('users')).find((u) => u.username === 'sonic');
+  const sonic = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS)).find((u) => u.username === 'sonic');
   assert.equal(sonic.city, 'Station Square');
   assert.equal(sonic.state, 'GH');
 });
