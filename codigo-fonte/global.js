@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </a>
         <span class="navbar-text text-white me-3">Bem-vindo, ${loggedInUser.username}!</span>
         <a class="nav-link me-3" href="#" id="profileLink">Perfil</a>
+        <a class="nav-link me-3" href="../Chat/chat.html">Mensagens</a>
         <a class="nav-link me-3" href="#" id="logoutLink">Sair</a>
           `;
 

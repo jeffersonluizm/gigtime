@@ -392,10 +392,25 @@ footer a{
     color: inherit;
 }
 
+/* Chat funcional (chat.js): nome do contato no cabeçalho e botão de enviar */
+.imgtext h4 span.nomeContato{
+    font-size: 1em;
+    color: inherit;
+}
 
+.chatNavbar2 a{
+    color: inherit;
+}
 
+.chatInput .enviar{
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
 
-
-
-
-
+.chatInput .enviar:disabled{
+    cursor: default;
+    opacity: 0.5;
+}

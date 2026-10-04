@@ -23,7 +23,8 @@
     if (logado && exibido && logado.username === exibido.username) {
       return { tipo: 'editar', texto: 'Editar perfil', href: '../EdicaoPerfil/EdicaoPerfil.html' };
     }
-    return { tipo: 'contato', texto: 'Contate-me', href: '../Chat/chat.html' };
+    const com = exibido ? '?com=' + encodeURIComponent(exibido.username) : '';
+    return { tipo: 'contato', texto: 'Contate-me', href: '../Chat/chat.html' + com };
   }
 
   const texto = (valor) => (typeof valor === 'string' ? valor.trim() : '');
