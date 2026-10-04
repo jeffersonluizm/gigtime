@@ -7,7 +7,7 @@ const path = require('node:path');
 const { createHash, pbkdf2Sync } = require('node:crypto');
 
 const RAIZ = path.join(__dirname, '..', 'codigo-fonte');
-const SENHA_DEMO = 'demo1234';
+const SENHA_DEMO = require('../codigo-fonte/dados/demo.js').senha; // fonte única
 const ITERACOES = 600000;
 
 const PERSONAS = [

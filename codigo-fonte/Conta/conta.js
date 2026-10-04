@@ -20,9 +20,15 @@
   // Trocar senha
   const formSenha = $('formSenha');
   const ID_TROCA = { senhaAtual: 'senhaAtualTroca', novaSenha: 'novaSenha', confirmacao: 'confirmacaoSenha' };
+  const CONTA_DEMO = 'Esta é uma conta de demonstração: a senha não muda e a conta não pode ser apagada, para a demonstração continuar funcionando. Crie uma conta sua para testar.';
+
   formSenha.addEventListener('submit', async (event) => {
     event.preventDefault();
     GigFormulario.limparErros(formSenha);
+    if (GigDemo.ehContaDemo(eu)) {
+      GigFormulario.mostrarErroGeral(formSenha, CONTA_DEMO);
+      return;
+    }
     const botao = $('salvarSenha');
     GigFormulario.ocupado(botao, true, 'Trocando...');
     let resultado;
@@ -72,6 +78,10 @@
   formApagar.addEventListener('submit', async (event) => {
     event.preventDefault();
     GigFormulario.limparErros(formApagar);
+    if (GigDemo.ehContaDemo(eu)) {
+      GigFormulario.mostrarErros(formApagar, [{ campo: 'senhaApagar', mensagem: CONTA_DEMO }]);
+      return;
+    }
     const confere = await GigSenha.autenticar(GigArmazenamento.lerUsuarios(localStorage), eu, $('senhaApagar').value);
     if (!confere) {
       GigFormulario.mostrarErros(formApagar, [{ campo: 'senhaApagar', mensagem: 'Senha incorreta.' }]);

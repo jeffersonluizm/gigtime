@@ -45,14 +45,18 @@
 
       <p class="text-center mt-4 mb-0">Ainda não tem conta? <a href="../Registro/registro.html">Criar conta</a></p>
 
-      <div class="alerta mt-4 contas-demo" id="contasDemo">
-        <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#info-circle"></use></svg>
+      <section class="alerta mt-4 contas-demo" id="contasDemo" aria-labelledby="tituloDemo">
+        <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#play-circle"></use></svg>
         <div>
-          <strong>Contas de demonstração</strong><br>
-          Músico: <code>lia.batera</code> · Contratante: <code>casa.lume</code><br>
-          Senha de todas: <code>demo1234</code>. Os dados ficam só neste navegador.
+          <h2 class="h6 mb-1" id="tituloDemo">Explore a demonstração</h2>
+          <p class="mb-2">Entre com um clique numa conta de exemplo. Os dados ficam só neste navegador.</p>
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <button type="button" class="btn btn-gig btn-sm" data-entrar-como="musico">Entrar como músico</button>
+            <button type="button" class="btn btn-gig-secundario btn-sm" data-entrar-como="contratante">Entrar como contratante</button>
+          </div>
+          <small>Ou digite: <code>lia.batera</code> (músico) ou <code>casa.lume</code> (contratante), senha <code>demo1234</code>.</small>
         </div>
-      </div>
+      </section>
     </div>
   </main>
 
@@ -68,6 +72,7 @@
   <script src="../lib/sessao.js"></script>
   <script src="../lib/mensagens.js"></script>
   <script src="../dados/usuarios-exemplo.js"></script>
+  <script src="../dados/demo.js"></script>
   <script src="../inicializacao.js"></script>
   <script src="../ui/avisos.js"></script>
   <script src="../ui/formularios.js"></script>

@@ -14,7 +14,7 @@ const PAGINAS = [
 
 const BASE = [
   '../vendor/bootstrap/bootstrap.bundle.min.js', '../lib/html.js', '../lib/constantes.js', '../lib/armazenamento.js', '../lib/senha.js',
-  '../lib/validacao.js', '../lib/perfil.js', '../lib/sessao.js', '../lib/mensagens.js', '../dados/usuarios-exemplo.js',
+  '../lib/validacao.js', '../lib/perfil.js', '../lib/sessao.js', '../lib/mensagens.js', '../dados/usuarios-exemplo.js', '../dados/demo.js',
   '../inicializacao.js', '../ui/avisos.js', '../ui/formularios.js', '../ui/cards.js', '../ui/layout.js',
 ];
 const ESTILOS = ['../vendor/bootstrap/bootstrap.min.css', '../assets/css/tokens.css', '../assets/css/base.css', '../assets/css/componentes.css'];
