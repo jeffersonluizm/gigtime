@@ -49,57 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectedRole = sessionStorage.getItem('selectedRole'); // Recupera a escolha do usuário
   const radioMusician = document.getElementById('radioMusician');
   const radioContractor = document.getElementById('radioContractor');
-  const selectedState = document.getElementById('state');
 
-  // Supondo que você tenha os estados e as funções correspondentes
-const stateActions = {
-    'AC': () => filtrarCards('AC'),
-    'AL': () => filtrarCards('AL'),
-    'AP': () => filtrarCards('AP'),
-    'AM': () => filtrarCards('AM'),
-    'BA': () => filtrarCards('BA'),
-    'CE': () => filtrarCards('CE'),
-    'DF': () => filtrarCards('DF'),
-    'ES': () => filtrarCards('ES'),
-    'GO': () => filtrarCards('GO'),
-    'MA': () => filtrarCards('MA'),
-    'MT': () => filtrarCards('MT'),
-    'MS': () => filtrarCards('MS'),
-    'MG': () => filtrarCards('MG'),
-    'PA': () => filtrarCards('PA'),
-    'PB': () => filtrarCards('PB'),
-    'PR': () => filtrarCards('PR'),
-    'PE': () => filtrarCards('PE'),
-    'PI': () => filtrarCards('PI'),
-    'RJ': () => filtrarCards('RJ'),
-    'RN': () => filtrarCards('RN'),
-    'RS': () => filtrarCards('RS'),
-    'RO': () => filtrarCards('RO'),
-    'RR': () => filtrarCards('RR'),
-    'SC': () => filtrarCards('SC'),
-    'SP': () => filtrarCards('SP'),
-    'SE': () => filtrarCards('SE'),
-    'TO': () => filtrarCards('TO')
-  // Adicione mais estados aqui
-};
-
-document.getElementById('state').addEventListener('change', function() {
-  const selectedState = this.value;
-  const action = stateActions[selectedState];
-
-  if (action) {
-    action(); // Executa a função associada ao estado
-  } else {
-    // Caso o estado não seja válido ou não tenha uma ação associada
-  }
-});
+  document.getElementById('state').addEventListener('change', () => filtrarCards());
 
   if (selectedRole === 'Músico') {
     radioMusician.checked = true; // Marca o botão de Músico
-    filtrarCards('Músico'); // Aplica o filtro automaticamente
+    filtrarCards(); // Aplica o filtro automaticamente
   } else if (selectedRole === 'Contratante') {
     radioContractor.checked = true; // Marca o botão de Contratante
-    filtrarCards('Contratante'); // Aplica o filtro automaticamente
+    filtrarCards(); // Aplica o filtro automaticamente
   }
 });
 
@@ -107,35 +65,33 @@ document.getElementById('state').addEventListener('change', function() {
 const radioMusician = document.getElementById('radioMusician');
 const radioContractor = document.getElementById('radioContractor');
 
-// Função para exibir/ocultar os cards com base no papel (role)
-function filtrarCards(param) {
+// Exibe só os cards que atendem ao papel (Músicos/Contratantes) E ao estado selecionados;
+// sem papel marcado ou com "Escolha seu estado..." aquele critério não filtra.
+function filtrarCards() {
+  const role = radioMusician.checked ? 'Músico' : radioContractor.checked ? 'Contratante' : null;
+  const state = document.getElementById('state').value;
   const cards = document.querySelectorAll('.col.d-flex'); // Seleciona todos os cards
   cards.forEach(card => {
-    if (card.classList.contains(param)) {
-      // Mostra o card do tipo selecionado
-      card.style.setProperty('display', 'flex', 'important');
-    } else {
-      // Oculta o card de outro tipo
-      card.style.setProperty('display', 'none', 'important');
-    }
+    const visivel = (!role || card.classList.contains(role)) && (!state || card.classList.contains(state));
+    card.style.setProperty('display', visivel ? 'flex' : 'none', 'important');
   });
 }
 
 // Adiciona eventos de clique aos botões de rádio
 radioMusician.addEventListener('change', () => {
-  if (radioMusician.checked) filtrarCards('Músico'); // Exibe músicos
+  if (radioMusician.checked) filtrarCards(); // Exibe músicos
 });
 
 radioContractor.addEventListener('change', () => {
-  if (radioContractor.checked) filtrarCards('Contratante'); // Exibe contratantes
+  if (radioContractor.checked) filtrarCards(); // Exibe contratantes
 });
 
 // Verifica o botão marcado ao carregar a página
 document.addEventListener('DOMContentLoaded', () => {
   if (radioMusician.checked) {
-    filtrarCards('Músico'); // Exibe músicos
+    filtrarCards(); // Exibe músicos
   } else if (radioContractor.checked) {
-    filtrarCards('Contratante'); // Exibe contratantes
+    filtrarCards(); // Exibe contratantes
   }
 });
 
