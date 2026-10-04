@@ -33,8 +33,13 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
 
   
     // Validação básica
-    if (!username || !name || !email || !phone || !role || !state || !city || !genres || !password || !confirmPassword) {
+    if (!username || !name || !email || !phone || !role || !state || !city || !password || !confirmPassword) {
       this.classList.add('was-validated');
+      return;
+    }
+
+    if (genres.length === 0) {
+      alert('Selecione pelo menos um gênero musical.');
       return;
     }
   
