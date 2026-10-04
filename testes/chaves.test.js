@@ -101,3 +101,9 @@ test('migrarChavesAntigas migra os itens válidos e mantém os inválidos na cha
   assert.equal(A.migrarChavesAntigas(local), false);
   assert.deepEqual(JSON.parse(local.getItem('users')), [{ id: 7 }]);
 });
+
+test('a chave das mensagens tem uma fonte só (lib/armazenamento.js)', () => {
+  const fonte = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'codigo-fonte', 'lib', 'mensagens.js'), 'utf8');
+  assert.doesNotMatch(fonte, /['"]gigtime:messages['"]/);
+  assert.equal(M.CHAVE_MENSAGENS, A.CHAVE_MENSAGENS);
+});

@@ -1,11 +1,13 @@
-// Mensagens do chat local: ficam no localStorage do navegador (chave "messages").
+// Mensagens do chat local: ficam no localStorage do navegador (chave GigArmazenamento.CHAVE_MENSAGENS).
 // Cada mensagem: { id, de, para, texto, enviadaEm } (de/para = username; enviadaEm = milissegundos).
+// Depende de lib/armazenamento.js, que precisa ser carregado antes na página.
 (function (raiz, fabrica) {
-  const api = fabrica();
-  if (typeof module === 'object' && module.exports) module.exports = api;
+  const ehNode = typeof module === 'object' && module.exports;
+  const api = fabrica(ehNode ? require('./armazenamento.js') : raiz.GigArmazenamento);
+  if (ehNode) module.exports = api;
   else raiz.GigMensagens = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
-  const CHAVE_MENSAGENS = 'gigtime:messages'; // mesma chave de GigArmazenamento.CHAVE_MENSAGENS
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (armazenamento) {
+  const CHAVE_MENSAGENS = armazenamento.CHAVE_MENSAGENS; // fonte única da chave
   const LIMITE_TEXTO = 2000; // caracteres por mensagem (o campo da tela tem o mesmo maxlength)
 
   function lerMensagens(storage) {
