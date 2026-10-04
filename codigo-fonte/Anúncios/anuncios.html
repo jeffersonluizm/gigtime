@@ -79,26 +79,56 @@
               <div class="invalid-feedback">Por favor, selecione seu estado.</div>
             </div>
             
-            <h6 class="pt-3">Avaliação:</h6>
+            <h6 class="pt-3">Avaliação mínima:</h6>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-              <label class="form-check-label" for="inlineCheckbox1">1</label>
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao1" value="1">
+              <label class="form-check-label" for="avaliacao1">1</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-              <label class="form-check-label" for="inlineCheckbox2">2</label>
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao2" value="2">
+              <label class="form-check-label" for="avaliacao2">2</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
-              <label class="form-check-label" for="inlineCheckbox3">3</label>
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao3" value="3">
+              <label class="form-check-label" for="avaliacao3">3</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="option4">
-              <label class="form-check-label" for="inlineCheckbox4">4</label>
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao4" value="4">
+              <label class="form-check-label" for="avaliacao4">4</label>
             </div>
-            <div class="form-check form-check-inline mb-3">
-              <input class="form-check-input" type="checkbox" id="inlineCheckbox5" value="option5">
-              <label class="form-check-label" for="inlineCheckbox5">5</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroAvaliacao" type="checkbox" id="avaliacao5" value="5">
+              <label class="form-check-label" for="avaliacao5">5</label>
+            </div>
+
+            <h6 class="pt-3">Gêneros:</h6>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoSertanejo" value="Sertanejo">
+              <label class="form-check-label" for="generoSertanejo">Sertanejo</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoRock" value="Rock">
+              <label class="form-check-label" for="generoRock">Rock</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoMPB" value="MPB">
+              <label class="form-check-label" for="generoMPB">MPB</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoPop" value="Pop">
+              <label class="form-check-label" for="generoPop">Pop</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoForró" value="Forró">
+              <label class="form-check-label" for="generoForró">Forró</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input filtroGenero" type="checkbox" id="generoJazz" value="Jazz">
+              <label class="form-check-label" for="generoJazz">Jazz</label>
+            </div>
+
+            <div class="my-3">
+              <button type="button" class="btn btn-sm btn-outline-secondary" id="limparFiltros">Limpar filtros</button>
             </div>
             </div>
           </div>
@@ -116,6 +146,7 @@
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
   crossorigin="anonymous">
   </script>
+  <script src="../lib/filtros.js"></script>
   <script src="../lib/armazenamento.js"></script>
   <script src="../lib/senha.js"></script>
   <script src="../global.js"></script>

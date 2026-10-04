@@ -9,7 +9,7 @@ const users = GigArmazenamento.lerUsuarios(localStorage);
 // Gera os cards para cada usuário
 users.forEach(user => {
   const card = `
-    <div class="col d-flex NO ${user.role} ${user.state}">
+    <div class="col d-flex NO ${user.role} ${user.state}" data-username="${user.username}">
       <div class="card flex-fill">
         <a href="#" id="${user.username}">
           <img src="${user.profilePicLink}" class="card-img-top" alt="Imagem de ${user.name}">
@@ -64,15 +64,28 @@ document.addEventListener('DOMContentLoaded', () => {
 // Seleciona os botões de rádio pelos IDs
 const radioMusician = document.getElementById('radioMusician');
 const radioContractor = document.getElementById('radioContractor');
+const caixasAvaliacao = document.querySelectorAll('.filtroAvaliacao');
+const caixasGenero = document.querySelectorAll('.filtroGenero');
 
-// Exibe só os cards que atendem ao papel (Músicos/Contratantes) E ao estado selecionados;
-// sem papel marcado ou com "Escolha seu estado..." aquele critério não filtra.
+// Lê os filtros marcados na tela
+function filtroAtual() {
+  const avaliacaoMarcada = Array.from(caixasAvaliacao).find(caixa => caixa.checked);
+  return {
+    papel: radioMusician.checked ? 'Músico' : radioContractor.checked ? 'Contratante' : null,
+    estado: document.getElementById('state').value,
+    avaliacaoMinima: avaliacaoMarcada ? Number(avaliacaoMarcada.value) : 0,
+    generos: Array.from(caixasGenero).filter(caixa => caixa.checked).map(caixa => caixa.value),
+  };
+}
+
+// Exibe só os cards que atendem a todos os filtros (papel, estado, avaliação mínima e gêneros);
+// critério sem escolha não filtra. A regra fica em lib/filtros.js.
 function filtrarCards() {
-  const role = radioMusician.checked ? 'Músico' : radioContractor.checked ? 'Contratante' : null;
-  const state = document.getElementById('state').value;
-  const cards = document.querySelectorAll('.col.d-flex'); // Seleciona todos os cards
+  const filtro = filtroAtual();
+  const cards = document.querySelectorAll('#anuncios > .col'); // Seleciona todos os cards
   cards.forEach(card => {
-    const visivel = (!role || card.classList.contains(role)) && (!state || card.classList.contains(state));
+    const usuario = users.find(user => user.username === card.dataset.username);
+    const visivel = usuario ? GigFiltros.correspondeFiltro(usuario, filtro) : true;
     card.style.setProperty('display', visivel ? 'flex' : 'none', 'important');
   });
 }
@@ -84,6 +97,26 @@ radioMusician.addEventListener('change', () => {
 
 radioContractor.addEventListener('change', () => {
   if (radioContractor.checked) filtrarCards(); // Exibe contratantes
+});
+
+// Avaliação mínima: uma caixa por vez (marcar uma desmarca as outras; desmarcar tira o filtro)
+caixasAvaliacao.forEach(caixa => {
+  caixa.addEventListener('change', () => {
+    if (caixa.checked) caixasAvaliacao.forEach(outra => { if (outra !== caixa) outra.checked = false; });
+    filtrarCards();
+  });
+});
+
+caixasGenero.forEach(caixa => caixa.addEventListener('change', () => filtrarCards()));
+
+document.getElementById('limparFiltros').addEventListener('click', () => {
+  radioMusician.checked = false;
+  radioContractor.checked = false;
+  document.getElementById('state').value = '';
+  caixasAvaliacao.forEach(caixa => { caixa.checked = false; });
+  caixasGenero.forEach(caixa => { caixa.checked = false; });
+  sessionStorage.removeItem('selectedRole');
+  filtrarCards();
 });
 
 // Verifica o botão marcado ao carregar a página
