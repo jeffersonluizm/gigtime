@@ -1,0 +1,11 @@
+{
+  "name": "gigtime",
+  "private": true,
+  "description": "Infraestrutura de testes do GigTime (somente desenvolvimento; o site continua estático)",
+  "scripts": {
+    "test": "node --test \"testes/**/*.test.js\""
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}
