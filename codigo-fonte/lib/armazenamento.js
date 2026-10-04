@@ -56,5 +56,16 @@
     return copia;
   }
 
-  return { CHAVE_USUARIOS, lerJSON, lerUsuarios, salvarUsuarios, migrarDaSessao, semearSeVazio, usuarioPublico };
+  // Página para onde o login deve voltar (gravada por quem exigiu login). Lê uma vez só e
+  // aceita apenas caminhos relativos do próprio site, como "../Chat/chat.html?com=ana".
+  const CHAVE_DESTINO = 'depoisDoLogin';
+  const DESTINO_VALIDO = /^\.\.\/[A-Za-zÀ-ÿ]+\/[A-Za-z]+\.html(\?[A-Za-z0-9_=%.&-]*)?$/;
+
+  function destinoDepoisDoLogin(sessao) {
+    const destino = sessao.getItem(CHAVE_DESTINO);
+    sessao.removeItem(CHAVE_DESTINO);
+    return destino && DESTINO_VALIDO.test(destino) ? destino : null;
+  }
+
+  return { CHAVE_USUARIOS, CHAVE_DESTINO, lerJSON, lerUsuarios, salvarUsuarios, migrarDaSessao, semearSeVazio, usuarioPublico, destinoDepoisDoLogin };
 });
