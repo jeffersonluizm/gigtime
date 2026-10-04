@@ -52,7 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }});
 
-// Usuários de exemplo, gravados no localStorage só quando ainda não há nenhum usuário
+// Usuários de exemplo, gravados no localStorage só quando ainda não há nenhum usuário.
+// passwordHash = SHA-256 de "gigtime:<username>:<senha>" (ver lib/senha.js); as senhas de demonstração estão no README.
 const USUARIOS_EXEMPLO = [
         {
             username: 'sonic',
@@ -76,7 +77,7 @@ const USUARIOS_EXEMPLO = [
                 "https://preview.redd.it/a-sonic-plush-holding-the-crush40-guitar-v0-msf38un6lgi91.jpg?auto=webp&s=7af1ab047d2caf047b8dcacfadf5aaded621c3ea",
                 "https://pbs.twimg.com/media/FmeeQ3AWQAUkre7?format=jpg&name=4096x4096",
             ],
-            password: 'sonic'
+            passwordHash: 'ec837339f61e8a35c0a90e526c732fd87ad2a86399f44e15686b62b7359f4da0'
         },
         {
             username: 'cartola',
@@ -100,7 +101,7 @@ const USUARIOS_EXEMPLO = [
                 "https://i.postimg.cc/CxNBK6LZ/highlight-5.jpg",
                 "https://i.postimg.cc/z3Y5w5pJ/highlight-2.jpg",
             ],
-            password: 'cartolinha'
+            passwordHash: 'ffcc0f73f2ff4099183563acf852fe3e1afeccf781f8b173cecb76e0f9987240'
         },
         {
             username: 'maria123',
@@ -124,7 +125,7 @@ const USUARIOS_EXEMPLO = [
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'maria123'
+            passwordHash: '717d0c15137e60b977e7cb8335e08dad1250ccacefe46ee6a12d2fc776c1f314'
         },
         {
             username: 'lucas98',
@@ -148,7 +149,7 @@ const USUARIOS_EXEMPLO = [
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'lucas98'
+            passwordHash: 'f5e14504ff3269b70f2842c83323bd8af6fa936214110dd959709ad68b1ae9c4'
         },
         {
             username: 'ana.pereira',
@@ -172,7 +173,7 @@ const USUARIOS_EXEMPLO = [
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'ana.pereira'
+            passwordHash: '3429b0e9801648cfcf9d99cee50fa1c150ccd084f5b1499df6aa955337debdf4'
         },
         {
             username: 'joao_souza',
@@ -196,7 +197,7 @@ const USUARIOS_EXEMPLO = [
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'joao.souza'
+            passwordHash: '490790c6e51b3c530ac3a0763ee0d5c58628747bac6e0dda8d0d62614d4185ae'
         },
         {
             username: 'carol.martins',
@@ -220,7 +221,7 @@ const USUARIOS_EXEMPLO = [
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'carol.martins'
+            passwordHash: 'acdcde187586742c9b28102649a5b3a6feb22738c844bb6b70d23672b69f8c29'
         },
         {
             username: 'joaoshow',
@@ -244,7 +245,7 @@ const USUARIOS_EXEMPLO = [
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'joaoshow123'
+            passwordHash: 'fae2df09db1825270a9f7081215af2d57233ff21c1a96ff2e3c645783c3a647e'
         },
         {
             username: 'jazzburger',
@@ -268,7 +269,7 @@ const USUARIOS_EXEMPLO = [
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'plannerpro2024'
+            passwordHash: '3b864c16ba14a5ed022e4397fb87e9827a25f9651f1878569e23976eb156b6b9'
         },
         {
             username: 'operahouse',
@@ -292,7 +293,7 @@ const USUARIOS_EXEMPLO = [
                 "https://picsum.photos/600/1000?x=5",
                 "https://picsum.photos/600/1000?x=6",
             ],
-            password: 'evento2024'
+            passwordHash: '971c82f043ddc4bee9f338e05b610d39d9ae8fcb6e65e4aaf3068403f28811a7'
         }
 ];
 
@@ -300,6 +301,8 @@ const USUARIOS_EXEMPLO = [
 // ou seja, a sessão vale por aba. Quem vinha da versão antiga (usuários no sessionStorage) é migrado.
 GigArmazenamento.migrarDaSessao(localStorage, sessionStorage);
 GigArmazenamento.semearSeVazio(localStorage, USUARIOS_EXEMPLO);
+// Senhas em texto puro de versões antigas viram hash (assíncrono; o login aceita as duas formas)
+GigSenha.migrarSenhasDoStorage(localStorage).catch(erro => console.warn(erro.message));
 
 // Objetos copiados para a sessão não guardam senha (versões antigas guardavam o usuário inteiro)
 ['loggedInUser', 'clickedUser'].forEach(chave => {

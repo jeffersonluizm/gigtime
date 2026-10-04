@@ -13,7 +13,7 @@ document.getElementById('sendImgLink').addEventListener('click', function () {
   }
 });
 
-document.getElementById('registerForm').addEventListener('submit', function (event) {
+document.getElementById('registerForm').addEventListener('submit', async function (event) {
     event.preventDefault();
   
     const username = document.getElementById('username').value.trim();
@@ -83,6 +83,15 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
         return;
     }
   
+    // Guarda só o hash SHA-256 da senha, nunca o texto puro
+    let passwordHash;
+    try {
+      passwordHash = await GigSenha.hashSenha(username, password);
+    } catch (erro) {
+      alert(erro.message);
+      return;
+    }
+
     // Adiciona novo usuário
     users.push({ 
       username,
@@ -106,7 +115,7 @@ document.getElementById('registerForm').addEventListener('submit', function (eve
         "https://picsum.photos/600/1000?x=5",
         "https://picsum.photos/600/1000?x=6",
     ],
-      password
+      passwordHash
     });
     
     GigArmazenamento.salvarUsuarios(localStorage, users);

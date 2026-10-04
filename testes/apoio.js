@@ -23,13 +23,20 @@ class StorageMemoria {
 // Carrega o HTML de uma página e executa, na ordem, os scripts locais que ela referencia
 // (os de CDN são ignorados). `antes(window)` roda antes dos scripts, para preparar o storage.
 function carregarPagina(relativo, { busca = '', antes } = {}) {
-  const { JSDOM } = require('jsdom');
+  const { JSDOM, VirtualConsole } = require('jsdom');
+  // Navegação de página não existe no jsdom; esse aviso é esperado e fica fora da saída
+  const virtualConsole = new VirtualConsole();
+  virtualConsole.on('jsdomError', (e) => { if (!/navigation/.test(e.message)) console.error(e); });
+  virtualConsole.on('error', (...a) => console.error(...a));
+  virtualConsole.on('warn', (...a) => console.warn(...a));
   const arquivo = path.join(RAIZ, relativo);
   const html = fs.readFileSync(arquivo, 'utf8');
   const url = 'http://127.0.0.1/' + relativo.split(path.sep).join('/') + busca;
-  const dom = new JSDOM(html, { url, runScripts: 'outside-only', pretendToBeVisual: true });
+  const dom = new JSDOM(html, { url, runScripts: 'outside-only', pretendToBeVisual: true, virtualConsole });
   const { window } = dom;
+  // O jsdom não traz WebCrypto nem TextEncoder; os navegadores trazem
   Object.defineProperty(window, 'crypto', { value: webcrypto, configurable: true });
+  window.TextEncoder = TextEncoder;
   window.alert = (msg) => { (window.__alertas ||= []).push(msg); };
   if (antes) antes(window);
 
