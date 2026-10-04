@@ -44,6 +44,13 @@
     });
   }
 
+  // Valor gravado que não está entre as opções (ex.: estado "GH" do usuário de exemplo Sonic)
+  // vira uma opção extra, para não ser apagado ao salvar
+  function garantirOpcao(select, valor) {
+    if (!valor || Array.from(select.options).some((opcao) => opcao.value === valor)) return;
+    select.add(new Option(valor, valor));
+  }
+
   // Preenche o formulário com os dados gravados (também usado por "Desfazer alterações")
   function preencher() {
     const usuario = usuarioAtual();
@@ -54,6 +61,8 @@
     }
     limparErros();
     $('username').value = usuario.username;
+    garantirOpcao($('role'), usuario.role);
+    garantirOpcao($('state'), usuario.state);
     CAMPOS_TEXTO.forEach((campo) => { $(campo).value = usuario[campo] || ''; });
     const generos = usuario.genres || [];
     caixasGenero().forEach((caixa) => { caixa.checked = generos.includes(caixa.value); });

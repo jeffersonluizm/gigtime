@@ -181,3 +181,15 @@ test('perfil mostra os dados atuais do modelo, não a cópia guardada na sessão
   assert.equal(w.document.getElementById('name').textContent, 'Cartola');
   assert.equal(w.document.getElementById('location').textContent, 'Rio de Janeiro/RJ');
 });
+
+test('EdicaoPerfil mantém um estado fora da lista de UFs (ex.: seed "GH") e deixa salvar', async () => {
+  const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', { antes: logadoComo('sonic') });
+  const $ = (id) => w.document.getElementById(id);
+  assert.equal($('state').value, 'GH');
+  $('city').value = 'Station Square';
+  $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
+  await esperar();
+  const sonic = JSON.parse(w.localStorage.getItem('users')).find((u) => u.username === 'sonic');
+  assert.equal(sonic.city, 'Station Square');
+  assert.equal(sonic.state, 'GH');
+});
