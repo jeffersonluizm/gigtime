@@ -31,16 +31,16 @@ A GigTime é uma plataforma que busca facilitar a conexão entre músicos e cont
 <li><a href="documentos/06-Programação de Funcionalidades.md"> Programação de Funcionalidades</a></li>
 <li><a href="documentos/07-Plano de Testes de Software.md"> Plano de Testes de Software</a></li>
 <li><a href="documentos/08-Registro de Testes de Software.md"> Registro de Testes de Software</a></li>
-<li><a href="documentos/09-Referências.md"> Referências Bibliográficas</a></li>
+<li><a href="documentos/09-Referências Bibliográficas.md"> Referências Bibliográficas</a></li>
 </ol>
 
 # Hospedagem
 
-* Insira o endereço eletrônico público de acesso ao conteúdo publicado. 
+* Site publicado no GitHub Pages: https://icei-puc-minas-pmv-ads.github.io/pmv-ads-2024-2-e1-proj-web-t10-pmv-ads-2024-2-e1-proj-gigtime/codigo-fonte/Home/home.html
 
 # Código-Fonte
 
-* <a href="codigo-fonte/README.md">Código Fonte</a>
+* <a href="codigo-fonte/Home/home.html">Código Fonte</a>: site estático (HTML, CSS e JavaScript), sem back-end. Para rodar localmente, sirva a pasta `codigo-fonte` com qualquer servidor HTTP (por exemplo `python -m http.server` dentro dela) e abra `/Home/home.html`. Os dados ficam no `sessionStorage` do navegador.
 
 # Apresentação
 
