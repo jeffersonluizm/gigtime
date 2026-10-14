@@ -7,7 +7,7 @@ const { PNG } = require('pngjs');
 const { GIFEncoder, quantize, applyPalette } = require('gifenc');
 
 const CHROME = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const [base = 'http://127.0.0.1:8811', destino = 'docs/img/demo.gif'] = process.argv.slice(2);
+const [base = 'http://127.0.0.1:8800', destino = 'docs/img/demo.gif'] = process.argv.slice(2);
 const LARGURA = 1100;
 const ALTURA = 680;
 
@@ -35,9 +35,8 @@ const ALTURA = 680;
   await pagina.evaluate(() => { localStorage.clear(); sessionStorage.clear(); });
   await pagina.goto(base + '/Home/home.html', { waitUntil: 'networkidle' });
   await quadro(1800);
-  await pagina.locator('a[href="../Login/login.html?demo=musico"]').scrollIntoViewIfNeeded();
-  await quadro(1200);
-  await pagina.click('a[href="../Login/login.html?demo=musico"]');
+  // atalho da demonstração na primeira dobra (hero)
+  await pagina.click('.hero a[href="../Login/login.html?demo=musico"]');
   await pagina.waitForURL(/anuncios/, { waitUntil: 'load' });
   await pagina.waitForTimeout(400);
   await quadro(1600);
