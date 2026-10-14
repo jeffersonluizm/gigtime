@@ -31,9 +31,19 @@
   }
 
   // "Entrar como músico/contratante": conta de demonstração com um clique (dados/demo.js)
-  function entrarComoDemo(papel) {
+  // Quem está logado com uma conta própria confirma antes de trocar pela conta de demonstração
+  async function entrarComoDemo(papel) {
     const username = GigDemo.contas[papel];
     if (!username) return;
+    const atual = GigSessao.usuarioLogado(sessionStorage);
+    if (atual && atual.username !== username && !GigDemo.ehContaDemo(atual.username)) {
+      const trocar = await GigAvisos.confirmar({
+        titulo: 'Trocar de conta?',
+        texto: `Você está conectado como ${atual.name || atual.username} (${atual.username}). Entrar na demonstração encerra essa sessão nesta aba; seus dados continuam guardados.`,
+        confirmar: 'Entrar na demonstração',
+      });
+      if (!trocar) return;
+    }
     GigFormulario.limparErros(form);
     $('username').value = username;
     $('password').value = '';

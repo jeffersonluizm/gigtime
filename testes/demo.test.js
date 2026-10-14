@@ -103,3 +103,27 @@ test('quem já tem dados não recebe as conversas de demonstração por cima', (
   });
   assert.equal(M.lerMensagens(w.localStorage).length, 0);
 });
+
+test('login.html?demo= com uma conta própria logada pede confirmação antes de trocar', async () => {
+  const minha = (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify({ username: 'carla.nova', name: 'Carla' }));
+  const w = carregarPagina('Login/login.html', { busca: '?demo=musico', antes: minha });
+  await esperarAte(() => w.document.querySelector('dialog'));
+  assert.match(w.document.querySelector('dialog').textContent, /carla\.nova|Carla/);
+  w.document.querySelector('dialog [data-resposta="nao"]').click();
+  await esperarAte(() => !w.document.querySelector('dialog'));
+  assert.equal(JSON.parse(w.sessionStorage.getItem('loggedInUser')).username, 'carla.nova', 'cancelar mantém a sessão');
+
+  const w2 = carregarPagina('Login/login.html', { busca: '?demo=musico', antes: minha });
+  await esperarAte(() => w2.document.querySelector('dialog'));
+  w2.document.querySelector('dialog [data-resposta="sim"]').click();
+  await esperarAte(() => JSON.parse(w2.sessionStorage.getItem('loggedInUser')).username === 'lia.batera');
+});
+
+test('login.html?demo= com outra conta de demonstração logada troca direto', async () => {
+  const w = carregarPagina('Login/login.html', {
+    busca: '?demo=musico',
+    antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify({ username: 'casa.lume' })),
+  });
+  await esperarAte(() => JSON.parse(w.sessionStorage.getItem('loggedInUser')).username === 'lia.batera');
+  assert.equal(w.document.querySelector('dialog'), null);
+});
