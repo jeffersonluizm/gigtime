@@ -15,10 +15,7 @@
   // Cota típica do localStorage por origem (Chrome, Edge, Firefox): 5 Mi unidades UTF-16
   const COTA_ESTIMADA = 5 * 1024 * 1024;
 
-  const lista = (storage, chave) => {
-    const valor = armazenamento.lerJSON(storage, chave);
-    return Array.isArray(valor) ? valor : [];
-  };
+  const lista = (storage, chave) => armazenamento.lerLista(storage, chave);
   const daPessoa = (m, username) => m && (m.de === username || m.para === username);
 
   function exportarDados(storage, username, agora) {

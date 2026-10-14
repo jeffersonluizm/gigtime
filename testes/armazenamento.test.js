@@ -104,3 +104,20 @@ test('clicar num card guarda o perfil escolhido sem senha', () => {
   assert.equal(escolhido.username, 'davi.sax');
   assert.equal('password' in escolhido || 'passwordHash' in escolhido, false);
 });
+
+test('lerLista devolve a lista gravada ou [] (chave vazia, JSON quebrado ou valor que não é lista)', () => {
+  const local = new StorageMemoria({ a: '[1,2]', b: '{quebrado', c: '{"x":1}' });
+  assert.deepEqual(A.lerLista(local, 'a'), [1, 2]);
+  assert.deepEqual(A.lerLista(local, 'b'), []);
+  assert.deepEqual(A.lerLista(local, 'c'), []);
+  assert.deepEqual(A.lerLista(local, 'nada'), []);
+});
+
+test('senha e mensagens leem listas pela mesma função de armazenamento (sem JSON.parse repetido)', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  for (const arquivo of ['senha.js', 'mensagens.js', 'conta.js']) {
+    const codigo = fs.readFileSync(path.join(__dirname, '..', 'codigo-fonte', 'lib', arquivo), 'utf8');
+    assert.doesNotMatch(codigo, /JSON\.parse\(/, arquivo);
+  }
+});

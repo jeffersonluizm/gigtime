@@ -3,11 +3,13 @@
 // Versões antigas guardavam SHA-256 de "gigtime:<username>:<senha>" (ou a senha pura): o login ainda
 // aceita esses formatos e troca pelo PBKDF2 na hora (autenticarEAtualizar), porque só ali a senha é conhecida.
 // Observação: crypto.subtle só existe em contexto seguro (https ou http://localhost/127.0.0.1).
+// Depende de lib/armazenamento.js (leitura das listas gravadas).
 (function (raiz, fabrica) {
-  const api = fabrica(raiz);
-  if (typeof module === 'object' && module.exports) module.exports = api;
+  const ehNode = typeof module === 'object' && module.exports;
+  const api = fabrica(raiz, ehNode ? require('./armazenamento.js') : raiz.GigArmazenamento);
+  if (ehNode) module.exports = api;
   else raiz.GigSenha = api;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (raiz) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (raiz, armazenamento) {
   const ITERACOES_PADRAO = 600000;
   const PREFIXO = 'pbkdf2-sha256';
   const BYTES_SAL = 16;
@@ -87,14 +89,7 @@
     return !registro || registro.iteracoes < iteracoesAtuais(opcoes);
   }
 
-  const lerLista = (storage, chave) => {
-    try {
-      const lista = JSON.parse(storage.getItem(chave));
-      return Array.isArray(lista) ? lista : [];
-    } catch (e) {
-      return [];
-    }
-  };
+  const lerLista = (storage, chave) => armazenamento.lerLista(storage, chave);
 
   // Login: confere a senha e, se o hash for de formato antigo, grava o PBKDF2 no lugar.
   // Relê a lista antes de gravar para não desfazer o que outra aba gravou durante o cálculo.

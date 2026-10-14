@@ -18,14 +18,7 @@
   // null = storage.clear() (evento "storage" sem chave)
   const ehChaveDeMensagens = (chave) => chave === null || chave === CHAVE_MENSAGENS || String(chave).startsWith(PREFIXO_AUTOR);
 
-  function lerLista(storage, chave) {
-    try {
-      const lista = JSON.parse(storage.getItem(chave));
-      return Array.isArray(lista) ? lista : [];
-    } catch (e) {
-      return [];
-    }
-  }
+  const lerLista = (storage, chave) => armazenamento.lerLista(storage, chave);
 
   // Todas as chaves de mensagens: a lista antiga e as dos autores
   function chavesDeMensagens(storage) {

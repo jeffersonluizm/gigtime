@@ -27,9 +27,14 @@
     }
   }
 
-  function lerUsuarios(storage) {
-    const lista = lerJSON(storage, CHAVE_USUARIOS);
+  // Lista gravada numa chave, ou [] (chave vazia, JSON quebrado ou valor que não é lista)
+  function lerLista(storage, chave) {
+    const lista = lerJSON(storage, chave);
     return Array.isArray(lista) ? lista : [];
+  }
+
+  function lerUsuarios(storage) {
+    return lerLista(storage, CHAVE_USUARIOS);
   }
 
   function salvarUsuarios(storage, lista) {
@@ -100,5 +105,5 @@
     return copia;
   }
 
-  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_LIDAS, ehErroDeCota, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico };
+  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_LIDAS, ehErroDeCota, lerJSON, lerLista, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico };
 });
