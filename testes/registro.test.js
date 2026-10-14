@@ -74,3 +74,12 @@ test('cadastro avisa quando o navegador não tem espaço e não entra na conta',
   assert.match(w.document.querySelector('[data-erro-formulario]').textContent, /espaço/);
   assert.equal(w.sessionStorage.getItem('loggedInUser'), null);
 });
+
+test('cadastro: nome de usuário e e-mail são únicos sem diferenciar maiúsculas', async () => {
+  const w = carregarPagina('Registro/registro.html');
+  preencher(w, { username: 'Lia.Batera', email: 'LIA.BATERA@EXAMPLE.COM' });
+  enviar(w);
+  await esperarAte(() => w.document.getElementById('username').classList.contains('is-invalid'));
+  assert.ok(w.document.getElementById('email').classList.contains('is-invalid'));
+  assert.equal(usuarios(w).filter((u) => u.username.toLowerCase() === 'lia.batera').length, 1);
+});

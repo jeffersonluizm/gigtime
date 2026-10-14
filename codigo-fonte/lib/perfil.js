@@ -46,9 +46,11 @@
 
     const email = texto(dados.email);
     const phone = texto(dados.phone);
+    // Unicidade sem diferenciar maiúsculas (Ana@Ex.com e ana@ex.com são o mesmo e-mail)
+    const igual = (a, b) => String(a || '').toLowerCase() === String(b || '').toLowerCase();
     const outros = usuarios.filter((u) => u.username !== username);
     if (email && !v.emailValido(email)) erro('email', 'Informe um e-mail válido, como nome@exemplo.com.');
-    else if (email && outros.some((u) => u.email === email)) erro('email', 'Este e-mail já está em uso.');
+    else if (email && outros.some((u) => igual(u.email, email))) erro('email', 'Este e-mail já está em uso.');
     if (phone && !v.telefoneValido(phone)) erro('phone', 'Informe o telefone com DDD, como (31) 91234-5678.');
     else if (phone && outros.some((u) => u.phone === phone)) erro('phone', 'Este telefone já está em uso.');
 
@@ -129,7 +131,7 @@
     const erros = [];
     if (!v.usernameValido(username)) {
       erros.push({ campo: 'username', mensagem: 'Use de 3 a 30 letras, números, ponto, hífen ou sublinhado, sem espaços.' });
-    } else if (usuarios.some((u) => u.username === username)) {
+    } else if (usuarios.some((u) => String(u.username).toLowerCase() === username.toLowerCase())) {
       erros.push({ campo: 'username', mensagem: 'Este nome de usuário já existe.' });
     }
     erros.push(...validarDadosPerfil(dados, usuarios, username));
