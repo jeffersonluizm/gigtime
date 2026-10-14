@@ -127,3 +127,31 @@ test('login.html?demo= com outra conta de demonstração logada troca direto', a
   await esperarAte(() => JSON.parse(w.sessionStorage.getItem('loggedInUser')).username === 'lia.batera');
   assert.equal(w.document.querySelector('dialog'), null);
 });
+
+test('textos da demonstração vêm de dados/ (GigDemo e GigUsuariosExemplo), não repetidos nas páginas', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const { RAIZ } = require('./apoio');
+  const achados = [];
+  const varrer = (pasta) => {
+    for (const item of fs.readdirSync(pasta, { withFileTypes: true })) {
+      const caminho = path.join(pasta, item.name);
+      if (item.isDirectory()) { if (!['dados', 'vendor', 'assets'].includes(item.name)) varrer(caminho); continue; }
+      if (!/\.(html|js)$/.test(item.name)) continue;
+      const texto = fs.readFileSync(caminho, 'utf8');
+      for (const proibido of ['demo1234', 'lia.batera', 'casa.lume', '10 personas']) if (texto.includes(proibido)) achados.push(`${path.relative(RAIZ, caminho)}: ${proibido}`);
+    }
+  };
+  varrer(RAIZ);
+  assert.deepEqual(achados, []);
+});
+
+test('[data-demo] é preenchido com a senha, as contas e o número de personas', () => {
+  const w = carregarPagina('Acesso/esqueci-senha.html');
+  const d = w.document;
+  assert.equal(d.querySelector('[data-demo="senha"]').textContent, Demo.senha);
+  assert.equal(d.querySelector('[data-demo="musico"]').textContent, Demo.contas.musico);
+  assert.equal(d.querySelector('[data-demo="personas"]').textContent, String(exemplos.length));
+  const login = carregarPagina('Login/login.html');
+  assert.match(login.document.getElementById('contasDemo').textContent, new RegExp(Demo.contas.contratante.replace('.', '\.')));
+});

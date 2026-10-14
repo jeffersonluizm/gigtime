@@ -164,8 +164,20 @@
     return emMoldura;
   }
 
+  // Textos da demonstração com uma fonte só (dados/demo.js e dados/usuarios-exemplo.js)
+  function preencherTextosDaDemo() {
+    const valores = {
+      senha: GigDemo.senha,
+      musico: GigDemo.contas.musico,
+      contratante: GigDemo.contas.contratante,
+      personas: String(GigUsuariosExemplo.length),
+    };
+    document.querySelectorAll('[data-demo]').forEach((el) => { el.textContent = valores[el.dataset.demo] || ''; });
+  }
+
   function iniciar() {
     if (bloquearMoldura(raiz)) return;
+    preencherTextosDaDemo();
     // Sessão parada há mais de 2 horas: encerra e avisa (páginas que exigem login vão para a página própria)
     // (quem exige login trata a expiração no próprio script, com GigSessao.exigirLogin)
     const paginaExigeLogin = document.body.hasAttribute('data-exige-login');

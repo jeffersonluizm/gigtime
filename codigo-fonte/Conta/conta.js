@@ -103,14 +103,14 @@
   $('restaurarDemo').addEventListener('click', async () => {
     const certeza = await GigAvisos.confirmar({
       titulo: 'Restaurar a demonstração?',
-      texto: 'Todas as contas criadas e todas as conversas deste navegador serão apagadas. As 10 personas de exemplo voltam.',
+      texto: `Todas as contas criadas e todas as conversas deste navegador serão apagadas. As ${GigUsuariosExemplo.length} personas de exemplo e as conversas de demonstração voltam.`,
       confirmar: 'Restaurar',
       perigo: true,
     });
     if (!certeza) return;
     GigConta.restaurarDemo(localStorage, GigUsuariosExemplo, GigDemo.conversas);
     GigSessao.sair(sessionStorage);
-    GigAvisos.paraProximaPagina('Demonstração restaurada. Entre com lia.batera e a senha demo1234.');
+    GigAvisos.paraProximaPagina(`Demonstração restaurada. Entre com ${GigDemo.contas.musico} e a senha ${GigDemo.senha}.`);
     window.location.href = '../Home/home.html';
   });
 })();
