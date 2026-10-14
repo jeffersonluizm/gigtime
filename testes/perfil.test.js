@@ -265,7 +265,10 @@ test('perfil monta o vídeo pelo ID do YouTube, no domínio sem cookies', () => 
       win.sessionStorage.setItem('clickedUser', JSON.stringify({ username: lista[0].username }));
     },
   });
-  assert.equal(w.document.getElementById('songLink').getAttribute('src'), 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ');
+  const iframe = w.document.getElementById('songLink');
+  assert.equal(iframe.getAttribute('src'), 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ');
+  const sandbox = (iframe.getAttribute('sandbox') || '').split(/\s+/);
+  assert.equal(sandbox.includes('allow-scripts') && sandbox.includes('allow-same-origin'), false, 'sem a combinação que anula o sandbox');
   const outro = carregarPagina('Perfil/perfil.html', {
     antes: (win) => {
       const lista = JSON.parse(JSON.stringify(require('../codigo-fonte/dados/usuarios-exemplo.js')));
@@ -274,7 +277,15 @@ test('perfil monta o vídeo pelo ID do YouTube, no domínio sem cookies', () => 
       win.sessionStorage.setItem('clickedUser', JSON.stringify({ username: lista[1].username }));
     },
   });
-  assert.equal(outro.document.getElementById('songLink').getAttribute('src') || '', '', 'link inválido não vira embed');
+  assert.equal(outro.document.getElementById('songLink'), null, 'link inválido não cria o iframe');
+  assert.equal(outro.document.getElementById('semVideo').hidden, false);
+});
+
+test('perfil sem vídeo não cria iframe e explica o recurso', () => {
+  const w = carregarPagina('Perfil/perfil.html', { busca: '?u=lia.batera' });
+  assert.equal(w.document.querySelector('iframe'), null);
+  assert.equal(w.document.getElementById('semVideo').hidden, false);
+  assert.match(w.document.getElementById('semVideo').textContent, /YouTube/);
 });
 
 test('perfil do próprio usuário mostra "Editar perfil"', () => {

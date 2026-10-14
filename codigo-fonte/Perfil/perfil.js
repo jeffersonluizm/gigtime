@@ -54,14 +54,21 @@
     });
   }
 
-  // O embed sai só do ID validado (11 caracteres), nunca do link guardado
+  // O iframe só é criado quando há vídeo, e o embed sai só do ID validado (11 caracteres), nunca do link
+  // guardado. Sem sandbox: o player é de outra origem (youtube-nocookie.com) e já fica isolado do site;
+  // um sandbox com allow-scripts + allow-same-origin não protegeria nada e o navegador avisa disso.
   const idVideo = GigValidacao.idYoutube(usuario.songLink);
   if (idVideo) {
-    $('songLink').src = 'https://www.youtube-nocookie.com/embed/' + idVideo;
-    $('songLink').title = `Vídeo de ${usuario.name} no YouTube`;
+    const iframe = document.createElement('iframe');
+    iframe.id = 'songLink';
+    iframe.title = `Vídeo de ${usuario.name} no YouTube`;
+    iframe.loading = 'lazy';
+    iframe.allow = 'encrypted-media; picture-in-picture; fullscreen';
+    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+    iframe.src = 'https://www.youtube-nocookie.com/embed/' + idVideo;
+    $('videoMoldura').appendChild(iframe);
     $('videoMoldura').hidden = false;
   } else {
-    $('songLink').removeAttribute('src');
     $('semVideo').hidden = false;
   }
 

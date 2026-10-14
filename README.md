@@ -18,7 +18,7 @@ Entre com um clique: **[Entrar como músico](https://SEU-USUARIO.github.io/gigti
 | | |
 |---|---|
 | **Explorar** perfis com filtro por papel, estado, avaliação, gêneros e busca por nome ou cidade. O filtro fica no endereço e pode ser compartilhado. | ![Explorar](docs/img/explorar-desktop.png) |
-| **Perfil** com apresentação, disponibilidade, selos, fotos de destaque e vídeo do YouTube. Cada perfil tem endereço próprio (`perfil.html?u=lia.batera`). | ![Perfil](docs/img/perfil-desktop.png) |
+| **Perfil** com apresentação, disponibilidade, selos, fotos de destaque e vídeo do YouTube. Cada perfil tem endereço próprio (`perfil.html?u=lia.batera`). As personas não têm vídeo (para não usar conteúdo de terceiros): em Editar perfil, cole um link do YouTube e o perfil monta o player em `youtube-nocookie.com` só a partir do ID validado. | ![Perfil](docs/img/perfil-desktop.png) |
 | **Mensagens** com lista de conversas, contador de não lidas, atualização entre abas e carregamento das mensagens antigas sob demanda. | ![Mensagens](docs/img/chat-desktop.png) |
 | **Conta e dados**: trocar a senha, baixar os próprios dados em JSON, apagar a conta, restaurar a demonstração. | ![Conta e dados](docs/img/conta-desktop.png) |
 

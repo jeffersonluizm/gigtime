@@ -86,9 +86,11 @@
             <section class="painel mb-4" aria-labelledby="tituloVideo" id="secaoVideo">
               <h2 class="h5" id="tituloVideo">Vídeo</h2>
               <div class="ratio ratio-16x9" id="videoMoldura" hidden>
-                <iframe id="songLink" title="Vídeo do YouTube" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
               </div>
-              <p class="texto-suave mb-0" id="semVideo" hidden>Nenhum vídeo cadastrado ainda.</p>
+              <div class="estado py-3" id="semVideo" hidden>
+                <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#play-circle"></use></svg>
+                <p class="mb-0">Nenhum vídeo cadastrado ainda. No GigTime, cada perfil pode mostrar um vídeo do YouTube: basta colar o link em Editar perfil.</p>
+              </div>
             </section>
 
             <section class="painel" aria-labelledby="tituloDestaques">
