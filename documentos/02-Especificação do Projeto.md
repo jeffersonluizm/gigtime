@@ -139,5 +139,5 @@ As tabelas acima são o registro original do projeto acadêmico (2024) e foram m
 | RNF-06 | Atendido | Igual ao RF-08 |
 | RNF-07 | Reescrito como limitação | Sem servidor não há armazenamento "protegido contra acesso não autorizado": quem usa o mesmo navegador vê os dados. A senha fica só como hash PBKDF2 e a página Privacidade explica o que é guardado |
 | RNF-08 | Atendido nos navegadores atuais | Usa recursos presentes em Chrome, Edge, Firefox e Safari recentes (WebCrypto, `<dialog>`, CSS `aspect-ratio`) |
-| RNF-09 | Atendido | Código em camadas (`lib/`, `ui/`, páginas), comentado, com mais de 280 testes automatizados |
+| RNF-09 | Atendido | Código em camadas (`lib/`, `ui/`, páginas), comentado, com <!-- testes -->305<!-- /testes --> testes automatizados |
 | RNF-10 | Atendido | Página nova = HTML com a sequência padrão de scripts + script da página; a estrutura comum é verificada em `paginas.test.js` |

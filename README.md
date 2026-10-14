@@ -91,7 +91,7 @@ documentos/          documentação acadêmica original (com o estado atual anex
 
 ## Testes
 
-**286 testes** automatizados (`npm install` e `npm test`, Node.js 22 ou superior; os testes não fazem parte do site publicado), com `node:test` e `jsdom` com `node:test` e `jsdom`: regras de `lib/`, páginas reais carregadas com os seus scripts (preencher, enviar, clicar) e testes de arquitetura (CSP em todas as páginas, contraste dos tokens, ícones existentes no sprite, estrutura comum).
+**<!-- testes -->305<!-- /testes --> testes** automatizados com `node:test` e `jsdom` (`npm install` e `npm test`, Node.js 22 ou superior; os testes não fazem parte do site publicado): regras de `lib/`, páginas reais carregadas com os seus scripts (preencher, enviar, clicar) e testes de arquitetura (CSP em todas as páginas, contraste dos tokens, ícones existentes no sprite, estrutura comum).
 
 ## Teste de carga
 
