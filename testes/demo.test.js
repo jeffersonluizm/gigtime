@@ -55,3 +55,14 @@ test('conta de demonstração não troca a senha nem é apagada (mas pode restau
   assert.equal(w.document.querySelector('dialog'), null);
   assert.ok(JSON.parse(w.localStorage.getItem('gigtime:users')).some((u) => u.username === 'lia.batera'));
 });
+
+test('o atalho da demonstração está na primeira dobra da Home e na navbar de quem não está logado', () => {
+  const w = carregarPagina('Home/home.html');
+  const d = w.document;
+  for (const papel of ['musico', 'contratante']) {
+    assert.ok(d.querySelector(`.hero a[href="../Login/login.html?demo=${papel}"]`), `hero: ${papel}`);
+    assert.ok(d.querySelector(`#topo a[href="../Login/login.html?demo=${papel}"]`), `navbar: ${papel}`);
+  }
+  const logado = carregarPagina('Home/home.html', { antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify({ username: 'davi.sax' })) });
+  assert.equal(logado.document.querySelector('#topo a[href*="?demo="]'), null, 'logado não vê o atalho na navbar');
+});

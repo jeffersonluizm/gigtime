@@ -12,6 +12,13 @@
       <li class="nav-item"><a class="nav-link" href="../Sobre/sobre.html" data-pagina="sobre">Como funciona</a></li>`;
     if (!logado) {
       return comum + `
+      <li class="nav-item dropdown">
+        <button class="nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Testar a demo</button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="../Login/login.html?demo=musico">${icone('mic')} Entrar como músico</a></li>
+          <li><a class="dropdown-item" href="../Login/login.html?demo=contratante">${icone('building')} Entrar como contratante</a></li>
+        </ul>
+      </li>
       <li class="nav-item"><a class="nav-link" href="../Login/login.html" data-pagina="entrar">Entrar</a></li>
       <li class="nav-item"><a class="btn btn-gig-claro btn-sm ms-lg-2 my-2 my-lg-0" href="../Registro/registro.html">Criar conta</a></li>`;
     }

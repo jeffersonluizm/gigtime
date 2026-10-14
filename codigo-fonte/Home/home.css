@@ -65,3 +65,12 @@
   color: var(--gig-laranja-escuro);
   font-weight: 600;
 }
+
+/* Atalho da demonstração na primeira dobra */
+.demo-rapida {
+  display: inline-block;
+  padding: .85rem 1rem;
+  border-radius: var(--gig-raio);
+  background: var(--gig-amarelo-claro);
+  color: var(--gig-texto-forte);
+}
