@@ -54,3 +54,24 @@ for (const pagina of paginas()) {
     assert.deepEqual(externos, []);
   });
 }
+
+// GitHub Actions: ações fixadas por SHA e permissão de escrita só no job que publica
+for (const arquivo of ['ci.yml', 'pages.yml']) {
+  test(`workflow ${arquivo}: ações fixadas por SHA de commit`, () => {
+    const yml = fs.readFileSync(path.join(RAIZ_REPO, '.github', 'workflows', arquivo), 'utf8');
+    const usos = [...yml.matchAll(/uses:\s*(\S+)/g)].map((m) => m[1]);
+    assert.ok(usos.length > 0);
+    for (const uso of usos) assert.match(uso, /^[\w.-]+\/[\w.-]+@[0-9a-f]{40}$/, uso);
+  });
+}
+
+test('pages.yml: permissões de Pages só no job publicar; o resto só lê o repositório', () => {
+  const yml = fs.readFileSync(path.join(RAIZ_REPO, '.github', 'workflows', 'pages.yml'), 'utf8');
+  const [topo, jobs] = yml.split(/^jobs:/m);
+  assert.match(topo, /permissions:\s*contents: read/);
+  assert.doesNotMatch(topo, /pages: write|id-token: write/);
+  const [testar, publicar] = jobs.split(/^  publicar:/m);
+  assert.doesNotMatch(testar, /pages: write|id-token: write/);
+  assert.match(publicar, /pages: write/);
+  assert.match(publicar, /id-token: write/);
+});
