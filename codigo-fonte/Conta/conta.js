@@ -108,7 +108,7 @@
       perigo: true,
     });
     if (!certeza) return;
-    GigConta.restaurarDemo(localStorage, GigUsuariosExemplo);
+    GigConta.restaurarDemo(localStorage, GigUsuariosExemplo, GigDemo.conversas);
     GigSessao.sair(sessionStorage);
     GigAvisos.paraProximaPagina('Demonstração restaurada. Entre com lia.batera e a senha demo1234.');
     window.location.href = '../Home/home.html';

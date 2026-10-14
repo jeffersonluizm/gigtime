@@ -66,3 +66,40 @@ test('o atalho da demonstração está na primeira dobra da Home e na navbar de 
   const logado = carregarPagina('Home/home.html', { antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify({ username: 'davi.sax' })) });
   assert.equal(logado.document.querySelector('#topo a[href*="?demo="]'), null, 'logado não vê o atalho na navbar');
 });
+
+// Conversas de demonstração: o chat das contas demo já começa com mensagens (e não lidas)
+const M = require('../codigo-fonte/lib/mensagens.js');
+
+test('demo.js traz conversas que envolvem as duas contas de demonstração, só entre personas', () => {
+  const nomes = exemplos.map((u) => u.username);
+  assert.ok(Demo.conversas.length >= 5);
+  for (const m of Demo.conversas) {
+    assert.ok(nomes.includes(m.de) && nomes.includes(m.para), `${m.de} -> ${m.para}`);
+    assert.ok(typeof m.texto === 'string' && m.texto.length > 0 && m.minutosAtras > 0);
+  }
+  for (const conta of Object.values(Demo.contas)) assert.ok(Demo.conversas.some((m) => m.para === conta), conta);
+});
+
+test('semearConversas grava cada mensagem na chave do autor, com horário relativo a agora', () => {
+  const { StorageMemoria } = require('./apoio');
+  const local = new StorageMemoria();
+  const agora = 1800000000000;
+  assert.equal(M.semearConversas(local, [{ de: 'ana', para: 'bia', texto: 'oi', minutosAtras: 10 }, { de: 'bia', para: 'ana', texto: 'olá', minutosAtras: 5 }], agora), 2);
+  assert.deepEqual(JSON.parse(local.getItem('gigtime:messages:ana')).map((m) => [m.texto, m.enviadaEm]), [['oi', agora - 600000]]);
+  assert.deepEqual(M.conversaEntre(M.lerMensagens(local), 'ana', 'bia').map((m) => m.texto), ['oi', 'olá']);
+});
+
+test('primeira visita: o chat da conta de músico já tem conversas e mensagens não lidas', () => {
+  const w = carregarPagina('Home/home.html');
+  const msgs = M.lerMensagens(w.localStorage);
+  assert.equal(msgs.length, Demo.conversas.length);
+  assert.ok(M.naoLidas(msgs, Demo.contas.musico, {}) >= 2);
+  assert.ok(M.naoLidas(msgs, Demo.contas.contratante, {}) >= 2);
+});
+
+test('quem já tem dados não recebe as conversas de demonstração por cima', () => {
+  const w = carregarPagina('Home/home.html', {
+    antes: (win) => win.localStorage.setItem('gigtime:users', JSON.stringify(exemplos)),
+  });
+  assert.equal(M.lerMensagens(w.localStorage).length, 0);
+});

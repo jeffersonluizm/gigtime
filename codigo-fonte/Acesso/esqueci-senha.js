@@ -10,7 +10,7 @@
     });
     if (!certeza) return;
     try {
-      GigConta.restaurarDemo(localStorage, GigUsuariosExemplo);
+      GigConta.restaurarDemo(localStorage, GigUsuariosExemplo, GigDemo.conversas);
     } catch (erro) {
       GigAvisos.mostrar('Não foi possível restaurar: o armazenamento deste navegador está indisponível.', 'erro');
       return;

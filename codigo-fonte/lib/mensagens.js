@@ -86,6 +86,21 @@
     }
   }
 
+  // Grava as conversas de exemplo ({ de, para, texto, minutosAtras }) nas chaves dos autores.
+  // Devolve quantas mensagens foram gravadas.
+  function semearConversas(storage, conversas, agora) {
+    const base = typeof agora === 'number' ? agora : Date.now();
+    const porAutor = new Map();
+    conversas.forEach((c, i) => {
+      const enviadaEm = base - c.minutosAtras * 60000;
+      const lista = porAutor.get(c.de) || [];
+      lista.push({ id: `${enviadaEm}-demo${i}`, de: c.de, para: c.para, texto: c.texto, enviadaEm });
+      porAutor.set(c.de, lista);
+    });
+    for (const [autor, lista] of porAutor) storage.setItem(chaveDoAutor(autor), JSON.stringify(lista));
+    return conversas.length;
+  }
+
   const doPar = (m, a, b) => (m.de === a && m.para === b) || (m.de === b && m.para === a);
 
   function conversaEntre(lista, a, b) {
@@ -153,5 +168,5 @@
     return dois(data.getDate()) + '/' + dois(data.getMonth() + 1);
   }
 
-  return { CHAVE_MENSAGENS, CHAVE_LIDAS, LIMITE_TEXTO, chaveDoAutor, ehChaveDeMensagens, chavesDeMensagens, lerMensagens, salvarMensagens, enviarMensagem, adicionarMensagem, conversaEntre, listarConversas, lerLidas, marcarComoLida, naoLidas, naoLidasPorContato, formatarHora };
+  return { CHAVE_MENSAGENS, CHAVE_LIDAS, LIMITE_TEXTO, semearConversas, chaveDoAutor, ehChaveDeMensagens, chavesDeMensagens, lerMensagens, salvarMensagens, enviarMensagem, adicionarMensagem, conversaEntre, listarConversas, lerLidas, marcarComoLida, naoLidas, naoLidasPorContato, formatarHora };
 });

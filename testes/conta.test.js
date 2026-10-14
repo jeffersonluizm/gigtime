@@ -68,3 +68,9 @@ test('conta: apagar, exportar, restaurar e medir consideram também as mensagens
   assert.equal(storage.getItem('gigtime:messages:bia'), null);
   assert.equal(storage.getItem('outro-app'), 'intocado');
 });
+
+test('restaurarDemo também volta as conversas de demonstração', () => {
+  const storage = local();
+  Conta.restaurarDemo(storage, [usuario('seed1'), usuario('seed2')], [{ de: 'seed1', para: 'seed2', texto: 'oi', minutosAtras: 3 }]);
+  assert.deepEqual(JSON.parse(storage.getItem('gigtime:messages:seed1')).map((m) => m.texto), ['oi']);
+});

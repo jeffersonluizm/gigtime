@@ -23,7 +23,13 @@
 
   tentarGravar('migrar as chaves antigas', () => GigArmazenamento.migrarChavesAntigas(localStorage));
   tentarGravar('migrar os usuários da sessão antiga', () => GigArmazenamento.migrarDaSessao(localStorage, sessionStorage));
-  tentarGravar('gravar os usuários de exemplo', () => GigArmazenamento.semearSeVazio(localStorage, GigUsuariosExemplo));
+  // Primeira visita: personas e, se ainda não há nenhuma mensagem, as conversas de demonstração
+  tentarGravar('gravar os usuários de exemplo', () => {
+    const semeou = GigArmazenamento.semearSeVazio(localStorage, GigUsuariosExemplo);
+    if (semeou && GigMensagens.chavesDeMensagens(localStorage).every((chave) => localStorage.getItem(chave) === null)) {
+      GigMensagens.semearConversas(localStorage, GigDemo.conversas);
+    }
+  });
   // Senhas em texto puro de versões antigas viram hash (assíncrono; o login aceita as duas formas)
   GigSenha.migrarSenhasDoStorage(localStorage, GigArmazenamento.CHAVE_USUARIOS).catch((erro) => console.warn(erro.message));
 

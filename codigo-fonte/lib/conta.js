@@ -52,10 +52,12 @@
     return true;
   }
 
-  function restaurarDemo(storage, seed) {
+  // `conversas` (opcional): as conversas de demonstração de dados/demo.js
+  function restaurarDemo(storage, seed, conversas) {
     mensagens.chavesDeMensagens(storage).forEach((chave) => storage.removeItem(chave));
     storage.removeItem(CHAVE_LIDAS);
     storage.setItem(CHAVE_USUARIOS, JSON.stringify(seed));
+    if (Array.isArray(conversas)) mensagens.semearConversas(storage, conversas);
   }
 
   function usoDoArmazenamento(storage) {

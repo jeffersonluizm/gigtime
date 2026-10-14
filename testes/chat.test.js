@@ -66,7 +66,9 @@ test('"Contate-me" abre a conversa com a pessoa do perfil', () => {
 });
 
 // Página do chat
+// Os testes do chat partem de um chat vazio: uma lista vazia gravada impede as conversas de demonstração
 const logado = (username, extra) => (win) => {
+  win.localStorage.setItem(CHAVE_MENSAGENS, '[]');
   win.sessionStorage.setItem('loggedInUser', JSON.stringify({ username }));
   if (extra) extra(win);
 };
@@ -124,11 +126,12 @@ test('chat mostra o texto da mensagem como texto, sem interpretar HTML', async (
   assert.match(d.querySelector('.chat .myMessage p').textContent, /<img src=x/);
 });
 
-test('chat não envia mensagem vazia', () => {
+test('chat não envia mensagem vazia', async () => {
   const w = carregarPagina('Chat/chat.html', { busca: '?com=lia.batera', antes: logado('davi.sax') });
   w.document.getElementById('mensagem').value = '   ';
   w.document.getElementById('chatForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  assert.equal(w.localStorage.getItem(CHAVE_MENSAGENS), null);
+  await new Promise((r) => setTimeout(r, 30));
+  assert.equal(M.lerMensagens(w.localStorage).length, 0);
 });
 
 test('chat atualiza quando outra aba grava mensagem', () => {
