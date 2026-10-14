@@ -85,3 +85,22 @@ test('todo ícone usado nas páginas e scripts existe no sprite', () => {
   assert.ok(usados.size > 5);
   for (const nome of usados) assert.ok(existentes.has(nome), `ícone "${nome}" não está no sprite`);
 });
+
+// Conteúdo próprio: nenhuma foto no site (de origem desconhecida ou de terceiros); só ilustrações geradas
+// pelos scripts de ferramentas/ e a imagem de compartilhamento gerada a partir delas
+test('o site não traz fotos: só SVG próprios e a imagem de compartilhamento gerada', () => {
+  const imagens = [];
+  const varrer = (pasta) => {
+    for (const item of fs.readdirSync(pasta, { withFileTypes: true })) {
+      const caminho = path.join(pasta, item.name);
+      if (item.isDirectory()) varrer(caminho);
+      else if (/\.(jpe?g|webp|png|gif|avif)$/i.test(item.name)) imagens.push(path.relative(RAIZ, caminho).split(path.sep).join('/'));
+    }
+  };
+  varrer(RAIZ);
+  // ícones do navegador e cartão de compartilhamento, todos gerados por ferramentas/gerar-og.js
+  const PERMITIDAS = ['assets/img/og-gigtime.png', 'assets/img/apple-touch-icon.png', 'assets/img/favicon-32.png'];
+  assert.deepEqual(imagens.filter((f) => !PERMITIDAS.includes(f)), []);
+  const home = fs.readFileSync(path.join(RAIZ, 'Home', 'home.html'), 'utf8');
+  assert.match(home, /assets\/img\/palco\.svg/);
+});

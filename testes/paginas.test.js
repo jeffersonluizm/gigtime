@@ -26,6 +26,8 @@ for (const pagina of PAGINAS) {
     assert.match(html, /<title>[^<]+ \| GigTime<\/title>/);
     assert.match(html, /<meta name="description" content="[^"]{20,}">/);
     assert.match(html, /<a class="pular-conteudo" href="#conteudo">/);
+    assert.match(html, /<link rel="icon" type="image\/png" sizes="32x32" href="\.\.\/assets\/img\/favicon-32\.png">/);
+    assert.match(html, /<link rel="apple-touch-icon" href="\.\.\/assets\/img\/apple-touch-icon\.png">/);
     assert.match(html, /<header id="topo"><\/header>/);
     assert.match(html, /<main id="conteudo" tabindex="-1"[^>]*>/);
     assert.match(html, /<footer id="rodape"><\/footer>/);

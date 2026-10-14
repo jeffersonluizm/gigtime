@@ -131,7 +131,7 @@ As tabelas acima são o registro original do projeto acadêmico (2024) e foram m
 
 | ID | Situação | Observação |
 |----|----------|------------|
-| RNF-01 | Atendido | Capa de 45 KB em WebP, sem CDN, fontes com `font-display: swap`. Medido com Lighthouse em `docs/carga/` |
+| RNF-01 | Atendido | Capa em ilustração SVG própria (23 KB), sem CDN, fontes com `font-display: swap`. Medido com Lighthouse em `docs/carga/` |
 | RNF-02 | Atendido | Filtro sobre 5 mil perfis medido em `docs/carga/`; o laço O(n²) foi trocado por um `Map` |
 | RNF-03 | Parcial | Sem servidor, o limite é a cota de cerca de 5 MB do localStorage (cerca de 6 mil perfis ou 30 mil mensagens curtas), medida em `docs/carga/` |
 | RNF-04 | Encaminhado | As regras ficam em `codigo-fonte/lib/` e recebem o armazenamento como parâmetro; uma API pode ocupar esse lugar sem reescrever as telas |

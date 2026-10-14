@@ -70,7 +70,7 @@ documentos/          documentação acadêmica original (com o estado atual anex
 - **Sem build.** Scripts clássicos na mesma ordem em todas as páginas; o site roda em qualquer servidor estático e os testes usam exatamente o mesmo código.
 - **Regras separadas da tela e do armazenamento.** As funções de `lib/` recebem o `storage` como parâmetro: nos testes é um objeto em memória; no futuro, uma API pode ocupar o lugar sem reescrever as telas.
 - **Gravação defensiva.** Antes de gravar, a lista é relida (outra aba pode ter mudado algo enquanto a senha era processada), a cota cheia é tratada com mensagem na tela e as migrações de versões antigas só mexem em dados com o formato do GigTime (no GitHub Pages a origem é dividida com outros sites).
-- **Conteúdo próprio.** Personas fictícias e ilustrações geradas por script; nenhuma imagem de terceiros.
+- **Conteúdo próprio.** Personas fictícias e ilustrações geradas por script (`ferramentas/gerar-demo.js`, `gerar-capa.js`, `gerar-og.js`), inclusive a capa da Home e os ícones; nenhuma foto nem imagem de terceiros (um teste garante que não entra foto no site).
 
 ## Segurança
 
