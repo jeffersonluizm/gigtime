@@ -17,11 +17,11 @@
       "meta": 1000,
       "antes": {
         "mediana": 364,
-        "p95": 642.2
+        "max": 642.2
       },
       "depois": {
         "mediana": 258.3,
-        "p95": 390
+        "max": 390
       },
       "nota": "antes: 5 mil cards; depois: primeira página (24)"
     },
@@ -31,11 +31,11 @@
       "meta": 100,
       "antes": {
         "mediana": 1216.1,
-        "p95": 2416.8
+        "max": 2416.8
       },
       "depois": {
         "mediana": 24.3,
-        "p95": 35.7
+        "max": 35.7
       }
     },
     {
@@ -44,11 +44,11 @@
       "meta": 2500,
       "antes": {
         "mediana": 1708,
-        "p95": 1988
+        "max": 1988
       },
       "depois": {
         "mediana": 164,
-        "p95": 1388
+        "max": 1388
       }
     },
     {
@@ -57,11 +57,11 @@
       "meta": 500,
       "antes": {
         "mediana": 726.8,
-        "p95": 1412
+        "max": 1412
       },
       "depois": {
         "mediana": 254.1,
-        "p95": 314.5
+        "max": 314.5
       }
     },
     {
@@ -70,11 +70,11 @@
       "meta": 200,
       "antes": {
         "mediana": 511,
-        "p95": 721.7
+        "max": 721.7
       },
       "depois": {
         "mediana": 43.4,
-        "p95": 50.4
+        "max": 50.4
       }
     },
     {
@@ -83,11 +83,11 @@
       "meta": 500,
       "antes": {
         "mediana": 424,
-        "p95": 461.1
+        "max": 461.1
       },
       "depois": {
         "mediana": 43.3,
-        "p95": 58.8
+        "max": 58.8
       }
     }
   ],
@@ -373,119 +373,35 @@
     }
   },
   "H13_servidor": {
-    "antes": {
-      "url": "http://127.0.0.1:8812/Home/home.html",
-      "quando": "2026-10-04T21:25:46.316Z",
-      "maquina": {
-        "cpus": 12,
-        "modelo": "AMD Ryzen 5 5600 6-Core Processor              "
-      },
-      "degraus": [
+    "status": "inconclusivo",
+    "motivo": "o servidor de desenvolvimento (python -m http.server) recusou e derrubou conexões; o autocannon registrou mais erros que respostas e latências incoerentes com as requisições por segundo, então os números não medem o site",
+    "errosPorDegrau": {
+      "antes": [
         {
-          "recursos": {
-            "cpuMediaPct": 63,
-            "memLivreMinMB": 2393
-          },
           "conexoes": 1,
-          "reqPorSegundo": 370,
-          "latenciaMs": {
-            "p50": 2696,
-            "p97_5": 4371,
-            "p99": 4423,
-            "max": 4461
-          },
-          "erros": 11,
-          "totalRequisicoes": 3701
+          "erros": 11
         },
         {
-          "recursos": {
-            "cpuMediaPct": 73,
-            "memLivreMinMB": 2679
-          },
           "conexoes": 10,
-          "reqPorSegundo": 749,
-          "latenciaMs": {
-            "p50": 2872,
-            "p97_5": 6123,
-            "p99": 6288,
-            "max": 6690
-          },
-          "erros": 7893,
-          "totalRequisicoes": 7494
+          "erros": 7893
         },
         {
-          "recursos": {
-            "cpuMediaPct": 78,
-            "memLivreMinMB": 2583
-          },
           "conexoes": 50,
-          "reqPorSegundo": 727,
-          "latenciaMs": {
-            "p50": 2610,
-            "p97_5": 6261,
-            "p99": 6446,
-            "max": 6803
-          },
-          "erros": 12285,
-          "totalRequisicoes": 7272
+          "erros": 12285
         }
-      ]
-    },
-    "depois": {
-      "url": "http://127.0.0.1:8811/Home/home.html",
-      "quando": "2026-10-04T21:26:52.669Z",
-      "maquina": {
-        "cpus": 12,
-        "modelo": "AMD Ryzen 5 5600 6-Core Processor              "
-      },
-      "degraus": [
+      ],
+      "depois": [
         {
-          "recursos": {
-            "cpuMediaPct": 61,
-            "memLivreMinMB": 3128
-          },
           "conexoes": 1,
-          "reqPorSegundo": 524,
-          "latenciaMs": {
-            "p50": 2673,
-            "p97_5": 5315,
-            "p99": 5392,
-            "max": 5447
-          },
-          "erros": 22,
-          "totalRequisicoes": 5767
+          "erros": 22
         },
         {
-          "recursos": {
-            "cpuMediaPct": 78,
-            "memLivreMinMB": 3192
-          },
           "conexoes": 10,
-          "reqPorSegundo": 877,
-          "latenciaMs": {
-            "p50": 3119,
-            "p97_5": 6144,
-            "p99": 6260,
-            "max": 6495
-          },
-          "erros": 7502,
-          "totalRequisicoes": 8769
+          "erros": 7502
         },
         {
-          "recursos": {
-            "cpuMediaPct": 76,
-            "memLivreMinMB": 3084
-          },
           "conexoes": 50,
-          "reqPorSegundo": 730,
-          "latenciaMs": {
-            "p50": 2957,
-            "p97_5": 6630,
-            "p99": 6745,
-            "max": 6951
-          },
-          "erros": 12268,
-          "totalRequisicoes": 7299
+          "erros": 12268
         }
       ]
     }

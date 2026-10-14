@@ -7,22 +7,22 @@ Data: 2026-10-04. As hipóteses foram escritas e versionadas **antes** das medi�
 ## Como foi medido
 
 - **Antes:** commit `5319271` (main), servido de uma worktree temporária na porta 8812. **Depois:** branch `feat/portfolio-ui-ux`, porta 8811. Os dois sites foram servidos por `python -m http.server` (o mesmo do `iniciar.bat`).
-- **Navegador:** Chrome 154 instalado, headless, comandado por `playwright-core` (`ferramentas/carga/medir-navegador.js`). Cada cenário rodou **5 vezes** num contexto limpo; o gráfico mostra a mediana e as tabelas trazem também o p95 (o maior valor das 5 rodadas).
+- **Navegador:** Chrome 154 instalado, headless, comandado por `playwright-core` (`ferramentas/carga/medir-navegador.js`). Cada cenário rodou **5 vezes** num contexto limpo; o gráfico mostra a mediana e as tabelas trazem também o **máximo** (o maior valor entre todas as amostras; com 5 a 25 amostras não faz sentido falar em p95).
 - **Dados:** gerados por `ferramentas/carga/gerar-dados.js` (determinístico, sem dado real) e gravados no localStorage antes de abrir a página. As imagens dos perfis gerados são locais, e o Bootstrap da versão antes foi servido a partir de uma cópia local idêntica à do CDN. Assim a rede fica fora da medição de JavaScript e DOM.
 - **"Até o próximo frame":** a ação síncrona (trocar o filtro, enviar, clicar) mais `requestAnimationFrame` e `setTimeout(0)`. É uma aproximação do INP.
 - **Lógica pura:** medida em Node com `performance.now()` (`medir-node.js`), 15 repetições depois de aquecer o JIT, usando a `lib/` de cada versão.
 - **Lighthouse 12** (`medir-lighthouse.js`): 3 execuções por página e perfil, mediana. **autocannon 8** (`medir-servidor.js`): degraus de 1, 10 e 50 conexões, 10 s cada, depois de 3 s de aquecimento.
-- **Máquina:** Ryzen 5 5600 (6 núcleos/12 threads), 16 GB. Gerador, navegador e servidor dividem a máquina, e outros projetos da oficina estavam rodando ao mesmo tempo: a CPU média ficou entre 50 e 100% e a memória livre caiu a menos de 100 MB em alguns momentos (campos `recursos_*` do JSON). Por isso os p95 oscilam; a comparação vale **entre antes e depois**, não como número absoluto.
+- **Máquina:** Ryzen 5 5600 (6 núcleos/12 threads), 16 GB. Gerador, navegador e servidor dividem a máquina, e outros projetos da oficina estavam rodando ao mesmo tempo: a CPU média ficou entre 50 e 100% e a memória livre caiu a menos de 100 MB em alguns momentos (campos `recursos_*` do JSON). Por isso os máximos oscilam; a comparação vale **entre antes e depois**, não como número absoluto.
 - A trava `.carga-lock` foi usada para não medir junto com a carga de outro projeto.
 
 ## Resultado por hipótese
 
-| # | Cenário | Meta | Antes (mediana / p95) | Depois (mediana / p95) | Hipótese |
+| # | Cenário | Meta | Antes (mediana / máx.) | Depois (mediana / máx.) | Hipótese |
 |---|---|---|---|---|---|
 | H1 | Node: filtrar 10 mil; `listarConversas` e `conversaEntre` em 100 mil | < 5 / 50 / 50 ms | 0,2 / 4,0 / 2,3 ms | 0,2 / 2,2 / 1,8 ms | **Confirmada** nas duas versões |
 | H1b | Node: laço da página Explorar com 5 mil cards | (diagnóstico) | 67 ms (`find` por card, O(n²)) | 0,7 ms (`Map`) | Causa do H3 confirmada |
 | H2 | Explorar com 5 mil perfis: resultados na tela | < 1000 ms | 364 / 642 ms (5 mil cards) | 258 / 390 ms (primeira página, 24 cards) | **Confirmada** nas duas |
-| H3 | Explorar com 5 mil: trocar o filtro | < 100 ms | **1216 / 2417 ms** | 24 / 49 ms | Antes **falhou**, como previsto; depois confirmada |
+| H3 | Explorar com 5 mil: trocar o filtro | < 100 ms | **1216 / 2417 ms** | 24 / 36 ms | Antes **falhou**, como previsto; depois confirmada |
 | H4 | Home com 5 mil usuários: LCP | < 2500 ms | 1708 / 1988 ms | 164 / 1388 ms | **Refutada** para o antes (passou); depois 10 vezes menor |
 | H5 | Cota de usuários; cadastro com o armazenamento cheio | estoura entre 5 e 7 mil; cadastro avisa | 11.647 usuários (442 caracteres cada); cadastro **sem aviso** (erro não tratado: `exceeded the quota`) | 8.846 usuários (585 caracteres, com apresentação); cadastro **avisa na tela** | Faixa **refutada** (os usuários gerados são menores que o estimado); aviso: antes falhou, depois confirmado |
 | H6 | Cota de mensagens de 50 caracteres; envio com o armazenamento cheio | entre 30 e 36 mil; avisa e não perde | 35.643; avisa por `alert()`; nada perdido | 35.642; avisa na tela (sem `alert`); nada perdido | **Confirmada** |
@@ -32,7 +32,7 @@ Data: 2026-10-04. As hipóteses foram escritas e versionadas **antes** das medi�
 | H10 | 2 abas × 500 envios a cada 10 ms | 0 perdidas | **2001 de 5000 perdidas (40%)** | 0 de 5000 | Antes **falhou**; depois confirmada (ver abaixo) |
 | H11 | Lighthouse | ver tabela | Home sem FCP | ver tabela | ver tabela |
 | H12 | Hash da senha no Chrome | SHA-256 < 5 ms; PBKDF2 < 1000 ms | SHA-256: 0,1 ms | PBKDF2 600 mil: 116 / 138 ms | **Confirmada** |
-| H13 | autocannon no servidor local | > 500 req/s, p99 < 50 ms | ver tabela | ver tabela | **Refutada**: o servidor de desenvolvimento não aguenta concorrência |
+| H13 | autocannon no servidor local | > 500 req/s, p99 < 50 ms | ver abaixo | ver abaixo | **Inconclusiva**: o servidor de desenvolvimento derrubou conexões e os números não medem o site |
 
 ### H11: Lighthouse (mediana de 3 execuções)
 
@@ -47,15 +47,11 @@ Na versão antes, o `body` ficava com `visibility: hidden` até o evento `load`,
 
 **Fora da meta:** o LCP no celular (4,1 a 4,3 s no perfil simulado de 4G lento com CPU 4 vezes mais lenta). O que pesa é o CSS do Bootstrap inteiro (227 KB) bloqueando a renderização. Fica registrado como próximo passo (gerar só o CSS usado).
 
-### H13: servidor local (referência)
+### H13: servidor local (inconclusivo)
 
-| Conexões | Antes: req/s / p50 / p99 / erros | Depois: req/s / p50 / p99 / erros |
-|---|---|---|
-| 1 | 370 / 2,7 s / 4,4 s / 11 | 524 / 2,7 s / 5,4 s / 22 |
-| 10 | 749 / 2,9 s / 6,3 s / 7.893 | 877 / 3,1 s / 6,3 s / 7.502 |
-| 50 | 727 / 2,6 s / 6,4 s / 12.285 | 730 / 3,0 s / 6,7 s / 12.268 |
+A medição com autocannon contra o `python -m http.server` (o servidor do `iniciar.bat`) **não é confiável** e fica marcada como inconclusiva. O servidor de desenvolvimento recusou e derrubou conexões: nos degraus de 10 e 50 conexões o autocannon registrou mais erros (cerca de 7.500 e 12.300) do que respostas, e as latências gravadas não fecham com as requisições por segundo (por exemplo, 1 conexão com centenas de req/s e mediana de segundos). Por isso nenhum número de latência ou vazão é citado aqui.
 
-O `python -m http.server` no Windows recusa e derruba conexões sob concorrência (fila de conexões pequena): a maior parte das "requisições por segundo" são erros, e as que respondem levam segundos. Não é um problema do GigTime nem da revisão; é o limite do servidor de desenvolvimento, que só existe para rodar o site localmente. Em produção o site é servido pelo GitHub Pages (CDN). A hipótese foi mal formulada para esse servidor e fica **refutada**.
+O que dá para afirmar: o `python -m http.server` só serve para rodar o site localmente, um usuário por vez; em produção o site é servido pelo GitHub Pages (CDN), onde esse limite não existe. A hipótese H13 foi mal formulada para esse servidor. Para medir de verdade seria preciso servir o site com um servidor estático de produção (por exemplo, nginx) ou medir o próprio Pages, o que fica fora do escopo desta rodada.
 
 ## O que foi corrigido por causa das medições
 
@@ -68,7 +64,7 @@ O `python -m http.server` no Windows recusa e derruba conexões sob concorrênci
 
 ## Limitações da medição
 
-- A máquina estava ocupada por outros projetos durante as medições (ver `recursos_*`): os p95 têm ruído. As conclusões usam a mediana e diferenças grandes (10 a 50 vezes).
+- A máquina estava ocupada por outros projetos durante as medições (ver `recursos_*`): os máximos têm ruído. As conclusões usam a mediana e diferenças grandes (10 a 50 vezes).
 - H2 mede coisas diferentes nas duas versões, por desenho: o antes desenhava 5 mil cards; o depois desenha a primeira página. O que importa para quem usa é o tempo até ver resultados.
 - H10 com duas abas da **mesma pessoa** ainda pode perder mensagens (as duas escrevem a mesma chave). É raro e está registrado nas limitações do README.
 - O Lighthouse foi rodado contra o servidor local, não contra o GitHub Pages; no Pages há compressão e cache de CDN, então os números tendem a ser melhores.
@@ -82,6 +78,6 @@ python -m http.server 8811 --bind 127.0.0.1 --directory codigo-fonte
 node ferramentas/carga/medir-node.js <codigo-fonte-da-versao-antiga> node.json
 node ferramentas/carga/medir-navegador.js depois http://127.0.0.1:8811 navegador-depois.json
 LIGHTHOUSE_BIN=<lighthouse instalado> node ferramentas/carga/medir-lighthouse.js depois http://127.0.0.1:8811 lighthouse-depois.json
-node ferramentas/carga/medir-servidor.js http://127.0.0.1:8811/Home/home.html servidor-depois.json
+node ferramentas/carga/medir-servidor.js http://127.0.0.1:8811/Home/home.html servidor-depois.json   # H13: só com um servidor estático de produção
 node ferramentas/carga/resumir.js <pasta-dos-json> 2026-10-04
 ```

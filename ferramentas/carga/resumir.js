@@ -16,7 +16,8 @@ const srvDepois = ler('servidor-depois.json');
 
 const r1 = (v) => (typeof v === 'number' ? Math.round(v * 10) / 10 : v);
 const med = (o) => (o ? r1(o.mediana) : null);
-const p95 = (o) => (o ? r1(o.p95) : null);
+// maior valor das amostras (os brutos antigos chamavam esse campo de p95)
+const maximo = (o) => (o ? r1(o.max !== undefined ? o.max : o.p95) : null);
 
 // Cenários de tempo (ms): rótulo, meta, antes, depois
 const cenarios = [
@@ -26,7 +27,7 @@ const cenarios = [
   { id: 'H7', rotulo: 'Chat com 25 mil mensagens: abrir', meta: 500, antes: antes.H7.abrirChatMs, depois: depois.H7.abrirChatMs },
   { id: 'H8', rotulo: 'Chat com 25 mil: enviar uma mensagem', meta: 200, antes: antes.H8.enviarMs, depois: depois.H8.enviarMs },
   { id: 'H9', rotulo: 'Abrir conversa de 5 mil mensagens', meta: 500, antes: antes.H9.abrirConversaPelaListaMs, depois: depois.H9.abrirConversaPelaListaMs },
-].map((c) => ({ ...c, antes: { mediana: med(c.antes), p95: p95(c.antes) }, depois: { mediana: med(c.depois), p95: p95(c.depois) } }));
+].map((c) => ({ ...c, antes: { mediana: med(c.antes), max: maximo(c.antes) }, depois: { mediana: med(c.depois), max: maximo(c.depois) } }));
 
 const resumo = {
   data,
@@ -38,7 +39,13 @@ const resumo = {
   H10: { antes: antes.H10, depois: depois.H10 },
   H11_lighthouse: { antes: lhAntes, depois: lhDepois },
   H12: { antes: antes.H12, depois: depois.H12 },
-  H13_servidor: { antes: srvAntes, depois: srvDepois },
+  // H13 inconclusivo: o python -m http.server derrubou conexões e as latências registradas são incoerentes
+  // (ex.: 1 conexão, 370 req/s com p50 de 2,7 s; mais erros que requisições). Ver resultados.md.
+  H13_servidor: {
+    status: 'inconclusivo',
+    motivo: 'o servidor de desenvolvimento (python -m http.server) recusou e derrubou conexões; o autocannon registrou mais erros que respostas e latências incoerentes com as requisições por segundo, então os números não medem o site',
+    errosPorDegrau: { antes: srvAntes.degraus.map((d) => ({ conexoes: d.conexoes, erros: d.erros })), depois: srvDepois.degraus.map((d) => ({ conexoes: d.conexoes, erros: d.erros })) },
+  },
   recursos: Object.fromEntries(Object.entries({ ...antes, ...Object.fromEntries(Object.entries(depois).map(([k, v]) => [k + '_depois', v])) }).filter(([k]) => k.startsWith('recursos'))),
 };
 const destino = path.join(__dirname, '..', '..', 'docs', 'carga');

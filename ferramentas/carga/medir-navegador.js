@@ -21,7 +21,8 @@ const ROTAS = {
 const estatistica = (valores) => {
   const ordenados = valores.filter((v) => typeof v === 'number').sort((a, b) => a - b);
   if (!ordenados.length) return null;
-  return { mediana: ordenados[Math.floor(ordenados.length / 2)], p95: ordenados[ordenados.length - 1], amostras: ordenados.map((v) => Math.round(v * 10) / 10) };
+  // "max" é o maior valor das amostras (com 5 a 25 amostras não dá para falar em p95)
+  return { mediana: ordenados[Math.floor(ordenados.length / 2)], max: ordenados[ordenados.length - 1], amostras: ordenados.map((v) => Math.round(v * 10) / 10) };
 };
 
 // Amostra de CPU e memória da máquina durante o cenário (gerador e "servidor" dividem a máquina)
