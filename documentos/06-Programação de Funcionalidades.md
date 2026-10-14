@@ -336,8 +336,8 @@ As seções acima são o registro original de 2024 (histórico). Algumas informa
 
 ### Como acessar
 
-1. Dê dois cliques em `iniciar.bat` (Windows) ou rode `python -m http.server 8000 --bind 127.0.0.1 --directory codigo-fonte`.
-2. Abra `http://localhost:8000/Home/home.html`.
+1. Dê dois cliques em `iniciar.bat` (Windows) ou rode `python -m http.server 8800 --bind 127.0.0.1 --directory codigo-fonte`.
+2. Abra `http://localhost:8800/Home/home.html`.
 3. Contas de demonstração: `lia.batera` (músico) e `casa.lume` (contratante), senha `demo1234`.
 
 ### Requisito, página e código

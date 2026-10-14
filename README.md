@@ -123,8 +123,8 @@ O que as medições mudaram no código: filtro sobre os dados com `Map` (era O(n
 Pré-requisito: Windows com Python ou PowerShell (já vem no Windows), ou qualquer sistema com Python.
 
 1. Baixe ou clone o repositório.
-2. No Windows, dê dois cliques em **`iniciar.bat`**. Ele serve a pasta `codigo-fonte` em `http://localhost:8000` e abre o navegador.
-   Em outros sistemas: `python -m http.server 8000 --bind 127.0.0.1 --directory codigo-fonte` e abra `http://localhost:8000/Home/home.html`.
+2. No Windows, dê dois cliques em **`iniciar.bat`**. Ele serve a pasta `codigo-fonte` em `http://localhost:8800` e abre o navegador.
+   Em outros sistemas: `python -m http.server 8800 --bind 127.0.0.1 --directory codigo-fonte` e abra `http://localhost:8800/Home/home.html`.
 3. Use "Entrar como músico" ou "Entrar como contratante".
 
 O site precisa ser aberto por HTTP (localhost ou https): aberto direto do disco (`file://`), o navegador isola o armazenamento de cada página e desliga a criptografia usada nas senhas.

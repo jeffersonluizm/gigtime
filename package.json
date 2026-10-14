@@ -2,6 +2,9 @@
   "name": "gigtime",
   "private": true,
   "description": "Infraestrutura de testes do GigTime (somente desenvolvimento; o site continua estático)",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "test": "node --test \"testes/**/*.test.js\"",
     "vendor": "node ferramentas/copiar-vendor.js",

@@ -48,3 +48,4 @@ Troque `SEU-USUARIO` nos três links do início do `README.md` pelo seu usuário
 - O workflow de testes (`.github/workflows/ci.yml`) roda em todo push e pull request.
 - No GitHub Pages a origem `https://<seu-usuario>.github.io` é dividida com os seus outros repositórios publicados: por isso todas as chaves do GigTime no armazenamento começam com `gigtime:`.
 - Para tirar a demonstração do ar: Settings > Pages > **Unpublish site**.
+- **404 em domínio próprio:** o `404.html` calcula a base do site pelo endereço (`/<repositório>/` em `<usuário>.github.io`, ou o trecho antes de `/codigo-fonte/`). Com um domínio próprio (Settings > Pages > Custom domain), o site fica na raiz do domínio e os links do 404 apontam para `/codigo-fonte/...`, o que continua certo. Se o site for publicado numa subpasta de um domínio próprio, ajuste o cálculo da base em `ferramentas/gerar-404.js` e gere o arquivo de novo (`node ferramentas/gerar-404.js`): os hashes da CSP mudam junto.
