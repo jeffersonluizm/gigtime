@@ -13,7 +13,7 @@ Data: 2026-10-04. As hipóteses foram escritas e versionadas **antes** das medi�
 - **Lógica pura:** medida em Node com `performance.now()` (`medir-node.js`), 15 repetições depois de aquecer o JIT, usando a `lib/` de cada versão.
 - **Lighthouse 12** (`medir-lighthouse.js`): 3 execuções por página e perfil, mediana. **autocannon 8** (`medir-servidor.js`): degraus de 1, 10 e 50 conexões, 10 s cada, depois de 3 s de aquecimento.
 - **Máquina:** Ryzen 5 5600 (6 núcleos/12 threads), 16 GB. Gerador, navegador e servidor dividem a máquina, e outros projetos da oficina estavam rodando ao mesmo tempo: a CPU média ficou entre 50 e 100% e a memória livre caiu a menos de 100 MB em alguns momentos (campos `recursos_*` do JSON). Por isso os máximos oscilam; a comparação vale **entre antes e depois**, não como número absoluto.
-- A trava `.carga-lock` foi usada para não medir junto com a carga de outro projeto.
+- A trava `.carga-lock` foi usada para não medir junto com a carga de outro projeto. Depois se descobriu que outro projeto da oficina mediu sem respeitar a trava em 04/10, das 18:26 às 18:47. O Lighthouse do GigTime rodou antes disso (18:06 e 18:18, campos `quando` do JSON). Os cenários de navegador não guardaram horário e foram registrados às 18:45, então parte deles pode ter coincidido. A concorrência aumenta o ruído de quem estiver medindo naquele momento (como os `recursos_*` já mostram), mas as conclusões se apoiam em medianas e em diferenças de 10 a 50 vezes, bem maiores que esse ruído; por isso foram mantidas.
 
 ## Resultado por hipótese
 
