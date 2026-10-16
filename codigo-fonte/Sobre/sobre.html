@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Como funciona e como foi feito | GigTime</title>
+  <meta name="description" content="O que é o GigTime, para quem é, por que roda sem servidor, arquitetura, decisões técnicas, testes, resultados de carga e limitações.">
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <link rel="preload" href="../assets/fontes/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/componentes.css">
+  <link rel="stylesheet" href="sobre.css">
+</head>
+<body data-pagina="sobre">
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+
+  <main id="conteudo" tabindex="-1">
+    <div class="container py-4 py-lg-5">
+      <div class="conteudo-texto mb-5">
+        <span class="sobretitulo">Sobre o projeto</span>
+        <h1>Como o GigTime funciona e como foi feito</h1>
+        <p class="lead texto-suave mt-3">Uma vitrine para músicos e para quem contrata música ao vivo: perfis, filtros e conversa direta. Nasceu como projeto acadêmico e foi revisado como peça de portfólio, com foco em arquitetura, segurança, acessibilidade e testes.</p>
+        <nav aria-label="Nesta página" class="indice">
+          <a href="#para-quem">Para quem</a>
+          <a href="#sem-back-end">Sem servidor</a>
+          <a href="#arquitetura">Arquitetura</a>
+          <a href="#decisoes">Decisões</a>
+          <a href="#testes">Testes</a>
+          <a href="#carga">Carga</a>
+          <a href="#limitacoes">Limitações</a>
+          <a href="#equipe">Equipe</a>
+        </nav>
+      </div>
+
+      <section class="mb-5" id="para-quem" aria-labelledby="tituloParaQuem">
+        <h2 id="tituloParaQuem">Para quem é</h2>
+        <div class="row g-4 mt-1">
+          <div class="col-md-6">
+            <div class="painel h-100">
+              <h3 class="h5"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#mic"></use></svg> Músicos e bandas</h3>
+              <ol class="mb-0">
+                <li>Crie o perfil com gêneros, apresentação, disponibilidade, fotos e um vídeo.</li>
+                <li>Encontre bares, casas de shows e eventos em Explorar.</li>
+                <li>Use "Contate-me" e combine data, repertório e cachê pelo chat.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="painel h-100">
+              <h3 class="h5"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#building"></use></svg> Contratantes</h3>
+              <ol class="mb-0">
+                <li>Descreva o seu espaço ou evento e o que procura.</li>
+                <li>Filtre músicos por gênero, estado e avaliação.</li>
+                <li>Converse com quem combina com o seu palco.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-5 conteudo-texto" id="sem-back-end" aria-labelledby="tituloSemBackEnd">
+        <h2 id="tituloSemBackEnd">Por que não tem servidor</h2>
+        <p>O GigTime foi feito na disciplina de desenvolvimento web front-end da PUC Minas (2º semestre de 2024), cujo escopo era HTML, CSS e JavaScript. Por isso ele é um <strong>site estático</strong>: não há back-end, banco de dados nem envio de e-mail. Tudo o que você cadastra fica guardado <strong>no seu próprio navegador</strong> (Web Storage).</p>
+        <p>Isso tem consequências que o site assume abertamente:</p>
+        <ul>
+          <li>Seus dados não saem deste computador e não aparecem em outro navegador.</li>
+          <li>Quem usa este mesmo navegador consegue ver os dados guardados nele.</li>
+          <li>Não existe recuperação de senha por e-mail. O caminho honesto está em <a href="../Acesso/esqueci-senha.html">Esqueci minha senha</a>.</li>
+        </ul>
+        <p class="mb-0">A lógica foi separada do armazenamento justamente para que uma API real possa entrar depois sem reescrever as telas (requisito RNF-04).</p>
+      </section>
+
+      <section class="mb-5" id="arquitetura" aria-labelledby="tituloArquitetura">
+        <h2 id="tituloArquitetura">Arquitetura</h2>
+        <p class="conteudo-texto">Três camadas dentro do navegador, sem build: cada página carrega scripts clássicos na mesma ordem. As regras de negócio ficam em <code>lib/</code>, sem tocar no DOM, e por isso rodam igual no Node para os testes.</p>
+        <div class="painel diagrama" tabindex="0" role="region" aria-label="Diagrama da arquitetura (role para os lados em telas pequenas)">
+          <svg viewBox="0 0 960 560" role="img" aria-labelledby="diagramaTitulo diagramaDescricao" xmlns="http://www.w3.org/2000/svg">
+            <title id="diagramaTitulo">Arquitetura do GigTime</title>
+            <desc id="diagramaDescricao">Páginas HTML usam a camada ui, que usa a camada lib de regras puras. A lib grava no localStorage e no sessionStorage e usa a WebCrypto. Os testes em Node carregam a mesma lib. Uma API futura pode substituir o armazenamento.</desc>
+            <defs>
+              <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0L10 5L0 10z" class="d-seta"/>
+              </marker>
+            </defs>
+            <rect x="10" y="10" width="680" height="540" rx="22" class="d-moldura"/>
+            <text x="34" y="44" class="d-rotulo">Navegador (site estático, GitHub Pages)</text>
+
+            <rect x="40" y="66" width="620" height="90" rx="14" class="d-caixa d-paginas"/>
+            <text x="350" y="100" class="d-titulo">Páginas</text>
+            <text x="350" y="128" class="d-texto">HTML + script da página: Home, Explorar, Perfil, Chat, Conta...</text>
+
+            <rect x="40" y="186" width="620" height="90" rx="14" class="d-caixa d-ui"/>
+            <text x="350" y="220" class="d-titulo">ui/</text>
+            <text x="350" y="248" class="d-texto">layout (topo, rodapé), cards, formulários, avisos e diálogo</text>
+
+            <rect x="40" y="306" width="620" height="100" rx="14" class="d-caixa d-lib"/>
+            <text x="350" y="340" class="d-titulo">lib/ (regras puras, sem DOM)</text>
+            <text x="350" y="366" class="d-texto">senha (PBKDF2), perfil, validação, filtros, mensagens,</text>
+            <text x="350" y="388" class="d-texto">sessão, conta, armazenamento, constantes</text>
+
+            <rect x="40" y="436" width="300" height="94" rx="14" class="d-caixa d-dados"/>
+            <text x="190" y="470" class="d-titulo">localStorage</text>
+            <text x="190" y="496" class="d-texto">gigtime:users, :messages, :lidas</text>
+
+            <rect x="360" y="436" width="300" height="94" rx="14" class="d-caixa d-dados"/>
+            <text x="510" y="470" class="d-titulo">sessionStorage</text>
+            <text x="510" y="496" class="d-texto">sessão por aba (expira em 2 h)</text>
+
+            <line x1="350" y1="156" x2="350" y2="184" class="d-linha" marker-end="url(#seta)"/>
+            <line x1="350" y1="276" x2="350" y2="304" class="d-linha" marker-end="url(#seta)"/>
+            <line x1="190" y1="406" x2="190" y2="434" class="d-linha" marker-end="url(#seta)"/>
+            <line x1="510" y1="406" x2="510" y2="434" class="d-linha" marker-end="url(#seta)"/>
+
+            <rect x="720" y="306" width="220" height="100" rx="14" class="d-caixa d-externo"/>
+            <text x="830" y="342" class="d-titulo">WebCrypto</text>
+            <text x="830" y="368" class="d-texto">PBKDF2-SHA256</text>
+            <text x="830" y="388" class="d-texto">600 mil iterações</text>
+            <line x1="662" y1="356" x2="718" y2="356" class="d-linha" marker-end="url(#seta)"/>
+
+            <rect x="720" y="66" width="220" height="130" rx="14" class="d-caixa d-externo"/>
+            <text x="830" y="100" class="d-titulo">Testes (Node)</text>
+            <text x="830" y="126" class="d-texto">node:test + jsdom</text>
+            <text x="830" y="148" class="d-texto">carregam a mesma lib/</text>
+            <text x="830" y="170" class="d-texto">e as páginas reais</text>
+            <path d="M720 176 H704 V340 H664" class="d-linha d-tracejada" marker-end="url(#seta)"/>
+
+            <rect x="720" y="436" width="220" height="94" rx="14" class="d-caixa d-futuro"/>
+            <text x="830" y="470" class="d-titulo">API (futuro)</text>
+            <text x="830" y="496" class="d-texto">troca o armazenamento</text>
+            <line x1="662" y1="483" x2="718" y2="483" class="d-linha d-tracejada" marker-end="url(#seta)"/>
+          </svg>
+        </div>
+      </section>
+
+      <section class="mb-5 conteudo-texto" id="decisoes" aria-labelledby="tituloDecisoes">
+        <h2 id="tituloDecisoes">Decisões técnicas</h2>
+        <ul class="lista-decisoes">
+          <li><strong>Sem build, scripts clássicos.</strong> Cada lib se registra como <code>window.GigX</code> no navegador e como módulo no Node (padrão UMD). Assim o site abre em qualquer servidor estático e os testes usam o mesmo código.</li>
+          <li><strong>Armazenamento injetado.</strong> As funções recebem o <code>storage</code> como parâmetro; nos testes ele é um objeto em memória, e uma API pode ocupar o mesmo lugar.</li>
+          <li><strong>Senha com PBKDF2.</strong> Sal aleatório de 16 bytes e 600 mil iterações (recomendação OWASP 2023), pela WebCrypto. Hashes antigos (SHA-256 ou texto puro) são trocados no próximo login, sem o usuário perceber.</li>
+          <li><strong>Política de segurança de conteúdo.</strong> CSP por <code>&lt;meta&gt;</code> (o GitHub Pages não permite cabeçalhos) sem script nem estilo inline; Bootstrap, fontes e ícones servidos pelo próprio site.</li>
+          <li><strong>Dados de usuário nunca viram HTML.</strong> Entram por <code>textContent</code> ou passam por escape; links de imagem só em https e vídeo só pelo ID do YouTube.</li>
+          <li><strong>Sessão por aba.</strong> Duas abas podem estar logadas com pessoas diferentes (ótimo para testar o chat) e a sessão expira após 2 horas sem uso. Ações sensíveis pedem a senha de novo.</li>
+          <li><strong>Acessibilidade.</strong> Contraste AA verificado em teste, foco visível, navegação por teclado, erros ligados aos campos e avisos em região <code>aria-live</code> no lugar de <code>alert()</code>.</li>
+          <li><strong>Conteúdo próprio.</strong> Personas fictícias e ilustrações geradas por script, sem imagens de terceiros.</li>
+        </ul>
+      </section>
+
+      <section class="mb-5 conteudo-texto" id="testes" aria-labelledby="tituloTestes">
+        <h2 id="tituloTestes">Testes</h2>
+        <p><!-- testes -->305<!-- /testes --> testes automatizados com <code>node:test</code> e <code>jsdom</code> cobrem as regras (senha, perfil, filtros, mensagens, sessão, conta) e as páginas de verdade: cada teste carrega o HTML, roda os scripts na ordem e interage como uma pessoa faria. Há também testes de arquitetura: CSP em todas as páginas, contraste AA dos pares de cor, ícones existentes no sprite e estrutura comum das páginas.</p>
+        <p class="mb-0">Para rodar: <code>npm install</code> e <code>npm test</code> na raiz do projeto.</p>
+      </section>
+
+      <section class="mb-5" id="carga" aria-labelledby="tituloCarga">
+        <h2 id="tituloCarga">Teste de carga</h2>
+        <p class="conteudo-texto">Sem servidor, o que se estressa é o navegador: milhares de perfis em Explorar, dezenas de milhares de mensagens no chat e o limite de cerca de 5 MB do localStorage. As medições foram feitas antes e depois das correções; o relatório completo está em <code>docs/carga/</code> no repositório.</p>
+        <div class="table-responsive painel p-0" tabindex="0" role="region" aria-label="Tabela de resultados do teste de carga">
+          <table class="table mb-0 tabela-carga">
+            <caption class="px-3">Resumo das medições (mediana de 5 execuções, Chrome, desktop)</caption>
+            <thead>
+              <tr><th scope="col">Cenário</th><th scope="col">Antes</th><th scope="col">Depois</th></tr>
+            </thead>
+            <tbody id="resumoCarga">
+              <tr><td>Trocar o filtro com 5 mil perfis em Explorar</td><td>1,2 s</td><td>24 ms</td></tr>
+              <tr><td>Abrir o chat com 25 mil mensagens</td><td>727 ms</td><td>254 ms</td></tr>
+              <tr><td>Enviar uma mensagem com 25 mil gravadas</td><td>511 ms</td><td>43 ms</td></tr>
+              <tr><td>Duas abas enviando 500 mensagens cada</td><td>40% perdidas</td><td>nenhuma perdida</td></tr>
+              <tr><td>Lighthouse da Home (desktop): desempenho / acessibilidade</td><td>página não pintava</td><td>98 / 100</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="mb-5 conteudo-texto" id="limitacoes" aria-labelledby="tituloLimitacoes">
+        <h2 id="tituloLimitacoes">Limitações honestas</h2>
+        <ul>
+          <li><strong>A autenticação é demonstrativa.</strong> Sem servidor, quem abre o DevTools consegue gravar outra pessoa na sessão. A senha pedida nas ações sensíveis e o PBKDF2 protegem contra uso casual e contra quem só copia os dados, não contra quem controla o navegador.</li>
+          <li><strong>Dados presos a este navegador.</strong> Não há sincronização entre dispositivos nem entre navegadores, e limpar os dados do site apaga tudo.</li>
+          <li><strong>Espaço limitado.</strong> O localStorage guarda cerca de 5 MB: algo como 6 mil perfis ou 30 mil mensagens curtas. Quando enche, o site avisa e oferece restaurar a demonstração.</li>
+          <li><strong>Avaliações e selos são fixos.</strong> Ainda não existe um fluxo para avaliar depois de um show.</li>
+          <li><strong>Imagens por link.</strong> Fotos são links https para outros sites; esses sites podem ver o endereço IP de quem abre o perfil.</li>
+          <li><strong>Mensagens só com a aba aberta.</strong> Não há notificação fora do site; entre abas do mesmo navegador o chat atualiza na hora.</li>
+        </ul>
+      </section>
+
+      <section class="mb-5 conteudo-texto" id="equipe" aria-labelledby="tituloEquipe">
+        <h2 id="tituloEquipe">Equipe</h2>
+        <p><strong>Projeto original (2024)</strong>, curso de Análise e Desenvolvimento de Sistemas da PUC Minas: Carlos Henrique Pereira Silva, Jefferson Luiz Mendonça da Silva, Kauã Eduardo Silva, Lucas Carvalho de Oliveira e William Rocha Leal Viana, com orientação de Humberto Azevedo Nigri do Carmo.</p>
+        <p class="mb-0"><strong>Revisão para portfólio (2026)</strong>, por Jefferson Luiz Mendonça da Silva: segurança (PBKDF2, CSP, validações), reorganização em camadas, identidade visual, acessibilidade, novas páginas (conta, privacidade, acesso), testes automatizados e teste de carga.</p>
+      </section>
+    </div>
+  </main>
+
+  <footer id="rodape"></footer>
+
+  <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="../lib/html.js"></script>
+  <script src="../lib/constantes.js"></script>
+  <script src="../lib/armazenamento.js"></script>
+  <script src="../lib/senha.js"></script>
+  <script src="../lib/validacao.js"></script>
+  <script src="../lib/perfil.js"></script>
+  <script src="../lib/sessao.js"></script>
+  <script src="../lib/mensagens.js"></script>
+  <script src="../dados/usuarios-exemplo.js"></script>
+  <script src="../dados/demo.js"></script>
+  <script src="../inicializacao.js"></script>
+  <script src="../ui/avisos.js"></script>
+  <script src="../ui/formularios.js"></script>
+  <script src="../ui/cards.js"></script>
+  <script src="../ui/layout.js"></script>
+</body>
+</html>

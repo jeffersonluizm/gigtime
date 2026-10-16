@@ -1,0 +1,58 @@
+# Publica a demonstração do GigTime no GitHub Pages.
+# Só vai para o ar o que o site precisa: index.html (redireciona para a Home), 404.html e codigo-fonte/.
+# Ativar uma vez: Settings > Pages > Build and deployment > Source: "GitHub Actions" (ver docs/deploy.md).
+# Ações fixadas por SHA de commit (a tag fica no comentário); só o job "publicar" pode escrever no Pages.
+name: Publicar no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  publicar:
+    needs: testar
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - id: pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - name: Montar a pasta do site
+        env:
+          URL_DO_SITE: ${{ steps.pages.outputs.base_url }}
+        run: |
+          mkdir _site
+          cp index.html 404.html _site/
+          cp -r codigo-fonte _site/codigo-fonte
+          # Metadados de compartilhamento (Open Graph) precisam do endereço absoluto do site publicado
+          grep -rl "__URL_DO_SITE__" _site --include=*.html | xargs -r sed -i "s#__URL_DO_SITE__#${URL_DO_SITE}#g"
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

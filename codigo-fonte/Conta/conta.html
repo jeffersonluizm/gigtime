@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conta e dados | GigTime</title>
+  <meta name="description" content="Troque a senha, baixe uma cópia dos seus dados, apague a conta ou restaure a demonstração do GigTime.">
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <link rel="preload" href="../assets/fontes/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/componentes.css">
+</head>
+<body data-pagina="conta" data-exige-login>
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+
+  <main id="conteudo" tabindex="-1">
+    <div class="container py-4 py-lg-5 conteudo-estreito">
+      <span class="sobretitulo">Configurações</span>
+      <h1 class="h2">Conta e dados</h1>
+      <p class="texto-suave mb-4">Conectado como <strong id="contaUsuario"></strong>. <span id="usoArmazenamento"></span></p>
+
+      <section class="painel mb-4" aria-labelledby="tituloSenha">
+        <h2 class="h5" id="tituloSenha"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#lock"></use></svg> Trocar senha</h2>
+        <form id="formSenha" novalidate>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label for="senhaAtualTroca" class="form-label">Senha atual</label>
+              <input type="password" class="form-control" id="senhaAtualTroca" autocomplete="current-password" required>
+              <div class="invalid-feedback" data-campo="senhaAtual"></div>
+            </div>
+            <div class="col-md-4">
+              <label for="novaSenha" class="form-label">Nova senha</label>
+              <input type="password" class="form-control" id="novaSenha" autocomplete="new-password" required aria-describedby="ajudaNovaSenha">
+              <div class="form-text" id="ajudaNovaSenha">Pelo menos 8 caracteres.</div>
+              <div class="invalid-feedback" data-campo="novaSenha"></div>
+            </div>
+            <div class="col-md-4">
+              <label for="confirmacaoSenha" class="form-label">Confirme a nova senha</label>
+              <input type="password" class="form-control" id="confirmacaoSenha" autocomplete="new-password" required>
+              <div class="invalid-feedback" data-campo="confirmacao"></div>
+            </div>
+          </div>
+          <div class="alerta alerta-erro mt-3 erro-formulario" role="alert" data-erro-formulario></div>
+          <button type="submit" class="btn btn-gig mt-3" id="salvarSenha">Trocar senha</button>
+        </form>
+      </section>
+
+      <section class="painel mb-4" aria-labelledby="tituloExportar">
+        <h2 class="h5" id="tituloExportar"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#download"></use></svg> Baixar meus dados</h2>
+        <p>Um arquivo JSON com o seu perfil e as suas conversas, guardados neste navegador. A senha não vai no arquivo.</p>
+        <button type="button" class="btn btn-gig-secundario" id="exportar">Gerar arquivo</button>
+        <p class="mt-3 mb-0" id="exportado" hidden>Arquivo pronto: <a id="linkExportado" href="#">baixar de novo</a>.</p>
+      </section>
+
+      <section class="painel mb-4" aria-labelledby="tituloSair">
+        <h2 class="h5" id="tituloSair"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#box-arrow-right"></use></svg> Sair</h2>
+        <p>Encerra a sessão nesta aba. Seus dados continuam neste navegador.</p>
+        <button type="button" class="btn btn-gig-secundario" id="sairConta">Sair da conta</button>
+      </section>
+
+      <section class="painel mb-4 zona-perigo" aria-labelledby="tituloApagar">
+        <h2 class="h5" id="tituloApagar"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#trash"></use></svg> Apagar minha conta</h2>
+        <p>Apaga o seu perfil, as suas conversas e o registro de mensagens lidas deste navegador. Não dá para desfazer.</p>
+        <form id="formApagar" novalidate>
+          <label for="senhaApagar" class="form-label">Confirme com a sua senha</label>
+          <div class="d-flex flex-wrap gap-2 align-items-start">
+            <div class="flex-grow-1">
+              <input type="password" class="form-control" id="senhaApagar" autocomplete="current-password" required>
+              <div class="invalid-feedback" data-campo="senhaApagar"></div>
+            </div>
+            <button type="submit" class="btn btn-perigo" id="apagarConta">Apagar conta</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="painel" aria-labelledby="tituloRestaurar">
+        <h2 class="h5" id="tituloRestaurar"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#arrow-counterclockwise"></use></svg> Restaurar a demonstração</h2>
+        <p>Volta o GigTime ao estado inicial neste navegador: as <span data-demo="personas"></span> personas de exemplo e as conversas de demonstração. Contas criadas aqui são apagadas. Útil quando o armazenamento enche.</p>
+        <button type="button" class="btn btn-perigo" id="restaurarDemo">Restaurar demonstração</button>
+      </section>
+    </div>
+  </main>
+
+  <footer id="rodape"></footer>
+
+  <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="../lib/html.js"></script>
+  <script src="../lib/constantes.js"></script>
+  <script src="../lib/armazenamento.js"></script>
+  <script src="../lib/senha.js"></script>
+  <script src="../lib/validacao.js"></script>
+  <script src="../lib/perfil.js"></script>
+  <script src="../lib/sessao.js"></script>
+  <script src="../lib/mensagens.js"></script>
+  <script src="../dados/usuarios-exemplo.js"></script>
+  <script src="../dados/demo.js"></script>
+  <script src="../inicializacao.js"></script>
+  <script src="../ui/avisos.js"></script>
+  <script src="../ui/formularios.js"></script>
+  <script src="../ui/cards.js"></script>
+  <script src="../ui/layout.js"></script>
+  <script src="../lib/conta.js"></script>
+  <script src="conta.js"></script>
+</body>
+</html>

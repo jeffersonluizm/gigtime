@@ -6,7 +6,7 @@ rem (login, usuarios e mensagens nao passariam de uma pagina para outra).
 rem Opcional: GIGTIME_PORTA muda a porta; GIGTIME_SEM_NAVEGADOR=1 nao abre o navegador.
 
 set "RAIZ=%~dp0codigo-fonte"
-if defined GIGTIME_PORTA (set "PORTA=%GIGTIME_PORTA%") else (set "PORTA=8000")
+if defined GIGTIME_PORTA (set "PORTA=%GIGTIME_PORTA%") else (set "PORTA=8800")
 set "URL=http://localhost:%PORTA%/Home/home.html"
 
 echo ============================================

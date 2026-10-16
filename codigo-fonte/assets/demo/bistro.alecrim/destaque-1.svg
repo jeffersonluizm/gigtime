@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='800' height='600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#3f5f3a'/><stop offset='1' stop-color='#140a05'/></linearGradient></defs>
+<rect width='800' height='600' fill='url(#g)'/>
+<path d='M93.9 0 L-69.3 600 L246.3 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='93.9' cy='8' r='14' fill='#f7b801'/><path d='M211.7 0 L53.7 600 L357.3 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='211.7' cy='8' r='14' fill='#f7b801'/><path d='M339.3 0 L214.2 600 L496.4 600 Z' fill='#ffffff' opacity='0.2'/><circle cx='339.3' cy='8' r='14' fill='#f7b801'/><path d='M457.1 0 L287 600 L617.3 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='457.1' cy='8' r='14' fill='#f7b801'/><path d='M567.2 0 L414.3 600 L695.4 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='567.2' cy='8' r='14' fill='#f7b801'/><path d='M685.8 0 L523.2 600 L817.5 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='685.8' cy='8' r='14' fill='#f7b801'/>
+<rect x='0' y='500' width='800' height='100' fill='#000000' opacity='.35'/>
+<text x='32' y='562' font-family='Segoe UI, Helvetica, Arial, sans-serif' font-size='36' font-weight='700' fill='#ffffff'>Ao vivo em Curitiba</text>
+</svg>

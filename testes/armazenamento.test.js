@@ -49,6 +49,14 @@ test('semearSeVazio grava o seed só quando não há usuários', () => {
   assert.deepEqual(A.lerUsuarios(local).map((x) => x.username), ['seed']);
 });
 
+test('ehErroDeCota reconhece o erro de armazenamento cheio do Chrome e do Firefox', () => {
+  const erro = (name) => Object.assign(new Error('x'), { name });
+  assert.equal(A.ehErroDeCota(erro('QuotaExceededError')), true);
+  assert.equal(A.ehErroDeCota(erro('NS_ERROR_DOM_QUOTA_REACHED')), true);
+  assert.equal(A.ehErroDeCota(erro('TypeError')), false);
+  assert.equal(A.ehErroDeCota(null), false);
+});
+
 test('usuarioPublico remove senha e hash do objeto', () => {
   const p = A.usuarioPublico(u('ana', { password: 'x', passwordHash: 'y' }));
   assert.equal('password' in p, false);
@@ -56,14 +64,14 @@ test('usuarioPublico remove senha e hash do objeto', () => {
   assert.equal(p.username, 'ana');
 });
 
-test('global.js grava os usuários de exemplo no localStorage e não no sessionStorage', () => {
+test('inicializacao.js grava os usuários de exemplo no localStorage e não no sessionStorage', () => {
   const w = carregarPagina('Home/home.html');
   const lista = JSON.parse(w.localStorage.getItem(CHAVE_USUARIOS));
   assert.equal(lista.length, 10);
   assert.equal(w.sessionStorage.getItem('users'), null);
 });
 
-test('global.js migra usuários de uma aba aberta na versão antiga', () => {
+test('inicializacao.js migra usuários de uma aba aberta na versão antiga', () => {
   const w = carregarPagina('Home/home.html', {
     antes: (win) => win.sessionStorage.setItem('users', JSON.stringify([u('antigo', { role: 'Músico', genres: [], badges: [], password: 'p' })])),
   });
@@ -71,27 +79,45 @@ test('global.js migra usuários de uma aba aberta na versão antiga', () => {
   assert.deepEqual(nomes, ['antigo'], 'quem já tinha dados mantém os dados e não recebe seed por cima');
 });
 
-test('global.js limpa senha antiga do usuário logado guardado na sessão', () => {
+test('inicializacao.js limpa senha antiga do usuário logado guardado na sessão', () => {
   const w = carregarPagina('Home/home.html', {
-    antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify(u('sonic', { password: 'sonic', profilePicLink: 'x' }))),
+    antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify(u('lia.batera', { password: 'demo1234', profilePicLink: 'x' }))),
   });
   const logado = JSON.parse(w.sessionStorage.getItem('loggedInUser'));
-  assert.equal(logado.username, 'sonic');
+  assert.equal(logado.username, 'lia.batera');
   assert.equal('password' in logado, false);
 });
 
-test('home e anúncios montam os cards a partir do localStorage', () => {
+test('home mostra os 4 mais bem avaliados de cada papel e anúncios mostra todos', () => {
   const home = carregarPagina('Home/home.html');
-  assert.equal(home.document.querySelectorAll('#anunciosMusic .card').length, 5);
-  assert.equal(home.document.querySelectorAll('#anunciosContrat .card').length, 5);
-  const anuncios = carregarPagina('Anúncios/anuncios.html');
+  assert.equal(home.document.querySelectorAll('#anunciosMusic .card').length, 4);
+  assert.equal(home.document.querySelectorAll('#anunciosContrat .card').length, 4);
+  assert.equal(home.document.querySelector('#anunciosMusic [data-username]').dataset.username, 'banda.aurora', 'nota 5 primeiro');
+  const anuncios = carregarPagina('anuncios/anuncios.html');
   assert.equal(anuncios.document.querySelectorAll('#anuncios .card').length, 10);
 });
 
 test('clicar num card guarda o perfil escolhido sem senha', () => {
-  const w = carregarPagina('Anúncios/anuncios.html');
-  w.document.querySelector('#anuncios > .col[data-username="cartola"] a').dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
+  const w = carregarPagina('anuncios/anuncios.html');
+  w.document.querySelector('#anuncios > .col[data-username="davi.sax"] a').dispatchEvent(new w.MouseEvent('click', { bubbles: true, cancelable: true }));
   const escolhido = JSON.parse(w.sessionStorage.getItem('clickedUser'));
-  assert.equal(escolhido.username, 'cartola');
+  assert.equal(escolhido.username, 'davi.sax');
   assert.equal('password' in escolhido || 'passwordHash' in escolhido, false);
+});
+
+test('lerLista devolve a lista gravada ou [] (chave vazia, JSON quebrado ou valor que não é lista)', () => {
+  const local = new StorageMemoria({ a: '[1,2]', b: '{quebrado', c: '{"x":1}' });
+  assert.deepEqual(A.lerLista(local, 'a'), [1, 2]);
+  assert.deepEqual(A.lerLista(local, 'b'), []);
+  assert.deepEqual(A.lerLista(local, 'c'), []);
+  assert.deepEqual(A.lerLista(local, 'nada'), []);
+});
+
+test('senha e mensagens leem listas pela mesma função de armazenamento (sem JSON.parse repetido)', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  for (const arquivo of ['senha.js', 'mensagens.js', 'conta.js']) {
+    const codigo = fs.readFileSync(path.join(__dirname, '..', 'codigo-fonte', 'lib', arquivo), 'utf8');
+    assert.doesNotMatch(codigo, /JSON\.parse\(/, arquivo);
+  }
 });

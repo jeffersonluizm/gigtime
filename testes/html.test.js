@@ -51,7 +51,7 @@ test('cards da home não interpretam HTML vindo dos dados do usuário', () => {
 });
 
 test('cards dos anúncios não interpretam HTML e o clique ainda abre o perfil certo', () => {
-  const w = carregarPagina('Anúncios/anuncios.html', { antes: comMalicioso() });
+  const w = carregarPagina('anuncios/anuncios.html', { antes: comMalicioso() });
   semInjecao(w);
   const col = w.document.querySelector('#anuncios > .col');
   assert.equal(col.dataset.username, MALICIOSO.username);
@@ -62,6 +62,12 @@ test('cards dos anúncios não interpretam HTML e o clique ainda abre o perfil c
 test('navbar do usuário logado mostra o nome como texto', () => {
   const w = carregarPagina('Home/home.html', { antes: comMalicioso(true) });
   semInjecao(w);
-  assert.match(w.document.querySelector('.navbar-nav').textContent, /Bem-vindo, x"><img src=x id=injU>!/);
-  assert.equal(w.document.querySelector('#profileAvatarLink img').getAttribute('src'), MALICIOSO.profilePicLink);
+  assert.equal(w.document.getElementById('nomeUsuario').textContent, MALICIOSO.name);
+  assert.equal(w.document.getElementById('profileAvatar').getAttribute('src'), MALICIOSO.profilePicLink);
+});
+
+test('icone monta o <svg> do sprite, decorativo e sem aceitar nome com caracteres especiais', () => {
+  const { icone } = require('../codigo-fonte/lib/html.js');
+  assert.equal(icone('star-fill'), '<svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#star-fill"></use></svg>');
+  assert.throws(() => icone('x"><script>'), /ícone inválido/);
 });

@@ -17,12 +17,12 @@ const escolhido = (w) => JSON.parse(w.sessionStorage.getItem('clickedUser'));
 test('cards não usam o username como id', () => {
   const home = carregarPagina('Home/home.html', { antes: comUsuarios(usuario('state'), usuario('outro', { role: 'Contratante' })) });
   assert.equal(home.document.querySelectorAll('#anunciosMusic [id], #anunciosContrat [id]').length, 0);
-  const anuncios = carregarPagina('Anúncios/anuncios.html', { antes: comUsuarios(usuario('state')) });
+  const anuncios = carregarPagina('anuncios/anuncios.html', { antes: comUsuarios(usuario('state')) });
   assert.equal(anuncios.document.querySelectorAll('#anuncios [id]').length, 0);
 });
 
 test('anúncios: usuário "state" não sequestra o select de estado', () => {
-  const w = carregarPagina('Anúncios/anuncios.html', {
+  const w = carregarPagina('anuncios/anuncios.html', {
     antes: comUsuarios(usuario('state', { state: 'SP' }), usuario('bh', { state: 'MG' })),
   });
   const select = w.document.getElementById('state');
@@ -31,12 +31,12 @@ test('anúncios: usuário "state" não sequestra o select de estado', () => {
   assert.equal(w.sessionStorage.getItem('clickedUser'), null, 'clicar no filtro não abre perfil');
   select.value = 'MG';
   select.dispatchEvent(new w.Event('change', { bubbles: true }));
-  const visiveis = [...w.document.querySelectorAll('#anuncios > .col')].filter((c) => c.style.display !== 'none').map((c) => c.dataset.username);
+  const visiveis = [...w.document.querySelectorAll('#anuncios > .col')].filter((c) => !c.hidden).map((c) => c.dataset.username);
   assert.deepEqual(visiveis, ['bh']);
 });
 
 test('anúncios: clicar no card abre o perfil do usuário do card', () => {
-  const w = carregarPagina('Anúncios/anuncios.html', { antes: comUsuarios(usuario('state'), usuario('radioMusician')) });
+  const w = carregarPagina('anuncios/anuncios.html', { antes: comUsuarios(usuario('state'), usuario('radioMusician')) });
   clicar(w, w.document.querySelector('#anuncios > .col[data-username="state"] .card-img-top'));
   assert.equal(escolhido(w).username, 'state');
   clicar(w, w.document.querySelector('#anuncios > .col[data-username="radioMusician"] a'));
@@ -54,4 +54,19 @@ test('home: username igual ao id de um container não quebra os cards nem o cliq
   assert.equal(escolhido(w).username, 'btnMusicians');
   clicar(w, d.querySelector('#anunciosMusic .card a'));
   assert.equal(escolhido(w).username, 'anunciosContrat');
+});
+
+test('o card leva ao perfil endereçável (?u=) por link de verdade, acessível pelo teclado', () => {
+  const w = carregarPagina('Home/home.html', { antes: comUsuarios(usuario('o\'neil & cia', { name: 'O Neil' })) });
+  const links = [...w.document.querySelectorAll('#anunciosMusic [data-username] a.link-perfil')];
+  assert.ok(links.length >= 1);
+  for (const a of links) assert.equal(a.getAttribute('href'), '../Perfil/perfil.html?u=' + encodeURIComponent("o'neil & cia"));
+  const focaveis = links.filter((a) => a.getAttribute('tabindex') !== '-1');
+  assert.equal(focaveis.length, 1, 'um link por card na ordem de tabulação');
+  assert.match(focaveis[0].textContent, /O Neil/);
+});
+
+test('usuário sem avaliação aparece como "Novo" no card', () => {
+  const w = carregarPagina('Home/home.html', { antes: comUsuarios(usuario('novato', { rating: 0 })) });
+  assert.match(w.document.querySelector('#anunciosMusic .nota').textContent, /Novo/);
 });

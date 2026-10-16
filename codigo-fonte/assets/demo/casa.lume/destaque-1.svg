@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='800' height='600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#070200'/><stop offset='1' stop-color='#140a05'/></linearGradient></defs>
+<rect width='800' height='600' fill='url(#g)'/>
+<path d='M110 0 L-68.7 600 L253.5 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='110' cy='8' r='14' fill='#ff5629'/><path d='M222.1 0 L81.3 600 L348 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='222.1' cy='8' r='14' fill='#ff5629'/><path d='M347.3 0 L202.6 600 L526.2 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='347.3' cy='8' r='14' fill='#ff5629'/><path d='M466.6 0 L309.3 600 L626.8 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='466.6' cy='8' r='14' fill='#ff5629'/><path d='M576.7 0 L410.4 600 L708.5 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='576.7' cy='8' r='14' fill='#ff5629'/><path d='M686 0 L557 600 L819.3 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='686' cy='8' r='14' fill='#ff5629'/>
+<rect x='0' y='500' width='800' height='100' fill='#000000' opacity='.35'/>
+<text x='32' y='562' font-family='Segoe UI, Helvetica, Arial, sans-serif' font-size='36' font-weight='700' fill='#ffffff'>Ao vivo em São Paulo</text>
+</svg>

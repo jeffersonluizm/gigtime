@@ -1,0 +1,25 @@
+.previa {
+  position: relative;
+  padding-bottom: 48px;
+}
+
+.previa-banner {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  object-fit: cover;
+  border-radius: var(--gig-raio);
+  background: var(--gig-superficie-2);
+}
+
+.previa-foto {
+  position: absolute;
+  left: 1.25rem;
+  bottom: 0;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--gig-superficie);
+  background: var(--gig-superficie-2);
+}

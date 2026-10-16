@@ -1,199 +1,167 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://flaticons.net/icon.php?slug_category=miscellaneous&slug_icon=electric-guitar-01">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="../global.css">
-    <link rel="stylesheet" type="text/css" href="style_edit.css">
-    <title>GigTime - Editar perfil</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editar perfil | GigTime</title>
+  <meta name="description" content="Edite as informações do seu perfil no GigTime: fotos, apresentação, gêneros e vídeo.">
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <link rel="preload" href="../assets/fontes/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/componentes.css">
+  <link rel="stylesheet" href="edicao.css">
 </head>
+<body data-pagina="editar" data-exige-login>
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
 
-<body class="bg-gig">
-    <!--Barra de navegação-->
-    <nav class="navbar navbar-expand-sm fixed-top bg-gig-pr" data-bs-theme="dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="../Home/home.html">
-                <img src="https://flaticons.net/icon.php?slug_category=miscellaneous&slug_icon=electric-guitar-01"
-                    alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-                GigTime
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <div class="navbar-nav ms-auto">
-                    <!-- Container com os links customizados conforme status de login (logado ou deslogado) -->
-                </div>
-            </div>
+  <main id="conteudo" tabindex="-1">
+    <div class="container py-4 py-lg-5 conteudo-estreito">
+      <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+        <div>
+          <span class="sobretitulo">Seu perfil</span>
+          <h1 class="h2 mb-0">Editar perfil</h1>
         </div>
-    </nav>
+        <a id="verMeuPerfil" href="../Perfil/perfil.html">Ver meu perfil</a>
+      </div>
 
-    <div class="container text-center mt-6 pb-5">
-        <!-- Pré-visualização do banner e da foto de perfil (vêm dos links abaixo) -->
-        <div class="banner mx-auto">
-            <span class="bannerimg w-100 h-100"><img id="bannerPreview" src="" alt="Banner" class="w-100 h-100 object-fit-cover"></span>
+      <form id="editForm" novalidate>
+        <section class="painel mb-4" aria-labelledby="tituloAparencia">
+          <h2 class="h5" id="tituloAparencia">Fotos</h2>
+          <div class="previa mb-3">
+            <img id="bannerPreview" class="previa-banner" src="../assets/img/banner-padrao.svg" alt="Prévia do banner" data-fallback="banner">
+            <img id="profilePreview" class="previa-foto" src="../assets/img/avatar-padrao.svg" alt="Prévia da foto de perfil" data-fallback="avatar">
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="profilePicLink" class="form-label">Foto de perfil (link)</label>
+              <input type="url" class="form-control" id="profilePicLink" placeholder="https://..." aria-describedby="ajudaImagens">
+              <div class="invalid-feedback" data-campo="profilePicLink"></div>
+            </div>
+            <div class="col-md-6">
+              <label for="bannerPicLink" class="form-label">Banner (link)</label>
+              <input type="url" class="form-control" id="bannerPicLink" placeholder="https://..." aria-describedby="ajudaImagens">
+              <div class="invalid-feedback" data-campo="bannerPicLink"></div>
+            </div>
+            <p class="form-text col-12 mt-1" id="ajudaImagens">Use links que comecem com https://. Deixe vazio para manter a imagem atual.</p>
+          </div>
+        </section>
+
+        <section class="painel mb-4" aria-labelledby="tituloDados">
+          <h2 class="h5" id="tituloDados">Dados</h2>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="username" class="form-label">Nome de usuário</label>
+              <input type="text" class="form-control" id="username" readonly aria-describedby="usernameAjuda">
+              <div id="usernameAjuda" class="form-text">O nome de usuário identifica suas conversas e não pode ser alterado.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="name" class="form-label">Nome de exibição</label>
+              <input type="text" class="form-control" id="name" required maxlength="80" autocomplete="name">
+              <div class="invalid-feedback" data-campo="name"></div>
+            </div>
+            <div class="col-md-6">
+              <label for="email" class="form-label">E-mail</label>
+              <input type="email" class="form-control" id="email" required autocomplete="email">
+              <div class="invalid-feedback" data-campo="email"></div>
+            </div>
+            <div class="col-md-6">
+              <label for="phone" class="form-label">Telefone</label>
+              <input type="tel" class="form-control" id="phone" required autocomplete="tel" placeholder="(31) 91234-5678">
+              <div class="invalid-feedback" data-campo="phone"></div>
+            </div>
+            <div class="col-md-4">
+              <label for="role" class="form-label">Perfil</label>
+              <select id="role" class="form-select" required>
+                <option value="">Escolha...</option>
+                <option value="Músico">Músico</option>
+                <option value="Contratante">Contratante</option>
+              </select>
+              <div class="invalid-feedback" data-campo="role"></div>
+            </div>
+            <div class="col-md-3">
+              <label for="state" class="form-label">Estado</label>
+              <select id="state" class="form-select" required></select>
+              <div class="invalid-feedback" data-campo="state"></div>
+            </div>
+            <div class="col-md-5">
+              <label for="city" class="form-label">Cidade</label>
+              <input type="text" class="form-control" id="city" required maxlength="80">
+              <div class="invalid-feedback" data-campo="city"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="painel mb-4" aria-labelledby="tituloSobreVoce">
+          <h2 class="h5" id="tituloSobreVoce">Sobre você</h2>
+          <div class="mb-3">
+            <label for="bio" class="form-label">Apresentação</label>
+            <textarea class="form-control" id="bio" rows="3" maxlength="280" aria-describedby="contadorBio"></textarea>
+            <div class="form-text" id="contadorBio" aria-live="polite"></div>
+            <div class="invalid-feedback" data-campo="bio"></div>
+          </div>
+          <div class="mb-3">
+            <label for="disponibilidade" class="form-label">Disponibilidade</label>
+            <input type="text" class="form-control" id="disponibilidade" maxlength="80" placeholder="Ex.: fins de semana, à noite">
+            <div class="invalid-feedback" data-campo="disponibilidade"></div>
+          </div>
+          <fieldset class="mb-3">
+            <legend class="form-label fs-6">Gêneros</legend>
+            <div id="genres"></div>
+            <div class="invalid-feedback" data-campo="genres"></div>
+          </fieldset>
+          <div>
+            <label for="songLink" class="form-label">Vídeo no YouTube</label>
+            <input type="url" class="form-control" id="songLink" placeholder="https://youtu.be/..." aria-describedby="ajudaVideo">
+            <div class="form-text" id="ajudaVideo">No YouTube, toque em "Compartilhar" e cole o link aqui.</div>
+            <div class="invalid-feedback" data-campo="songLink"></div>
+          </div>
+        </section>
+
+        <section class="painel mb-4" aria-labelledby="tituloConfirmar">
+          <h2 class="h5" id="tituloConfirmar">Confirmar alterações</h2>
+          <label for="senhaAtual" class="form-label">Senha atual</label>
+          <div class="campo-senha">
+            <input type="password" class="form-control" id="senhaAtual" autocomplete="current-password" required aria-describedby="ajudaSenhaAtual">
+            <button type="button" class="mostrar-senha" data-alvo="senhaAtual" aria-label="Mostrar senha" aria-pressed="false"><svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#eye"></use></svg></button>
+          </div>
+          <div class="invalid-feedback" data-campo="senhaAtual"></div>
+          <div class="form-text" id="ajudaSenhaAtual">Pedimos a senha para confirmar que é você. Para trocar a senha, use <a href="../Conta/conta.html">Conta e dados</a>.</div>
+        </section>
+
+        <div class="alerta alerta-erro mb-3 erro-formulario" role="alert" data-erro-formulario></div>
+        <div class="d-flex flex-wrap justify-content-end gap-2">
+          <button type="button" class="btn btn-gig-secundario" id="clear_button">Descartar alterações</button>
+          <button type="submit" class="btn btn-gig" id="salvar_button">Salvar alterações</button>
         </div>
-        <div class="icon mx-auto mt-3">
-            <span class="iconimg w-100 h-100"><img id="profilePreview" src="" alt="Foto de perfil" class="w-100 h-100 object-fit-cover"></span>
-        </div>
-
-        <form id="editForm" class="row g-3 mt-2 text-start" novalidate>
-            <div class="col-sm-12 col-lg-6">
-                <label for="profilePicLink" class="form-label">Foto de perfil (link)</label>
-                <input type="text" class="form-control" id="profilePicLink" placeholder="Link da imagem. Vazio usa a foto padrão.">
-            </div>
-            <div class="col-sm-12 col-lg-6">
-                <label for="bannerPicLink" class="form-label">Banner (link)</label>
-                <input type="text" class="form-control" id="bannerPicLink" placeholder="Link da imagem do banner">
-            </div>
-
-            <div class="col-sm-12 col-lg-6">
-                <label for="username" class="form-label">Nome de usuário</label>
-                <input type="text" class="form-control" id="username" readonly aria-describedby="usernameAjuda">
-                <div id="usernameAjuda" class="form-text">O nome de usuário não pode ser alterado.</div>
-            </div>
-            <div class="col-sm-12 col-lg-6">
-                <label for="name" class="form-label">Nome</label>
-                <input type="text" class="form-control" id="name" required>
-                <div class="invalid-feedback" data-campo="name"></div>
-            </div>
-
-            <div class="col-sm-12 col-lg-6">
-                <label for="email" class="form-label">E-mail</label>
-                <input type="email" class="form-control" id="email" required>
-                <div class="invalid-feedback" data-campo="email"></div>
-            </div>
-            <div class="col-sm-12 col-lg-6">
-                <label for="phone" class="form-label">Telefone</label>
-                <input type="tel" class="form-control" id="phone" required>
-                <div class="invalid-feedback" data-campo="phone"></div>
-            </div>
-
-            <div class="col-sm-12 col-lg-6">
-                <label for="role" class="form-label">Perfil</label>
-                <select id="role" class="form-select" required>
-                    <option value="">Escolha seu perfil...</option>
-                    <option value="Músico">Músico</option>
-                    <option value="Contratante">Contratante</option>
-                </select>
-                <div class="invalid-feedback" data-campo="role"></div>
-            </div>
-            <div class="col-sm-12 col-lg-6">
-                <label for="state" class="form-label">Estado</label>
-                <select id="state" class="form-select" required>
-                    <option value="">Escolha seu estado...</option>
-                    <option value="AC">AC</option>
-                    <option value="AL">AL</option>
-                    <option value="AP">AP</option>
-                    <option value="AM">AM</option>
-                    <option value="BA">BA</option>
-                    <option value="CE">CE</option>
-                    <option value="DF">DF</option>
-                    <option value="ES">ES</option>
-                    <option value="GO">GO</option>
-                    <option value="MA">MA</option>
-                    <option value="MT">MT</option>
-                    <option value="MS">MS</option>
-                    <option value="MG">MG</option>
-                    <option value="PA">PA</option>
-                    <option value="PB">PB</option>
-                    <option value="PR">PR</option>
-                    <option value="PE">PE</option>
-                    <option value="PI">PI</option>
-                    <option value="RJ">RJ</option>
-                    <option value="RN">RN</option>
-                    <option value="RS">RS</option>
-                    <option value="RO">RO</option>
-                    <option value="RR">RR</option>
-                    <option value="SC">SC</option>
-                    <option value="SP">SP</option>
-                    <option value="SE">SE</option>
-                    <option value="TO">TO</option>
-                </select>
-                <div class="invalid-feedback" data-campo="state"></div>
-            </div>
-
-            <div class="col-sm-12 col-lg-6">
-                <label for="city" class="form-label">Cidade</label>
-                <input type="text" class="form-control" id="city" required>
-                <div class="invalid-feedback" data-campo="city"></div>
-            </div>
-            <div class="col-sm-12 col-lg-6">
-                <label for="songLink" class="form-label">Vídeo autoral</label>
-                <input type="text" class="form-control" id="songLink" placeholder="No Youtube, clique em 'Compartilhar' e cole o link aqui">
-            </div>
-
-            <div class="col-12">
-                <span class="form-label d-block">Gêneros</span>
-                <div id="genres">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="genreSertanejo" value="Sertanejo">
-                        <label class="form-check-label" for="genreSertanejo">Sertanejo</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="genreRock" value="Rock">
-                        <label class="form-check-label" for="genreRock">Rock</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="genreMPB" value="MPB">
-                        <label class="form-check-label" for="genreMPB">MPB</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="genrePop" value="Pop">
-                        <label class="form-check-label" for="genrePop">Pop</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="genreForró" value="Forró">
-                        <label class="form-check-label" for="genreForró">Forró</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="genreJazz" value="Jazz">
-                        <label class="form-check-label" for="genreJazz">Jazz</label>
-                    </div>
-                </div>
-                <div class="invalid-feedback" data-campo="genres"></div>
-            </div>
-
-            <div class="col-12">
-                <h6 class="mt-2 mb-0">Trocar senha (opcional)</h6>
-            </div>
-            <div class="col-sm-12 col-lg-4">
-                <label for="senhaAtual" class="form-label">Senha atual</label>
-                <input type="password" class="form-control" id="senhaAtual" autocomplete="current-password">
-                <div class="invalid-feedback" data-campo="senhaAtual"></div>
-            </div>
-            <div class="col-sm-12 col-lg-4">
-                <label for="novaSenha" class="form-label">Nova senha</label>
-                <input type="password" class="form-control" id="novaSenha" autocomplete="new-password">
-            </div>
-            <div class="col-sm-12 col-lg-4">
-                <label for="confirmacao" class="form-label">Confirme a nova senha</label>
-                <input type="password" class="form-control" id="confirmacao" autocomplete="new-password">
-                <div class="invalid-feedback" data-campo="confirmacao"></div>
-            </div>
-
-            <div class="col-12 text-center">
-                <button type="button" class="btn btn-danger" id="clear_button">Desfazer alterações</button>
-                <button type="submit" class="btn btn-primary" id="salvar_button">Salvar</button>
-            </div>
-        </form>
+      </form>
     </div>
+  </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="../lib/html.js"></script>
-    <script src="../lib/armazenamento.js"></script>
-    <script src="../lib/senha.js"></script>
-    <script src="../lib/perfil.js"></script>
-    <script src="../global.js"></script>
-    <script src="app.js"></script>
+  <footer id="rodape"></footer>
+
+  <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="../lib/html.js"></script>
+  <script src="../lib/constantes.js"></script>
+  <script src="../lib/armazenamento.js"></script>
+  <script src="../lib/senha.js"></script>
+  <script src="../lib/validacao.js"></script>
+  <script src="../lib/perfil.js"></script>
+  <script src="../lib/sessao.js"></script>
+  <script src="../lib/mensagens.js"></script>
+  <script src="../dados/usuarios-exemplo.js"></script>
+  <script src="../dados/demo.js"></script>
+  <script src="../inicializacao.js"></script>
+  <script src="../ui/avisos.js"></script>
+  <script src="../ui/formularios.js"></script>
+  <script src="../ui/cards.js"></script>
+  <script src="../ui/layout.js"></script>
+  <script src="edicao.js"></script>
 </body>
-
 </html>

@@ -1,70 +1,117 @@
-window.addEventListener('load', function () {
+// Perfil: endereço próprio (perfil.html?u=<username>). Sem ?u=, usa o perfil escolhido na sessão
+// (links antigos). Os dados vêm sempre do modelo atual no localStorage e entram por textContent/src.
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const usuarios = GigArmazenamento.lerUsuarios(localStorage);
+  const pedido = new URLSearchParams(window.location.search).get('u');
+  const escolhido = GigSessao.perfilEscolhido(sessionStorage);
+  const username = pedido || (escolhido && escolhido.username);
+  const usuario = username ? usuarios.find((u) => u.username === username) : null;
+  const logado = GigSessao.usuarioLogado(sessionStorage);
 
-// Recupera o perfil escolhido (sessionStorage) e busca a versão atual dele no modelo (localStorage),
-// para refletir edições feitas depois do clique
-const escolhido = JSON.parse(sessionStorage.getItem('clickedUser'));
-const clickedUser = escolhido && (GigArmazenamento.lerUsuarios(localStorage).find(u => u.username === escolhido.username) || escolhido);
-const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-  
-if (clickedUser) {
-    // Preenche os dados do perfil com as informações do usuário
-    document.getElementById('profilePic').src = clickedUser.profilePicLink;
-    document.getElementById('name').textContent = clickedUser.name;
-    document.getElementById('badges').textContent = clickedUser.badges.join(' / ');
-    document.getElementById('email').textContent = clickedUser.email;
-    document.getElementById('phone').textContent = clickedUser.phone;
-    document.getElementById('role').textContent = clickedUser.role;
-    document.getElementById('location').textContent = `${clickedUser.city}/${clickedUser.state}`;
-    document.getElementById('genres').textContent = clickedUser.genres.join(', ');
-    document.getElementById('bannerImg').src = clickedUser.bannerPicLink;
-    // Sem música cadastrada, esconde o player (um embed vazio do YouTube mostra erro)
-    if (clickedUser.songLink) {
-        document.getElementById('songLink').src = "https://www.youtube.com/embed/" + clickedUser.songLink.split('/').pop();
-    } else {
-        document.getElementById('songLink').style.display = 'none';
-    }
-    document.getElementById('img1').src = clickedUser.userPicsLinks[0];
-    document.getElementById('img2').src = clickedUser.userPicsLinks[1];
-    document.getElementById('img3').src = clickedUser.userPicsLinks[2];
-    document.getElementById('img4').src = clickedUser.userPicsLinks[3];
-    document.getElementById('img5').src = clickedUser.userPicsLinks[4];
-    document.getElementById('img6').src = clickedUser.userPicsLinks[5];
+  $('perfilCarregando').remove();
+  if (!usuario) {
+    $('perfilNaoEncontrado').hidden = false;
+    document.title = 'Perfil não encontrado | GigTime';
+    return;
+  }
+  $('perfil').hidden = false;
+  document.title = `${usuario.name} | GigTime`;
+  if (!pedido) history.replaceState(null, '', '?u=' + encodeURIComponent(usuario.username));
 
-    // Próprio perfil: "Editar perfil"; perfil de outra pessoa: "Contate-me"
-    const acao = GigPerfil.acaoDoPerfil(clickedUser, loggedInUser);
-    const botaoAcao = document.getElementById('acaoPerfil');
-    botaoAcao.textContent = acao.texto;
-    botaoAcao.dataset.href = acao.href;
-    botaoAcao.addEventListener('click', () => { window.location.href = acao.href; });
+  const lista = (valor) => (Array.isArray(valor) ? valor : []);
+  const itens = (ul, textos, classe) => {
+    ul.replaceChildren(...textos.map((texto) => {
+      const li = document.createElement('li');
+      li.className = classe;
+      li.textContent = texto;
+      return li;
+    }));
+  };
 
-    document.body.classList.add('loaded')
-} else {
-     alert('Usuário não encontrado!');
-}
-});
+  $('profilePic').src = usuario.profilePicLink || GigConstantes.FOTO_PADRAO;
+  $('profilePic').alt = `Foto de ${usuario.name}`;
+  $('bannerImg').src = usuario.bannerPicLink || GigConstantes.BANNER_PADRAO;
+  $('name').textContent = usuario.name;
+  $('role').textContent = usuario.role;
+  $('location').textContent = `${usuario.city}/${usuario.state}`;
+  const nota = GigCards.textoNota(usuario.rating);
+  $('nota').textContent = nota === 'Novo' ? 'Novo no GigTime' : `${nota} de 5`;
+  itens($('badges'), lista(usuario.badges), 'selo');
+  itens($('genres'), lista(usuario.genres), 'chip');
+  $('bio').textContent = usuario.bio || 'Este perfil ainda não tem uma apresentação.';
+  $('disponibilidade').textContent = usuario.disponibilidade || 'A combinar';
 
-// Seleciona as imagens e o modal
-const photos = document.querySelectorAll('.photos img');
-const modal = document.getElementById('modal');
-const modalImg = document.getElementById('modal-img');
-const closeBtn = document.getElementById('close-btn');
-
-// Exibe a imagem ampliada no modal
-photos.forEach(photo => {
-    photo.addEventListener('click', () => {
-        modalImg.src = photo.src;
-        modal.classList.add('active');
+  // Contato só para quem está logado (evita expor e-mail e telefone a qualquer visitante)
+  if (logado) {
+    $('email').textContent = usuario.email;
+    $('phone').textContent = usuario.phone;
+    $('contatoVisivel').hidden = false;
+  } else {
+    $('contatoOculto').hidden = false;
+    $('entrarParaVer').addEventListener('click', () => {
+      sessionStorage.setItem(GigConstantes.CHAVES_SESSAO.DESTINO, '../Perfil/perfil.html?u=' + GigSessao.codificarParametro(usuario.username));
     });
-});
+  }
 
-// Fecha o modal
-closeBtn.addEventListener('click', () => {
-    modal.classList.remove('active');
-});
+  // O iframe só é criado quando há vídeo, e o embed sai só do ID validado (11 caracteres), nunca do link
+  // guardado. Sem sandbox: o player é de outra origem (youtube-nocookie.com) e já fica isolado do site;
+  // um sandbox com allow-scripts + allow-same-origin não protegeria nada e o navegador avisa disso.
+  const idVideo = GigValidacao.idYoutube(usuario.songLink);
+  if (idVideo) {
+    const iframe = document.createElement('iframe');
+    iframe.id = 'songLink';
+    iframe.title = `Vídeo de ${usuario.name} no YouTube`;
+    iframe.loading = 'lazy';
+    iframe.allow = 'encrypted-media; picture-in-picture; fullscreen';
+    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+    iframe.src = 'https://www.youtube-nocookie.com/embed/' + idVideo;
+    $('videoMoldura').appendChild(iframe);
+    $('videoMoldura').hidden = false;
+  } else {
+    $('semVideo').hidden = false;
+  }
 
-// Fecha o modal se clicar fora da imagem
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-         modal.classList.remove('active');
-    }
-});
+  // Próprio perfil: "Editar perfil"; perfil de outra pessoa: "Contate-me"
+  const acao = GigPerfil.acaoDoPerfil(usuario, logado);
+  const botaoAcao = $('acaoPerfil');
+  botaoAcao.textContent = acao.texto;
+  botaoAcao.href = acao.href;
+  botaoAcao.dataset.href = acao.href;
+
+  // Galeria: cada foto é um botão que abre o diálogo (Esc fecha e o foco volta para a foto)
+  const fotos = lista(usuario.userPicsLinks).filter(Boolean);
+  const galeria = $('galeria');
+  if (fotos.length === 0) $('semDestaques').hidden = false;
+  fotos.forEach((link, i) => {
+    const li = document.createElement('li');
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = 'galeria-item';
+    botao.setAttribute('aria-label', `Ampliar foto ${i + 1} de ${fotos.length}`);
+    const img = document.createElement('img');
+    img.src = link;
+    img.alt = '';
+    img.loading = 'lazy';
+    img.dataset.fallback = 'destaque';
+    botao.appendChild(img);
+    botao.addEventListener('click', () => abrirFoto(img.src, `Foto ${i + 1} de ${usuario.name}`));
+    li.appendChild(botao);
+    galeria.appendChild(li);
+  });
+
+  const modal = $('modal');
+  function abrirFoto(src, descricao) {
+    $('modal-img').src = src;
+    $('modal-img').alt = descricao;
+    if (typeof modal.showModal === 'function') modal.showModal();
+    else modal.setAttribute('open', '');
+    $('close-btn').focus();
+  }
+  function fecharFoto() {
+    if (typeof modal.close === 'function') modal.close();
+    else modal.removeAttribute('open');
+  }
+  $('close-btn').addEventListener('click', fecharFoto);
+  modal.addEventListener('click', (event) => { if (event.target === modal) fecharFoto(); }); // clique fora da foto
+})();

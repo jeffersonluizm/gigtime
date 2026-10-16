@@ -3,19 +3,20 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { webcrypto } = require('node:crypto');
-const { StorageMemoria, carregarPagina, esperar } = require('./apoio');
+const { StorageMemoria, carregarPagina, esperar, esperarAte } = require('./apoio');
 const A = require('../codigo-fonte/lib/armazenamento.js');
 
 // Troca o WebCrypto da página por um que executa `efeito` (a "outra aba") durante o primeiro hash
 function outraAbaDuranteOHash(w, efeito) {
   let feito = false;
+  const disparar = () => { if (!feito) { feito = true; efeito(); } };
   const subtle = {
-    digest: async (alg, dados) => {
-      if (!feito) { feito = true; efeito(); }
-      return webcrypto.subtle.digest(alg, dados);
-    },
+    digest: async (alg, dados) => { disparar(); return webcrypto.subtle.digest(alg, dados); },
+    importKey: (...args) => webcrypto.subtle.importKey(...args),
+    deriveBits: async (...args) => { disparar(); return webcrypto.subtle.deriveBits(...args); },
   };
-  Object.defineProperty(w, 'crypto', { value: { subtle }, configurable: true });
+  const getRandomValues = (bytes) => webcrypto.getRandomValues(bytes);
+  Object.defineProperty(w, 'crypto', { value: { subtle, getRandomValues }, configurable: true });
 }
 
 const usuarios = (w) => JSON.parse(w.localStorage.getItem(A.CHAVE_USUARIOS));
@@ -44,7 +45,7 @@ test('cadastro não apaga usuário gravado por outra aba durante o hash', async 
   preencherCadastro(w);
   outraAbaDuranteOHash(w, () => adicionar(w, outro('outraaba')));
   w.document.getElementById('registerForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperar();
+  await esperarAte(() => usuarios(w).some((u) => u.username === 'novo'));
   const nomes = usuarios(w).map((u) => u.username);
   assert.ok(nomes.includes('outraaba'));
   assert.ok(nomes.includes('novo'));
@@ -55,25 +56,25 @@ test('cadastro não duplica username registrado por outra aba durante o hash', a
   preencherCadastro(w);
   outraAbaDuranteOHash(w, () => adicionar(w, outro('novo', { email: 'x@ex.com', phone: 'x' })));
   w.document.getElementById('registerForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperar();
+  const erro = w.document.querySelector('[data-erro-formulario]');
+  await esperarAte(() => erro.textContent);
   assert.equal(usuarios(w).filter((u) => u.username === 'novo').length, 1);
   assert.equal(usuarios(w).find((u) => u.username === 'novo').email, 'x@ex.com');
-  assert.equal(w.__alertas.length, 1);
+  assert.match(erro.textContent, /outra aba/);
+  assert.equal(w.__alertas, undefined);
 });
 
 test('edição de perfil não apaga usuário gravado por outra aba durante o hash', async () => {
   const w = carregarPagina('EdicaoPerfil/EdicaoPerfil.html', {
-    antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify({ username: 'cartola' })),
+    antes: (win) => win.sessionStorage.setItem('loggedInUser', JSON.stringify({ username: 'davi.sax' })),
   });
   const $ = (id) => w.document.getElementById(id);
   $('city').value = 'Niterói';
-  $('senhaAtual').value = 'cartolinha';
-  $('novaSenha').value = 'nova123';
-  $('confirmacao').value = 'nova123';
+  $('senhaAtual').value = 'demo1234';
   outraAbaDuranteOHash(w, () => adicionar(w, outro('outraaba')));
   $('editForm').dispatchEvent(new w.Event('submit', { cancelable: true }));
-  await esperar(60);
+  await esperarAte(() => usuarios(w).find((u) => u.username === 'davi.sax').city === 'Niterói');
   const lista = usuarios(w);
   assert.ok(lista.some((u) => u.username === 'outraaba'));
-  assert.equal(lista.find((u) => u.username === 'cartola').city, 'Niterói');
+  assert.equal(lista.find((u) => u.username === 'davi.sax').city, 'Niterói');
 });

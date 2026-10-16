@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='800' height='600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#5d3a76'/><stop offset='1' stop-color='#140a05'/></linearGradient></defs>
+<rect width='800' height='600' fill='url(#g)'/>
+<path d='M87.8 0 L-86.7 600 L218.2 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='87.8' cy='8' r='14' fill='#f7b801'/><path d='M202.2 0 L71.2 600 L372.3 600 Z' fill='#ffffff' opacity='0.2'/><circle cx='202.2' cy='8' r='14' fill='#f7b801'/><path d='M342 0 L200.5 600 L513.8 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='342' cy='8' r='14' fill='#f7b801'/><path d='M461.9 0 L316.5 600 L582 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='461.9' cy='8' r='14' fill='#f7b801'/><path d='M563.2 0 L423.9 600 L705.9 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='563.2' cy='8' r='14' fill='#f7b801'/><path d='M708.2 0 L531.2 600 L859.6 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='708.2' cy='8' r='14' fill='#f7b801'/>
+<rect x='0' y='500' width='800' height='100' fill='#000000' opacity='.35'/>
+<text x='32' y='562' font-family='Segoe UI, Helvetica, Arial, sans-serif' font-size='36' font-weight='700' fill='#ffffff'>Ao vivo em Recife</text>
+</svg>

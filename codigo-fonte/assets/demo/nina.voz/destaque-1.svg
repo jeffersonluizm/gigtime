@@ -1,0 +1,7 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='800' height='600'>
+<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#ff5629'/><stop offset='1' stop-color='#140a05'/></linearGradient></defs>
+<rect width='800' height='600' fill='url(#g)'/>
+<path d='M85.6 0 L-44.4 600 L233.9 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='85.6' cy='8' r='14' fill='#5d3a76'/><path d='M223.4 0 L45.8 600 L374.9 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='223.4' cy='8' r='14' fill='#5d3a76'/><path d='M345 0 L197 600 L481.4 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='345' cy='8' r='14' fill='#5d3a76'/><path d='M469.3 0 L308.4 600 L649.1 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='469.3' cy='8' r='14' fill='#5d3a76'/><path d='M577.5 0 L412.5 600 L730.5 600 Z' fill='#ffffff' opacity='0.2'/><circle cx='577.5' cy='8' r='14' fill='#5d3a76'/><path d='M700 0 L551.1 600 L821.8 600 Z' fill='#ffffff' opacity='0.1'/><circle cx='700' cy='8' r='14' fill='#5d3a76'/>
+<rect x='0' y='500' width='800' height='100' fill='#000000' opacity='.35'/>
+<text x='32' y='562' font-family='Segoe UI, Helvetica, Arial, sans-serif' font-size='36' font-weight='700' fill='#ffffff'>Ao vivo em Goiânia</text>
+</svg>

@@ -327,3 +327,33 @@ RF-08 | O site deve se encontrar totalmente responsivo nas principais das plataf
 
 
 <hr>
+
+---
+
+## Artefatos atuais (revisão de portfólio, 2026)
+
+As seções acima são o registro original de 2024 (histórico). Algumas informações delas não valem mais: os arquivos `perfilContratante.*` e `stylesheetperfilContratante.css` nunca existiram no repositório, o filtro de Explorar fica à esquerda (não à direita) e o endereço publicado da PUC mostra a versão antiga. A tabela abaixo descreve o código atual.
+
+### Como acessar
+
+1. Dê dois cliques em `iniciar.bat` (Windows) ou rode `python -m http.server 8800 --bind 127.0.0.1 --directory codigo-fonte`.
+2. Abra `http://localhost:8800/Home/home.html`.
+3. Contas de demonstração: `lia.batera` (músico) e `casa.lume` (contratante), senha `demo1234`.
+
+### Requisito, página e código
+
+| Requisito | Página | Código da página | Regras (lib/) | Testes |
+|-----------|--------|------------------|---------------|--------|
+| RF-01 Cadastro | `Registro/registro.html` | `Registro/registro.js` | `perfil.js` (validarCadastro, criarUsuario), `validacao.js`, `senha.js` | `registro.test.js`, `concorrencia.test.js` |
+| RF-02 Filtros | `anuncios/anuncios.html` | `anuncios/anuncios.js` | `filtros.js` | `filtros.test.js` |
+| RF-03 Chat | `Chat/chat.html` | `Chat/chat.js` | `mensagens.js` | `chat.test.js` |
+| RF-04 Perfil | `Perfil/perfil.html?u=<usuário>` | `Perfil/perfil.js` | `perfil.js` (acaoDoPerfil), `validacao.js` (idYoutube) | `perfil.test.js` |
+| RF-05 Login | `Login/login.html` | `Login/login.js` | `senha.js` (autenticarEAtualizar), `sessao.js` | `senha.test.js`, `sessao.test.js` |
+| RF-06 e RF-07 Perfis na Home e em Explorar | `Home/home.html`, `anuncios/anuncios.html` | `Home/home.js`, `ui/cards.js` | `armazenamento.js` | `cards.test.js`, `armazenamento.test.js` |
+| RF-08 Responsivo | todas | `assets/css/*.css` e CSS de cada página | - | prints em `docs/img/` |
+| RF-09 Próprio perfil | menu da conta → Meu perfil | `ui/layout.js` | `sessao.js` | `perfil.test.js` |
+| RF-10 Editar perfil | `EdicaoPerfil/EdicaoPerfil.html` | `EdicaoPerfil/edicao.js` | `perfil.js` (atualizarPerfil) | `perfil.test.js` |
+| RF-11 Conta e dados | `Conta/conta.html` | `Conta/conta.js` | `conta.js`, `perfil.js` (trocarSenha) | `conta.test.js`, `conta-pagina.test.js` |
+| RF-12 Acesso e sistema | `Acesso/*.html`, `Sistema/erro.html`, `404.html` (raiz) | `Acesso/esqueci-senha.js`, `Sistema/erro.js`, `ferramentas/gerar-404.js` | `conta.js` | `paginas-sistema.test.js` |
+
+Comum a todas as páginas: `inicializacao.js` (migrações e dados de exemplo), `ui/layout.js` (topo, rodapé, contador de não lidas, sessão expirada), `ui/avisos.js` (toast e diálogo), `ui/formularios.js` (erros por campo) e `dados/usuarios-exemplo.js` (personas, gerado por `ferramentas/gerar-demo.js`).

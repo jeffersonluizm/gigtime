@@ -11,7 +11,11 @@
   // com outros repositórios do mesmo usuário
   const CHAVE_USUARIOS = 'gigtime:users';
   const CHAVE_MENSAGENS = 'gigtime:messages';
+  const CHAVE_LIDAS = 'gigtime:lidas'; // { usuario: { contato: lidaAte (ms) } }
   const CHAVE_SESSAO_ANTIGA = 'users'; // versão publicada antes: usuários no sessionStorage
+
+  // Armazenamento cheio (cota do localStorage): Chrome/Edge/Safari e Firefox usam nomes diferentes
+  const ehErroDeCota = (erro) => Boolean(erro) && (erro.name === 'QuotaExceededError' || erro.name === 'NS_ERROR_DOM_QUOTA_REACHED');
 
   function lerJSON(storage, chave) {
     const bruto = storage.getItem(chave);
@@ -23,9 +27,14 @@
     }
   }
 
-  function lerUsuarios(storage) {
-    const lista = lerJSON(storage, CHAVE_USUARIOS);
+  // Lista gravada numa chave, ou [] (chave vazia, JSON quebrado ou valor que não é lista)
+  function lerLista(storage, chave) {
+    const lista = lerJSON(storage, chave);
     return Array.isArray(lista) ? lista : [];
+  }
+
+  function lerUsuarios(storage) {
+    return lerLista(storage, CHAVE_USUARIOS);
   }
 
   function salvarUsuarios(storage, lista) {
@@ -96,22 +105,5 @@
     return copia;
   }
 
-  // Página para onde o login deve voltar (gravada por quem exigiu login). Lê uma vez só e
-  // aceita apenas caminhos relativos do próprio site, como "../Chat/chat.html?com=ana".
-  const CHAVE_DESTINO = 'depoisDoLogin';
-  const DESTINO_VALIDO = /^\.\.\/[A-Za-zÀ-ÿ]+\/[A-Za-z]+\.html(\?[A-Za-z0-9_=%.&-]*)?$/;
-
-  // encodeURIComponent deixa ' ( ) * ! ~ sem codificar; aqui eles também viram %XX,
-  // para o valor caber na lista de caracteres aceitos em DESTINO_VALIDO
-  function codificarParametro(valor) {
-    return encodeURIComponent(String(valor)).replace(/[!'()*~]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase());
-  }
-
-  function destinoDepoisDoLogin(sessao) {
-    const destino = sessao.getItem(CHAVE_DESTINO);
-    sessao.removeItem(CHAVE_DESTINO);
-    return destino && DESTINO_VALIDO.test(destino) ? destino : null;
-  }
-
-  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_DESTINO, lerJSON, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico, destinoDepoisDoLogin, codificarParametro };
+  return { CHAVE_USUARIOS, CHAVE_MENSAGENS, CHAVE_LIDAS, ehErroDeCota, lerJSON, lerLista, lerUsuarios, salvarUsuarios, substituirUsuario, migrarDaSessao, migrarChavesAntigas, semearSeVazio, usuarioPublico };
 });

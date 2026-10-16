@@ -3,7 +3,7 @@
 # Arquivo mantido em ASCII para o Windows PowerShell 5.1 ler sem problema de codificacao.
 param(
     [string]$Raiz = (Join-Path $PSScriptRoot '..\codigo-fonte'),
-    [int]$Porta = 8000
+    [int]$Porta = 8800
 )
 
 $Raiz = (Resolve-Path -LiteralPath $Raiz).Path.TrimEnd('\') + '\'

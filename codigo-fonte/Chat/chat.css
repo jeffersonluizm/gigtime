@@ -1,0 +1,239 @@
+/* Chat: lista de conversas + conversa aberta, ocupando a altura da tela abaixo do topo */
+
+.chat-app {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  height: calc(100vh - 140px);
+  height: calc(100dvh - 140px);
+  min-height: 420px;
+  background: var(--gig-superficie);
+  border: 1px solid var(--gig-borda);
+  border-radius: var(--gig-raio-g);
+  box-shadow: var(--gig-sombra);
+  overflow: hidden;
+}
+
+.chat-lista, .chat-conversa {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.chat-lista {
+  border-right: 1px solid var(--gig-borda);
+  background: var(--gig-fundo);
+}
+
+.chat-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  min-height: 68px;
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--gig-borda);
+}
+
+.chat-contato {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.chatlist {
+  list-style: none;
+  padding: .5rem;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.chatBlock {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  width: 100%;
+  padding: .65rem .75rem;
+  border: 0;
+  border-radius: var(--gig-raio);
+  background: transparent;
+  color: var(--gig-texto);
+  text-align: left;
+}
+
+.chatBlock:hover {
+  background: var(--gig-superficie-2);
+}
+
+.chatBlock.active {
+  background: var(--gig-amarelo-claro);
+}
+
+.chatBlock .avatar {
+  width: 44px;
+  height: 44px;
+}
+
+.chatBlock__detalhes {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.chatBlock__topo {
+  display: flex;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.chatBlock__nome {
+  font-weight: 600;
+  color: var(--gig-texto-forte);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chatBlock__hora {
+  font-size: .8rem;
+  color: var(--gig-texto-suave);
+  flex-shrink: 0;
+}
+
+.chatBlock__previa {
+  font-size: .9rem;
+  color: var(--gig-texto-suave);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  background: var(--gig-fundo);
+}
+
+.messagechat {
+  display: flex;
+  margin: .35rem 0;
+}
+
+.messagechat p {
+  max-width: 70%;
+  margin: 0;
+  padding: .6rem .85rem;
+  border-radius: 18px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.messagechat .hora {
+  display: block;
+  margin-top: .2rem;
+  font-size: .72rem;
+  text-align: right;
+}
+
+.myMessage {
+  justify-content: flex-end;
+}
+
+.myMessage p {
+  background: var(--gig-laranja);
+  color: var(--gig-superficie);
+  border-bottom-right-radius: 6px;
+}
+
+.myMessage .hora {
+  color: var(--gig-superficie);
+}
+
+.friendMessage {
+  justify-content: flex-start;
+}
+
+.friendMessage p {
+  background: var(--gig-superficie);
+  color: var(--gig-texto);
+  border: 1px solid var(--gig-borda);
+  border-bottom-left-radius: 6px;
+}
+
+.friendMessage .hora {
+  color: var(--gig-texto-suave);
+}
+
+.chatInput {
+  display: flex;
+  gap: .5rem;
+  padding: .75rem;
+  border-top: 1px solid var(--gig-borda);
+  background: var(--gig-superficie);
+}
+
+.chatInput .form-control {
+  border-radius: 999px;
+}
+
+.chatInput .enviar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+}
+
+.erro-envio {
+  margin: 0;
+  padding: 0 1rem;
+  color: var(--gig-erro-texto);
+  font-size: .9rem;
+}
+
+.erro-envio:empty {
+  display: none;
+}
+
+.voltar {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gig-texto-forte);
+  font-size: 1.25rem;
+}
+
+/* Telas estreitas: mostra a lista de conversas OU a conversa aberta, ocupando a largura toda */
+@media (max-width: 767.98px) {
+  .chat-app {
+    grid-template-columns: 1fr;
+    height: calc(100vh - 110px);
+    height: calc(100dvh - 110px);
+  }
+
+  .chat-app .chat-conversa,
+  .chat-app.conversa-aberta .chat-lista {
+    display: none;
+  }
+
+  .chat-app.conversa-aberta .chat-conversa {
+    display: flex;
+  }
+
+  .chat-lista {
+    border-right: 0;
+  }
+
+  .voltar {
+    display: inline-flex;
+  }
+
+  .messagechat p {
+    max-width: 85%;
+  }
+}

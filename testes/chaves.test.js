@@ -57,7 +57,7 @@ test('migrarChavesAntigas não mexe em dados de outro site na mesma origem', () 
   assert.equal(local.getItem('gigtime:users'), null);
 });
 
-test('global.js migra as chaves antigas antes de semear os usuários de exemplo', () => {
+test('inicializacao.js migra as chaves antigas antes de semear os usuários de exemplo', () => {
   const w = carregarPagina('Home/home.html', {
     antes: (win) => {
       win.localStorage.setItem('users', JSON.stringify([usuario('antigo', { state: 'MG', city: 'BH' })]));

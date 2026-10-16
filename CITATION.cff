@@ -2,6 +2,8 @@ cff-version: 1.0.1
 message: Site para conexão entre músicos e contratantes
 title: GigTime
 authors:
+  - family-names: Pereira Silva
+    given-names: Carlos Henrique
   - family-names: Carvalho de Oliveira
     given-names: Lucas
   - family-names: Eduardo Silva

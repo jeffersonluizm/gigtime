@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: data:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Esqueci minha senha | GigTime</title>
+  <meta name="description" content="Como recuperar o acesso ao GigTime, um site sem servidor: o que dá e o que não dá para fazer.">
+  <link rel="icon" type="image/svg+xml" href="../assets/img/logo.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+  <link rel="preload" href="../assets/fontes/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/componentes.css">
+</head>
+<body data-pagina="esqueci" data-topo="simples">
+  <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+  <header id="topo"></header>
+
+  <main id="conteudo" tabindex="-1" class="acesso">
+    <div class="painel largo">
+      <svg class="icone icone-g mb-3 text-gig-laranja" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#question-circle"></use></svg>
+      <h1>Esqueceu a senha?</h1>
+      <p class="lead texto-suave">Vamos ser sinceros: aqui não existe servidor nem envio de e-mail, então não temos como mandar um link de recuperação.</p>
+
+      <p>A senha fica guardada só como um hash (PBKDF2) neste navegador, e ninguém, nem nós, consegue lê-la de volta. Você tem três caminhos:</p>
+      <ol class="mb-4">
+        <li class="mb-2"><strong>Conta de demonstração?</strong> Todas usam a senha <code data-demo="senha"></code> (por exemplo, <code data-demo="musico"></code>). <a href="../Login/login.html">Voltar para entrar</a>.</li>
+        <li class="mb-2"><strong>Conta que você criou?</strong> Crie outra, com outro nome de usuário. <a href="../Registro/registro.html">Criar conta</a>.</li>
+        <li><strong>Quer começar do zero?</strong> Restaure a demonstração: as contas criadas e as conversas deste navegador são apagadas e as <span data-demo="personas"></span> personas de exemplo voltam.</li>
+      </ol>
+
+      <button type="button" class="btn btn-perigo" id="restaurarDemo">
+        <svg class="icone" aria-hidden="true" focusable="false"><use href="../assets/icones.svg#arrow-counterclockwise"></use></svg> Restaurar a demonstração
+      </button>
+    </div>
+  </main>
+
+  <footer id="rodape"></footer>
+
+  <script src="../vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script src="../lib/html.js"></script>
+  <script src="../lib/constantes.js"></script>
+  <script src="../lib/armazenamento.js"></script>
+  <script src="../lib/senha.js"></script>
+  <script src="../lib/validacao.js"></script>
+  <script src="../lib/perfil.js"></script>
+  <script src="../lib/sessao.js"></script>
+  <script src="../lib/mensagens.js"></script>
+  <script src="../dados/usuarios-exemplo.js"></script>
+  <script src="../dados/demo.js"></script>
+  <script src="../inicializacao.js"></script>
+  <script src="../ui/avisos.js"></script>
+  <script src="../ui/formularios.js"></script>
+  <script src="../ui/cards.js"></script>
+  <script src="../ui/layout.js"></script>
+  <script src="../lib/conta.js"></script>
+  <script src="esqueci-senha.js"></script>
+</body>
+</html>
