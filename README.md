@@ -2,11 +2,11 @@
 
 **Música ao vivo, sem complicação.** O GigTime conecta músicos e quem contrata música ao vivo (bares, casas de shows, eventos): perfis com repertório e avaliações, busca por gênero e região e conversa direta.
 
-### ▶ [Abrir a demonstração](https://SEU-USUARIO.github.io/gigtime/)
+### ▶ [Abrir a demonstração](https://jeffersonluizm.github.io/gigtime/)
 
 <!-- Link provisório: troque pelo endereço real depois de publicar (passo a passo em docs/deploy.md). -->
 
-Entre com um clique: **[Entrar como músico](https://SEU-USUARIO.github.io/gigtime/codigo-fonte/Login/login.html?demo=musico)** · **[Entrar como contratante](https://SEU-USUARIO.github.io/gigtime/codigo-fonte/Login/login.html?demo=contratante)**
+Entre com um clique: **[Entrar como músico](https://jeffersonluizm.github.io/gigtime/codigo-fonte/Login/login.html?demo=musico)** · **[Entrar como contratante](https://jeffersonluizm.github.io/gigtime/codigo-fonte/Login/login.html?demo=contratante)**
 (ou digite `lia.batera` / `casa.lume`, senha `demo1234`). Para ver o chat funcionando, abra uma aba como músico e outra como contratante.
 
 ![Fluxo da demonstração: entrar como músico, filtrar, abrir um perfil e mandar mensagem](docs/img/demo.gif)
