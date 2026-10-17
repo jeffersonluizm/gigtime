@@ -4,8 +4,6 @@
 
 ### ▶ [Abrir a demonstração](https://jeffersonluizm.github.io/gigtime/)
 
-<!-- Link provisório: troque pelo endereço real depois de publicar (passo a passo em docs/deploy.md). -->
-
 Entre com um clique: **[Entrar como músico](https://jeffersonluizm.github.io/gigtime/codigo-fonte/Login/login.html?demo=musico)** · **[Entrar como contratante](https://jeffersonluizm.github.io/gigtime/codigo-fonte/Login/login.html?demo=contratante)**
 (ou digite `lia.batera` / `casa.lume`, senha `demo1234`). Para ver o chat funcionando, abra uma aba como músico e outra como contratante.
 
